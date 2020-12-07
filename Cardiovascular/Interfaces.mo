@@ -6,19 +6,19 @@ package Interfaces
   //   Physiolibrary.Types.Volume V "Volume";
     parameter Boolean useLVCannula = false;
 
-    Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a rightHeartInflow
-      annotation (Placement(transformation(extent={{-110,30},{-90,50}}),
+    Physiolibrary.Fluid.Interfaces.FluidPort_a rightHeartInflow annotation (
+        Placement(transformation(extent={{-110,30},{-90,50}}),
           iconTransformation(extent={{-108,-30},{-88,-10}})));
-    Physiolibrary.Hydraulic.Interfaces.HydraulicPort_b rightHeartOutflow
-      annotation (Placement(transformation(extent={{90,30},{110,50}}),
-          iconTransformation(extent={{-110,10},{-90,30}})));
-    Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a leftHeartInflow
-      annotation (Placement(transformation(extent={{90,-30},{110,-10}}),
+    Physiolibrary.Fluid.Interfaces.FluidPort_b rightHeartOutflow annotation (
+        Placement(transformation(extent={{90,30},{110,50}}), iconTransformation(
+            extent={{-110,10},{-90,30}})));
+    Physiolibrary.Fluid.Interfaces.FluidPort_a leftHeartInflow annotation (
+        Placement(transformation(extent={{90,-30},{110,-10}}),
           iconTransformation(extent={{90,10},{110,30}})));
-    Physiolibrary.Hydraulic.Interfaces.HydraulicPort_b leftHeartOutflow
-      annotation (Placement(transformation(extent={{-110,-30},{-90,-10}}),
+    Physiolibrary.Fluid.Interfaces.FluidPort_b leftHeartOutflow annotation (
+        Placement(transformation(extent={{-110,-30},{-90,-10}}),
           iconTransformation(extent={{90,-28},{110,-8}})));
-    Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a LVCannula if useLVCannula
+    Physiolibrary.Fluid.Interfaces.FluidPort_a LVCannula if         useLVCannula
       annotation (Placement(transformation(extent={{40,-78},{60,-58}}),
           iconTransformation(extent={{72,-70},{92,-50}})));
     annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
@@ -41,13 +41,15 @@ package Interfaces
   //   Physiolibrary.Types.Volume V "Total stressed blood volume of the systemic circulation";
 
     parameter Boolean useAortalCanulla = false;
-    Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a q_in annotation (
-        Placement(transformation(extent={{90,-10},{110,10}}),
-          iconTransformation(extent={{90,-10},{110,10}})));
-    Physiolibrary.Hydraulic.Interfaces.HydraulicPort_b q_out annotation (
-        Placement(transformation(extent={{-110,-10},{-90,10}}),
-          iconTransformation(extent={{-110,-10},{-90,10}})));
-    Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a AortaCannulla if useAortalCanulla annotation (Placement(transformation(extent={{60,-100},{80,-80}}), iconTransformation(extent={{60,-100},{80,-80}})));
+    Physiolibrary.Fluid.Interfaces.FluidPort_a q_in annotation (Placement(
+          transformation(extent={{90,-10},{110,10}}), iconTransformation(extent=
+             {{90,-10},{110,10}})));
+    Physiolibrary.Fluid.Interfaces.FluidPort_b q_out annotation (Placement(
+          transformation(extent={{-110,-10},{-90,10}}), iconTransformation(
+            extent={{-110,-10},{-90,10}})));
+    Physiolibrary.Fluid.Interfaces.FluidPort_a AortaCannulla if         useAortalCanulla
+      annotation (Placement(transformation(extent={{60,-100},{80,-80}}),
+          iconTransformation(extent={{60,-100},{80,-80}})));
 
     annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
               -100,-100},{100,100}}), graphics), Icon(coordinateSystem(
@@ -64,12 +66,12 @@ package Interfaces
     //  extends Physiolibrary.Hydraulic.Interfaces.OnePort;
   //   Physiolibrary.Types.Volume V "Total stressed blood volume of the pulmonary circulation";
 
-    Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a q_in annotation (
-        Placement(transformation(extent={{-110,-10},{-90,10}}),
-          iconTransformation(extent={{-108,-12},{-88,8}})));
-    Physiolibrary.Hydraulic.Interfaces.HydraulicPort_b q_out annotation (
-        Placement(transformation(extent={{90,-10},{110,10}}),
-          iconTransformation(extent={{88,-16},{108,4}})));
+    Physiolibrary.Fluid.Interfaces.FluidPort_a q_in annotation (Placement(
+          transformation(extent={{-110,-10},{-90,10}}), iconTransformation(
+            extent={{-108,-12},{-88,8}})));
+    Physiolibrary.Fluid.Interfaces.FluidPort_b q_out annotation (Placement(
+          transformation(extent={{90,-10},{110,10}}), iconTransformation(extent=
+             {{88,-16},{108,4}})));
     annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
               -100},{100,100}}), graphics={Text(
             extent={{-156,-38},{156,-64}},
@@ -139,7 +141,7 @@ package Controlled
                 {{-60,-40},{20,40}}), graphics));
   end System;
 
-  model Pulmonary "Abstract controlled pulmonary circulation submodel"
+  partial model Pulmonary "Abstract controlled pulmonary circulation submodel"
     extends Cardiovascular.Interfaces.Pulmonary;
     Physiolibrary.Types.BusConnector busConnector annotation (Placement(
           transformation(extent={{-100,14},{-60,54}}), iconTransformation(
@@ -155,7 +157,7 @@ package Controlled
                 {{-100,-100},{100,100}}), graphics));
   end Heart;
 
-  model Systemic "Abstract controlled systemic circulation submodel"
+  partial model Systemic "Abstract controlled systemic circulation submodel"
     extends Cardiovascular.Interfaces.Systemic;
     Physiolibrary.Types.BusConnector busConnector annotation (Placement(
           transformation(extent={{-100,14},{-60,54}}), iconTransformation(
@@ -170,9 +172,9 @@ package Controlled
     Physiolibrary.Types.BusConnector busConnector annotation (Placement(
             transformation(extent={{0,-8},{40,32}}), iconTransformation(
               extent={{-38,4},{2,44}})));
-      Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a port_a annotation (
-          Placement(transformation(extent={{84,-70},{104,-50}}),
-          iconTransformation(extent={{84,-70},{104,-50}})));
+      Physiolibrary.Fluid.Interfaces.FluidPort_a port_a annotation (Placement(
+            transformation(extent={{84,-70},{104,-50}}), iconTransformation(
+              extent={{84,-70},{104,-50}})));
     Model.Control.BloodVolume.VolumeRefill2 volumeRefill
       annotation (Placement(transformation(extent={{46,-38},{86,6}})));
   equation

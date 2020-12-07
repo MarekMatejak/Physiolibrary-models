@@ -799,69 +799,17 @@ package Complex
     package Auxiliary "Auxiliary components"
       package Connectors
         "Connectors used in the model, compatible with Physiolibrary"
-        connector In "Inflow connector"
-          extends Physiolibrary.Hydraulic.Interfaces.HydraulicPort;
+        connector In = Physiolibrary.Fluid.Interfaces.FluidPort_a;
 
-          annotation (Icon(coordinateSystem(preserveAspectRatio=false,
-                  extent={{-100,-100},{100,100}}), graphics={
-                Ellipse(
-                  extent={{-80,80},{80,-80}},
-                  lineColor={127,0,0},
-                  fillColor={255,63,5},
-                  fillPattern=FillPattern.Sphere),
-                Rectangle(
-                  extent={{-42,12},{34,-14}},
-                  lineColor={255,255,0},
-                  lineThickness=0.5,
-                  fillPattern=FillPattern.Solid,
-                  fillColor={255,255,0}),
-                Polygon(
-                  points={{8,42},{8,-42},{50,0},{8,42}},
-                  lineColor={255,255,0},
-                  lineThickness=0.5,
-                  fillPattern=FillPattern.Sphere,
-                  smooth=Smooth.None,
-                  fillColor={255,255,0})}));
-        end In;
+        connector Through = Physiolibrary.Fluid.Interfaces.FluidPort_a;
 
-        connector Through "Connector with no preferred flow direction"
-          extends Physiolibrary.Hydraulic.Interfaces.HydraulicPort;
-
-          annotation (Icon(graphics={Ellipse(
-                  extent={{-80,80},{80,-80}},
-                  lineColor={197,52,16},
-                  fillColor={255,170,0},
-                  fillPattern=FillPattern.Sphere)}));
-        end Through;
-
-        connector Out "Outflow connector"
-          extends Physiolibrary.Hydraulic.Interfaces.HydraulicPort;
-
-          annotation (Icon(graphics={
-                Ellipse(
-                  extent={{-80,80},{80,-80}},
-                  lineColor={229,133,64},
-                  fillColor={255,255,0},
-                  fillPattern=FillPattern.Sphere),
-                Rectangle(
-                  extent={{-42,12},{32,-14}},
-                  lineColor={255,0,0},
-                  lineThickness=0.5,
-                  fillPattern=FillPattern.Solid,
-                  fillColor={255,0,0}),
-                Polygon(
-                  points={{8,42},{8,-42},{50,0},{8,42}},
-                  lineColor={255,0,0},
-                  lineThickness=0.5,
-                  fillPattern=FillPattern.Sphere,
-                  smooth=Smooth.None,
-                  fillColor={255,0,0})}));
-        end Out;
+        connector Out = Physiolibrary.Fluid.Interfaces.FluidPort_b;
 
       end Connectors;
 
       package BlockKinds "Fundamental types of blocks"
         partial model Port "Block with flow through"
+
           import Physiolibrary.Types.*;
 
           Connectors.In cIn "Inflow" annotation (Placement(transformation(
@@ -869,13 +817,15 @@ package Complex
           Connectors.Out cOut "Outflow" annotation (Placement(
                 transformation(extent={{70,-10},{90,10}})));
 
-          Pressure dp=cIn.pressure - cOut.pressure "Pressure gradient";
+          Pressure dp=cIn.p - cOut.p "Pressure gradient";
 
           annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
+                  extent={{-100,-100},{100,100}}), graphics),
+                      Diagram(coordinateSystem(preserveAspectRatio=false,
                   extent={{-100,-100},{100,100}}), graphics));
         end Port;
 
-        model Hook "Block for intercepting flow"
+        partial model Hook "Block for intercepting flow"
 
           Connectors.Through c "Hooking connector" annotation (Placement(
                 transformation(extent={{-10,40},{10,60}}),
@@ -953,9 +903,10 @@ package Complex
 
       package RLC "Components with RLC characteristics"
         package Elements "Fundamental units for RLC"
-          model R "Resistive port"
-            extends Auxiliary.BlockKinds.Port;
-            extends Physiolibrary.Icons.Resistor;
+          model R_ "Resistive port"
+            extends Physiolibrary.Fluid.Interfaces.OnePort;
+            extends Physiolibrary.Icons.HydraulicResistor;
+
             import Physiolibrary.Types.*;
 
             input HydraulicResistance R "Current resistance";
@@ -963,49 +914,29 @@ package Complex
               "Special argument to allow for a non-linear term";
 
           equation
-            cIn.q*R*nonlinearity = dp;
-            0 = cIn.q + cOut.q;
+            volumeFlowRate*R*nonlinearity = dp;
 
-          end R;
+          end R_;
 
           model L "Port with inertance"
-            extends Auxiliary.BlockKinds.Port;
-            extends Physiolibrary.Icons.Inertance;
+            extends Physiolibrary.Fluid.Interfaces.OnePort;
+            extends Physiolibrary.Icons.HydraulicResistor;
+
             import Physiolibrary.Types.*;
 
-            input HydraulicInertance L=0 "Current inertance";
+            input Real L(unit="Pa.s2/m3")=0 "Current inertance";
 
           equation
-            der(cIn.q)*L = dp;
-            0 = cIn.q + cOut.q;
+            der(volumeFlowRate)*L = dp;
 
           end L;
 
-          model C "Compliance compartment"
-            extends Auxiliary.BlockKinds.Hook;
-            extends Physiolibrary.Icons.BloodElasticCompartment;
-            import Physiolibrary.Types.*;
-
-            parameter Volume V_init=0 "Starting volume";
-
-            input HydraulicCompliance C "Current compliance";
-            input Pressure pGround=0 "Grounding pressure";
-
-            Pressure dp=c.pressure - pGround "Pressure gradient";
-            Volume V(start=V_init) "Compartment volume";
-
-          equation
-            c.q = C*der(dp);
-            c.q = der(V);
-
-            annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                    extent={{-100,-100},{100,100}}), graphics));
-          end C;
+          model C=Physiolibrary.Fluid.Components.ElasticVessel "Compliance compartment";
 
           model ExponentialResistance
             "Resistive port with exponential resistivity profile dp = Base*q^Exp"
-            extends Auxiliary.BlockKinds.Port;
-            extends Physiolibrary.Icons.Resistor;
+            extends Physiolibrary.Fluid.Interfaces.OnePort;
+            extends Physiolibrary.Icons.HydraulicResistor;
             import Physiolibrary.Types.*;
 
             parameter Real Base "dp = base * Q^Exp ";
@@ -1033,13 +964,14 @@ package Complex
             //   dp = if noEvent(dp >= 0) and noEvent(cIn.q >= 0) then Base*cIn.q^Exp else -
             //     Base*(-cIn.q)^Exp;
             if closed then
-              cIn.q = 0;
+              volumeFlowRate = 0;
               else
-            cIn.q = if noEvent(dp >= 0) then (dp/Base/relativeViscosity)^(1/Exp) else -(-dp/
-              Base/relativeViscosity)^(1/Exp);
+              volumeFlowRate = if noEvent(dp >= 0) then (dp/Base/
+                relativeViscosity)^(1/Exp) else -(-dp/Base/relativeViscosity)^(
+                1/Exp);
             end if;
 
-            0 = cIn.q + cOut.q;
+
 
             annotation (Icon(graphics={Line(
                     points={{-80,-60},{-20,-52},{38,-18},{60,60}},
@@ -1052,6 +984,42 @@ package Complex
         end Elements;
 
         package Compounds "RLC circuits"
+          model R "Constant R segment"
+            extends BlockKinds.Port;
+            import Physiolibrary.Types.*;
+
+            parameter HydraulicResistance R "Constant resistance";
+
+
+            Elements.R_ resistor(R=R) annotation (Placement(transformation(
+                    extent={{-50,-10},{-30,10}})));
+
+          equation
+
+            connect(cIn, resistor.q_in) annotation (Line(
+                points={{-80,0},{-64,0},{-64,2.22045e-16},{-50,2.22045e-16}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(resistor.q_out, cOut) annotation (Line(
+                points={{-30,2.22045e-16},{26,2.22045e-16},{26,0},{80,0}},
+                color={127,0,0},
+                thickness=0.5));
+            annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
+                    extent={{-100,-100},{100,100}})),           Icon(
+                  graphics={Text(
+                    extent={{-32,26},{32,-24}},
+                    lineColor={0,0,0},
+                    fillColor={255,255,255},
+                    fillPattern=FillPattern.Solid,
+                    textStyle={TextStyle.Bold},
+                                  textString="RC"),Text(
+                    extent={{-70,86},{72,30}},
+                    lineColor={0,0,0},
+                    fillColor={86,199,10},
+                    fillPattern=FillPattern.Solid,
+                    textString="%name")}));
+          end R;
+
           model RC "Constant RC segment"
             extends BlockKinds.Port;
             import Physiolibrary.Types.*;
@@ -1059,31 +1027,32 @@ package Complex
             parameter HydraulicResistance R "Constant resistance";
             parameter HydraulicCompliance C "Constant compliance";
 
-            Volume V=capacitor.V "Segment volume";
+            Volume V=capacitor.volume "Segment volume";
 
-            Elements.C capacitor(C=C) annotation (Placement(transformation(
+            Elements.C capacitor(Compliance=C, nHydraulicPorts=2)
+                                      annotation (Placement(transformation(
                   extent={{-10,-10},{10,10}},
                   rotation=0,
                   origin={40,-6})));
-            Elements.R resistor(R=R) annotation (Placement(transformation(
+            Elements.R_ resistor(R=R) annotation (Placement(transformation(
                     extent={{-50,-10},{-30,10}})));
 
           equation
-            connect(cIn, resistor.cIn) annotation (Line(
-                points={{-80,0},{-48,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(resistor.cOut, capacitor.c) annotation (Line(
-                points={{-32,0},{8,0},{8,-1},{40,-1}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(cOut, capacitor.c) annotation (Line(
-                points={{80,0},{64,0},{64,-1},{40,-1}},
-                color={0,0,255},
-                smooth=Smooth.None));
 
+            connect(resistor.q_out, capacitor.q_in[1]) annotation (Line(
+                points={{-30,0},{6,0},{6,-4.7},{39.7,-4.7}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(cIn, resistor.q_in) annotation (Line(
+                points={{-80,0},{-64,0},{-64,2.22045e-16},{-50,2.22045e-16}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(capacitor.q_in[2], cOut) annotation (Line(
+                points={{39.7,-7.3},{58,-7.3},{58,0},{80,0}},
+                color={127,0,0},
+                thickness=0.5));
             annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                    extent={{-100,-100},{100,100}}), graphics), Icon(
+                    extent={{-100,-100},{100,100}})),           Icon(
                   graphics={Text(
                     extent={{-32,26},{32,-24}},
                     lineColor={0,0,0},
@@ -1103,40 +1072,41 @@ package Complex
             import Physiolibrary.Types.*;
 
             parameter HydraulicResistance R "Constant resistance";
-            parameter HydraulicInertance L "Constant inertance";
+            parameter Physiolibrary.Obsolete.ObsoleteTypes.VolumetricHydraulicInertance L "Constant inertance";
             parameter HydraulicCompliance C "Constant compliance";
 
-            Volume V=capacitor.V "Segment volume";
+            Volume V=capacitor.volume "Segment volume";
 
-            Elements.C capacitor(C=C) annotation (Placement(transformation(
+            Elements.C capacitor(Compliance=C, nHydraulicPorts=2)
+                                      annotation (Placement(transformation(
                   extent={{-10,-10},{10,10}},
                   rotation=0,
                   origin={40,-6})));
             Elements.L inductor(L=L) annotation (Placement(transformation(
                     extent={{-10,-10},{10,10}})));
-            Elements.R resistor(R=R) annotation (Placement(transformation(
+            Elements.R_ resistor(R=R) annotation (Placement(transformation(
                     extent={{-50,-10},{-30,10}})));
 
           equation
-            connect(cIn, resistor.cIn) annotation (Line(
-                points={{-80,0},{-48,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(resistor.cOut, inductor.cIn) annotation (Line(
-                points={{-32,0},{-8,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(inductor.cOut, capacitor.c) annotation (Line(
-                points={{8,0},{28,0},{28,-1},{40,-1}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(cOut, capacitor.c) annotation (Line(
-                points={{80,0},{64,0},{64,-1},{40,-1}},
-                color={0,0,255},
-                smooth=Smooth.None));
 
+            connect(cIn, resistor.q_in) annotation (Line(
+                points={{-80,0},{-64,0},{-64,0},{-50,0}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(resistor.q_out, inductor.q_in) annotation (Line(
+                points={{-30,0},{-10,0}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(inductor.q_out, capacitor.q_in[1]) annotation (Line(
+                points={{10,2.22045e-16},{25,2.22045e-16},{25,-4.7},{39.7,-4.7}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(capacitor.q_in[2], cOut) annotation (Line(
+                points={{39.7,-7.3},{60,-7.3},{60,0},{80,0}},
+                color={127,0,0},
+                thickness=0.5));
             annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                    extent={{-100,-100},{100,100}}), graphics), Icon(
+                    extent={{-100,-100},{100,100}})),           Icon(
                   graphics={Text(
                     extent={{-34,26},{30,-24}},
                     lineColor={0,0,0},
@@ -1156,40 +1126,41 @@ package Complex
             import Physiolibrary.Types.*;
 
             parameter HydraulicCompliance C "Constant compliance";
-            parameter HydraulicInertance L "Constant inertance";
+            parameter Physiolibrary.Obsolete.ObsoleteTypes.VolumetricHydraulicInertance L "Constant inertance";
             parameter HydraulicResistance R "Constant resistance";
 
-            Volume V=capacitor.V "Segment volume";
+            Volume V=capacitor.volume "Segment volume";
 
-            Elements.C capacitor(C=C) annotation (Placement(transformation(
+            Elements.C capacitor(Compliance=C, nHydraulicPorts=2)
+                                               annotation (Placement(transformation(
                   extent={{-10,-10},{10,10}},
                   rotation=0,
                   origin={-40,-6})));
             Elements.L inductor(L=L) annotation (Placement(transformation(
                     extent={{-10,-10},{10,10}})));
-            Elements.R resistor(R=R) annotation (Placement(transformation(
-                    extent={{30,-10},{50,10}})));
+            Elements.R_ resistor(R=R)
+              annotation (Placement(transformation(extent={{30,-10},{50,10}})));
 
           equation
-            connect(inductor.cOut, resistor.cIn) annotation (Line(
-                points={{8,0},{32,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(cOut, resistor.cOut) annotation (Line(
-                points={{80,0},{48,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(cIn, capacitor.c) annotation (Line(
-                points={{-80,0},{-56,0},{-56,-1},{-40,-1}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(inductor.cIn, capacitor.c) annotation (Line(
-                points={{-8,0},{-20,0},{-20,-1},{-40,-1}},
-                color={0,0,255},
-                smooth=Smooth.None));
 
+            connect(cIn, capacitor.q_in[1]) annotation (Line(
+                points={{-80,0},{-60,0},{-60,-4.7},{-40.3,-4.7}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(capacitor.q_in[2], inductor.q_in) annotation (Line(
+                points={{-40.3,-7.3},{-24.15,-7.3},{-24.15,0},{-10,0}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(inductor.q_out, resistor.q_in) annotation (Line(
+                points={{10,0},{22,0},{22,2.22045e-16},{30,2.22045e-16}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(resistor.q_out, cOut) annotation (Line(
+                points={{50,0},{66,0},{66,0},{80,0}},
+                color={127,0,0},
+                thickness=0.5));
             annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                    extent={{-100,-100},{100,100}}), graphics), Icon(
+                    extent={{-100,-100},{100,100}})),           Icon(
                   graphics={Text(
                     extent={{-34,26},{30,-24}},
                     lineColor={0,0,0},
@@ -1210,39 +1181,40 @@ package Complex
 
             parameter HydraulicCompliance C "Constant compliance";
             parameter HydraulicResistance R "Constant resistance";
-            parameter HydraulicInertance L "Constant inertance";
+            parameter Physiolibrary.Obsolete.ObsoleteTypes.VolumetricHydraulicInertance L "Constant inertance";
 
-            Volume V=capacitor.V "Segment volume";
+            Volume V=capacitor.volume "Segment volume";
 
-            Elements.C capacitor(C=C) annotation (Placement(transformation(
+            Elements.C capacitor(Compliance=C, nHydraulicPorts=2)
+                                      annotation (Placement(transformation(
                   extent={{-10,-10},{10,10}},
                   rotation=0,
                   origin={-40,-6})));
             Elements.L inductor(L=L) annotation (Placement(transformation(
                     extent={{30,-10},{50,10}})));
-            Elements.R resistor(R=R) annotation (Placement(transformation(
+            Elements.R_ resistor(R=R) annotation (Placement(transformation(
                     extent={{-10,-10},{10,10}})));
 
           equation
-            connect(capacitor.c, cIn) annotation (Line(
-                points={{-40,-1},{-60,-1},{-60,0},{-80,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(capacitor.c, resistor.cIn) annotation (Line(
-                points={{-40,-1},{-20,-1},{-20,0},{-8,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(resistor.cOut, inductor.cIn) annotation (Line(
-                points={{8,0},{32,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(cOut, inductor.cOut) annotation (Line(
-                points={{80,0},{48,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
 
+            connect(cIn, capacitor.q_in[1]) annotation (Line(
+                points={{-80,0},{-59,0},{-59,-4.7},{-40.3,-4.7}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(capacitor.q_in[2], resistor.q_in) annotation (Line(
+                points={{-40.3,-7.3},{-24,-7.3},{-24,0},{-10,0}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(resistor.q_out, inductor.q_in) annotation (Line(
+                points={{10,0},{30,0}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(inductor.q_out, cOut) annotation (Line(
+                points={{50,0},{66,0},{66,0},{80,0}},
+                color={127,0,0},
+                thickness=0.5));
             annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                    extent={{-100,-100},{100,100}}), graphics), Icon(
+                    extent={{-100,-100},{100,100}})),           Icon(
                   graphics={Text(
                     extent={{-34,26},{30,-24}},
                     lineColor={0,0,0},
@@ -1263,21 +1235,21 @@ package Complex
 
             parameter HydraulicResistance Rp "Constant parallel resistance";
 
-            Elements.R resistorPar(R=Rp) annotation (Placement(
-                  transformation(extent={{-10,10},{10,30}})));
+            Elements.R_ resistorPar(R=Rp)
+              annotation (Placement(transformation(extent={{-10,10},{10,30}})));
 
           equation
-            connect(resistorPar.cIn, inductor.cIn) annotation (Line(
-                points={{-8,20},{-8,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(resistorPar.cOut, inductor.cOut) annotation (Line(
-                points={{8,20},{8,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
 
+            connect(resistorPar.q_in, inductor.q_in) annotation (Line(
+                points={{-10,20},{-10,2.22045e-16}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(resistorPar.q_out, inductor.q_out) annotation (Line(
+                points={{10,20},{10,0}},
+                color={127,0,0},
+                thickness=0.5));
             annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                    extent={{-100,-100},{100,100}}), graphics), Icon(
+                    extent={{-100,-100},{100,100}})),           Icon(
                   graphics={Rectangle(
                     extent={{-48,18},{52,-18}},
                     lineColor={255,255,255},
@@ -1297,21 +1269,21 @@ package Complex
 
             parameter HydraulicResistance Rp "Constant parallel resistance";
 
-            Elements.R resistorPar(R=Rp) annotation (Placement(
-                  transformation(extent={{30,14},{50,34}})));
+            Elements.R_ resistorPar(R=Rp)
+              annotation (Placement(transformation(extent={{30,14},{50,34}})));
 
           equation
-            connect(resistorPar.cIn, inductor.cIn) annotation (Line(
-                points={{32,24},{32,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(resistorPar.cOut, inductor.cOut) annotation (Line(
-                points={{48,24},{48,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
 
+            connect(resistorPar.q_in, inductor.q_in) annotation (Line(
+                points={{30,24},{30,2.22045e-16},{30,2.22045e-16}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(resistorPar.q_out, inductor.q_out) annotation (Line(
+                points={{50,24},{50,24},{50,0}},
+                color={127,0,0},
+                thickness=0.5));
             annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                    extent={{-100,-100},{100,100}}), graphics), Icon(
+                    extent={{-100,-100},{100,100}})),           Icon(
                   graphics={Rectangle(
                     extent={{-50,18},{50,-18}},
                     lineColor={255,255,255},
@@ -1329,52 +1301,54 @@ package Complex
             extends BlockKinds.Port;
             import Physiolibrary.Types.*;
 
-            parameter HydraulicInertance L "Constant inertance";
+            parameter Physiolibrary.Obsolete.ObsoleteTypes.VolumetricHydraulicInertance L "Constant inertance";
             parameter HydraulicResistance Rp "Constant parallel resistance";
             parameter HydraulicCompliance C "Constant compliance";
             parameter HydraulicResistance R "Constant resistance";
 
-            Volume V=capacitor.V "Segment volume";
+            Volume V=capacitor.volume "Segment volume";
 
-            Elements.C capacitor(C=C) annotation (Placement(transformation(
+            Elements.C capacitor(Compliance=C, nHydraulicPorts=3)
+                                      annotation (Placement(transformation(
                   extent={{-10,-10},{10,10}},
                   rotation=0,
                   origin={0,-6})));
             Elements.L inductor(L=L) annotation (Placement(transformation(
                     extent={{-50,10},{-30,30}})));
-            Elements.R resistorP(R=Rp) annotation (Placement(transformation(
+            Elements.R_ resistorP(R=Rp) annotation (Placement(transformation(
                     extent={{-50,-30},{-30,-10}})));
-            Elements.R resistor(R=R) annotation (Placement(transformation(
-                    extent={{30,-10},{50,10}})));
+            Elements.R_ resistor(R=R)
+              annotation (Placement(transformation(extent={{30,-10},{50,10}})));
 
           equation
-            connect(inductor.cIn, cIn) annotation (Line(
-                points={{-48,20},{-64,20},{-64,0},{-80,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(resistorP.cIn, cIn) annotation (Line(
-                points={{-48,-20},{-64,-20},{-64,0},{-80,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(capacitor.c, inductor.cOut) annotation (Line(
-                points={{0,-1},{-16,-1},{-16,20},{-32,20}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(capacitor.c, resistorP.cOut) annotation (Line(
-                points={{0,-1},{-16,-1},{-16,-20},{-32,-20}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(capacitor.c, resistor.cIn) annotation (Line(
-                points={{0,-1},{20,-1},{20,0},{32,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(cOut, resistor.cOut) annotation (Line(
-                points={{80,0},{48,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
 
+            connect(resistor.q_out, cOut) annotation (Line(
+                points={{50,0},{80,0}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(capacitor.q_in[1], resistor.q_in) annotation (Line(
+                points={{-0.3,-4.26667},{16,-4.26667},{16,0},{30,0}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(inductor.q_out, capacitor.q_in[2]) annotation (Line(
+                points={{-30,20},{-16,20},{-16,-6},{-0.3,-6}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(resistorP.q_out, capacitor.q_in[3]) annotation (Line(
+                points={{-30,-20},{-18,-20},{-18,-10},{0,-10},{0,-7.73333},{-0.3,-7.73333}},
+                color={127,0,0},
+                thickness=0.5));
+
+            connect(cIn, inductor.q_in) annotation (Line(
+                points={{-80,0},{-66,0},{-66,20},{-50,20}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(cIn, resistorP.q_in) annotation (Line(
+                points={{-80,0},{-66,0},{-66,-20},{-50,-20}},
+                color={127,0,0},
+                thickness=0.5));
             annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                    extent={{-100,-100},{100,100}}), graphics), Icon(
+                    extent={{-100,-100},{100,100}})),           Icon(
                   graphics={Text(
                     extent={{-34,26},{30,-24}},
                     lineColor={0,0,0},
@@ -1398,39 +1372,40 @@ package Complex
               "Constant compliance resistance";
             parameter HydraulicResistance R "Constant resistance";
 
-            Volume V=capacitor.V "Segment volume";
+            Volume V=capacitor.volume "Segment volume";
 
-            Elements.C capacitor(C=C) annotation (Placement(transformation(
+            Elements.C capacitor(Compliance=C, nHydraulicPorts=1)
+                                               annotation (Placement(transformation(
                   extent={{-10,-10},{10,10}},
                   rotation=0,
                   origin={22,-34})));
-            Elements.R resistor(R=R) annotation (Placement(transformation(
+            Elements.R_ resistor(R=R) annotation (Placement(transformation(
                     extent={{-50,-10},{-30,10}})));
-            Elements.R resistorC(R=Rc) annotation (Placement(transformation(
+            Elements.R_ resistorC(R=Rc) annotation (Placement(transformation(
                   extent={{-10,-10},{10,10}},
                   rotation=-90,
                   origin={22,-8})));
 
           equation
-            connect(cIn, resistor.cIn) annotation (Line(
-                points={{-80,0},{-48,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(resistor.cOut, resistorC.cIn) annotation (Line(
-                points={{-32,0},{22,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(cOut, resistorC.cIn) annotation (Line(
-                points={{80,0},{22,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(resistorC.cOut, capacitor.c) annotation (Line(
-                points={{22,-16},{22,-26},{22,-29},{22,-29}},
-                color={0,0,255},
-                smooth=Smooth.None));
 
+            connect(cIn, resistor.q_in) annotation (Line(
+                points={{-80,0},{-50,0}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(resistor.q_out, resistorC.q_in) annotation (Line(
+                points={{-30,0},{-4,0},{-4,2},{22,2}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(resistorC.q_in, cOut) annotation (Line(
+                points={{22,2},{52,2},{52,0},{80,0}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(resistorC.q_out, capacitor.q_in[1]) annotation (Line(
+                points={{22,-18},{22,-26},{22,-34},{21.7,-34}},
+                color={127,0,0},
+                thickness=0.5));
             annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                    extent={{-100,-100},{100,100}}), graphics), Icon(
+                    extent={{-100,-100},{100,100}})),           Icon(
                   coordinateSystem(preserveAspectRatio=false, extent={{-100,
                       -100},{100,100}}), graphics={Text(
                     extent={{-32,26},{32,-24}},
@@ -1465,7 +1440,7 @@ package Complex
 
           model TubeR "Resistive tube"
             extends Abstraction.Tube;
-            extends Elements.R(R=8*mu*l/pi/r^4);
+            extends Compounds.R(R=8*mu*l/pi/r^4);
             import Cardiovascular.Constants.*;
             import Modelica.Constants.*;
 
@@ -1583,9 +1558,11 @@ package Complex
             Real xi=rIABP/r
               "Fraction of balloon radius and arterial radius";
 
-            Elements.C capacitorIABP(C=0.1*C, pGround=pIABP) if enableIABP
+            Elements.C capacitorIABP(Compliance=0.1*C, useExternalPressureInput=true, externalPressure=pIABP+system.p_ambient,
+              nHydraulicPorts=1) if                             enableIABP
               annotation (Placement(transformation(extent={{24,-46},{44,-26}})));
-            Elements.C capacitorIABP2(C=0.1*C, pGround=pIABP) if useIABP2
+            Elements.C capacitorIABP2(Compliance=0.1*C, useExternalPressureInput=true, externalPressure=pIABP+system.p_ambient,
+              nHydraulicPorts=1) if                              useIABP2
                and enableIABP annotation (Placement(transformation(extent={
                       {-50,-46},{-30,-26}})));
 
@@ -1623,17 +1600,16 @@ package Complex
               pIABP = 0;
             end if;
 
-            connect(inductor.cOut, capacitorIABP.c) annotation (Line(
-                points={{8,0},{18,0},{18,-31},{34,-31}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(capacitorIABP2.c, resistor.cIn) annotation (Line(
-                points={{-40,-31},{-40,-14},{-48,-14},{-48,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-
+            connect(resistor.q_in, capacitorIABP2.q_in[1]) annotation (Line(
+                points={{-50,0},{-44,0},{-44,-36},{-40.3,-36}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(inductor.q_out, capacitorIABP.q_in[1]) annotation (Line(
+                points={{10,0},{22,0},{22,-36},{33.7,-36}},
+                color={127,0,0},
+                thickness=0.5));
             annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                    extent={{-100,-100},{100,100}}), graphics), Icon(
+                    extent={{-100,-100},{100,100}})),           Icon(
                   coordinateSystem(preserveAspectRatio=false, extent={{-100,
                       -100},{100,100}}), graphics={Text(
                     extent={{-62,-34},{62,-76}},
@@ -1937,79 +1913,79 @@ package Complex
 
         equation
 
-          connect(cVSV, vSV.cIn) annotation (Line(
-              points={{-42,24},{-44,24},{-44,7.99878},{-43.8604,7.99878}},
+          connect(cVSV, vSV.q_in) annotation (Line(
+              points={{-42,24},{-44,24},{-44,9.99848},{-43.8255,9.99848}},
               color={127,5,58},
               smooth=Smooth.Bezier,
               thickness=1));
-          connect(vSV.cOut, RA.c) annotation (Line(
-              points={{-44.1396,-7.99878},{-44,-7.99878},{-44,-23.5},{-45,-23.5}},
+          connect(vSV.q_out, RA.c) annotation (Line(
+              points={{-44.1745,-9.99848},{-44,-9.99848},{-44,-23.5},{-45,-23.5}},
               color={127,5,58},
               smooth=Smooth.Bezier,
               thickness=1));
 
-          connect(RA.c, vRAV.cIn) annotation (Line(
-              points={{-45,-23.5},{-44,-23.5},{-44,-48},{-42,-48},{-42,-49.4468},
-                  {-36.5886,-49.4468}},
+          connect(RA.c, vRAV.q_in) annotation (Line(
+              points={{-45,-23.5},{-44,-23.5},{-44,-48},{-42,-48},{-42,-47.8085},
+                  {-37.7358,-47.8085}},
               color={127,5,58},
               smooth=Smooth.Bezier,
               thickness=1));
-          connect(cVPV, vPV.cIn) annotation (Line(
-              points={{32,36},{34,36},{34,17.9988},{34.1396,17.9988}},
+          connect(cVPV, vPV.q_in) annotation (Line(
+              points={{32,36},{34,36},{34,19.9985},{34.1745,19.9985}},
               color={255,0,0},
               smooth=Smooth.Bezier,
               thickness=1));
-          connect(vPV.cOut, LA.c) annotation (Line(
-              points={{33.8604,2.00122},{36,2.00122},{36,-11.5},{37,-11.5}},
-              color={255,0,0},
-              smooth=Smooth.Bezier,
-              thickness=1));
-
-          connect(vLAV.cIn, LA.c) annotation (Line(
-              points={{34.3184,-47.0748},{36,-47.0748},{36,-11.5},{37,-11.5}},
+          connect(vPV.q_out, LA.c) annotation (Line(
+              points={{33.8255,0.00152305},{36,0.00152305},{36,-11.5},{37,-11.5}},
               color={255,0,0},
               smooth=Smooth.Bezier,
               thickness=1));
 
-          connect(vLAV.cOut, ventricles.cLV) annotation (Line(
-              points={{24.449,-58.8368},{30,-58.8368},{24,-58.8368},{24,-68},
+          connect(vLAV.q_in, LA.c) annotation (Line(
+              points={{35.5521,-45.6046},{36,-45.6046},{36,-11.5},{37,-11.5}},
+              color={255,0,0},
+              smooth=Smooth.Bezier,
+              thickness=1));
+
+          connect(vLAV.q_out, ventricles.cLV) annotation (Line(
+              points={{23.2153,-60.307},{23.2153,-60.307},{24,-60.307},{24,-68},
                   {12,-68},{12,-67.4},{8.8,-67.4}},
               color={255,0,0},
               smooth=Smooth.Bezier,
               thickness=1));
-          connect(ventricles.cLV, vSA.cIn) annotation (Line(
-              points={{8.8,-67.4},{8,-67.4},{8,-47.9988},{9.86038,-47.9988}},
+          connect(ventricles.cLV, vSA.q_in) annotation (Line(
+              points={{8.8,-67.4},{8,-67.4},{8,-49.9985},{9.82548,-49.9985}},
               color={255,0,0},
               smooth=Smooth.Bezier,
               thickness=1));
 
-          connect(vSA.cOut, cVSA) annotation (Line(
-              points={{10.1396,-32.0012},{8,-32.0012},{8,-20},{-20,-20},{-20,
-                  38},{-24,38},{-24,40}},
+          connect(vSA.q_out, cVSA) annotation (Line(
+              points={{10.1745,-30.0015},{8,-30.0015},{8,-20},{-20,-20},{-20,38},
+                  {-24,38},{-24,40}},
               color={255,0,0},
               smooth=Smooth.Bezier,
               thickness=1));
-          connect(ventricles.cRV, vRAV.cOut) annotation (Line(
-              points={{-11.6,-68},{-26,-68},{-26,-62},{-27.4114,-62},{-27.4114,
-                  -62.5532}},
+          connect(ventricles.cRV, vRAV.q_out) annotation (Line(
+              points={{-11.6,-68},{-26,-68},{-26,-62},{-26.2642,-62},{-26.2642,
+                  -64.1915}},
               color={127,5,58},
               smooth=Smooth.Bezier,
               thickness=1));
-          connect(ventricles.cRV, vPA.cIn) annotation (Line(
-              points={{-11.6,-68},{-11.6,-66},{-10,-66},{-10,-62},{-10.1396,
-                  -62},{-10.1396,-47.9988}},
+          connect(ventricles.cRV, vPA.q_in) annotation (Line(
+              points={{-11.6,-68},{-11.6,-66},{-10,-66},{-10,-62},{-10.1745,-62},
+                  {-10.1745,-49.9985}},
               color={127,5,58},
               smooth=Smooth.Bezier,
               thickness=1));
-          connect(vPA.cOut, cVPA) annotation (Line(
-              points={{-9.86038,-32.0012},{-10,-32.0012},{-10,-24},{4,-24},
-                  {4,44}},
+          connect(vPA.q_out, cVPA) annotation (Line(
+              points={{-9.82548,-30.0015},{-10,-30.0015},{-10,-24},{4,-24},{4,
+                  44}},
               color={127,5,58},
               smooth=Smooth.Bezier,
               thickness=1));
-          connect(vSA.cOut, Coro.cIn) annotation (Line(
-              points={{10.1396,-32.0012},{10,-32.0012},{10,-32},{10,-24},{
-                  22,-24},{22,-10},{22,-12},{21.8,-12},{21.8,-11}},
+          connect(vSA.q_out, Coro.cIn) annotation (Line(
+              points={{10.1745,-30.0015},{10,-30.0015},{10,-32},{10,-24},{22,
+                  -24},{22,-10},{22,-12},{21.8,-12},{21.8,-11}},
               color={255,0,0},
               smooth=Smooth.Bezier,
               thickness=1));
@@ -2027,7 +2003,7 @@ package Complex
         end Heart;
 
         model Valve "Heart valves with finite-time state transition"
-          extends Auxiliary.BlockKinds.Port;
+          extends Physiolibrary.Fluid.Interfaces.OnePort;
           extends Cardiovascular.Icons.Valve;
           import Cardiovascular.Constants.*;
           import Cardiovascular.Types.*;
@@ -2058,16 +2034,18 @@ package Complex
           Real s(start=1, fixed=true)
             "Opening state (1 = open .. 0 = closed)";
           Real R(unit="kg/m7") "Bernoulli resistance";
-          HydraulicInertance L "Inertance";
+          Physiolibrary.Obsolete.ObsoleteTypes.VolumetricHydraulicInertance L "Inertance";
+
         equation
-          cIn.q = -cOut.q;
+
 
           if noEvent(A > 0) then
-            dp = R*cIn.q*abs(cIn.q) + L*der(cIn.q);
+            dp =R*q_in.m_flow/density*abs(q_in.m_flow/density) + L*der(q_in.m_flow
+              /density);
             R = rho/2/A^2;
             L = rho*l/A;
           else
-            cIn.q = 0;
+            q_in.m_flow = 0;
             R = Modelica.Constants.inf;
             L = Modelica.Constants.inf;
           end if;
@@ -2101,11 +2079,15 @@ package Complex
           Pressure p=pT + pP "Current atria pressure";
           Volume V "Current atria volume";
 
+          parameter Density density=1000;
         equation
           // connector connection - 1+
-          c.q = der(V) - (if V < 10e-6 then 700*(10e-6 - V) else 0);
+          c.m_flow/density = der(V) - (if V < 10e-6 then 700*(10e-6 - V) else 0);
           // Protection against near-zero volumes
-          c.pressure = p;
+          c.p = p;
+
+          c.C_outflow = c.Medium.C_default;
+          c.h_outflow = c.Medium.h_default;
 
           // implementation of inherited variables
           Vm = V + 0.5*VW;
@@ -2172,6 +2154,8 @@ package Complex
           Pressure pRV=RW.pT + pP "Pressure in right ventricle";
           Pressure pM=sigmaRM + pLV*(rO - rM)/(rO - rI)
             "Intramyocardial pressure for left ventricle";
+
+          parameter Density density=1000;
 
         protected
           Cardiovascular.Types.Length rO=(3*(VLV + (LW.VW + SW.VW)*1)/4/
@@ -2254,13 +2238,20 @@ package Complex
           RW.Vm = +VRV + 0.5*RW.VW + 0.5*SW.VW + SW.Vm;
 
           // connectors connection
-          cLV.pressure = pLV;
-          cRV.pressure = pRV;
-          cLV.q = der(VLV);
-          cRV.q = der(VRV);
+          cLV.p = pLV;
+          cRV.p = pRV;
+          cLV.m_flow/density = der(VLV);
+          cRV.m_flow/density = der(VRV);
+
+          cLV.C_outflow=cLV.Medium.C_default;
+          cRV.C_outflow=cRV.Medium.C_default;
+        //  cLV.Xi_outflow=cLV.Medium.X_default[1:cLV.Medium.nXi];
+        //  cRV.Xi_outflow=cRV.Medium.X_default[1:cRV.Medium.nXi];
+          cLV.h_outflow=cLV.Medium.h_default;
+          cRV.h_outflow=cRV.Medium.h_default;
 
           annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                  extent={{-100,-100},{100,100}}), graphics), Icon(
+                  extent={{-100,-100},{100,100}})),           Icon(
                 coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                     {100,100}})));
         end Ventricles;
@@ -2318,7 +2309,7 @@ package Complex
             import Cardiovascular.Model.Complex.Components.Auxiliary.RLC.*;
             import Cardiovascular.Types.*;
             import Physiolibrary.Types.*;
-            import Physiolibrary.Hydraulic.Sensors.*;
+            import Physiolibrary.Fluid.Sensors.*;
 
             inner parameter Real k "Stiffness non-linearity coefficient";
             inner parameter Cardiovascular.Types.Length l "Length of vessels";
@@ -2331,40 +2322,40 @@ package Complex
 
             Volume V=core.V "Current volume";
 
-            Elements.R RWave(R=core.RWave) annotation (Placement(
+            Auxiliary.RLC.Elements.R_ RWave(R=core.RWave) annotation (Placement(
                   transformation(
                   extent={{-10,-10},{10,10}},
                   rotation=-90,
                   origin={-10,-8})));
             AdaptableVesselsCore core annotation (Placement(transformation(
                     extent={{-20,-46},{0,-26}})));
-            PressureMeasure pressureMeasure annotation (Placement(
-                  transformation(extent={{-4,-34},{16,-14}})));
+            Physiolibrary.Fluid.Sensors.PressureMeasure pressureMeasure
+              annotation (Placement(transformation(extent={{-4,-34},{16,-14}})));
 
           equation
-            connect(RWave.cOut, core.c) annotation (Line(
-                points={{-10,-16},{-10,-31}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(RWave.cIn, cOut) annotation (Line(
-                points={{-10,0},{80,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(RWave.cIn, cIn) annotation (Line(
-                points={{-10,0},{-80,0}},
-                color={0,0,255},
-                smooth=Smooth.None));
-            connect(core.c, pressureMeasure.q_in)   annotation (Line(
-                points={{-10,-31},{2,-31},{2,-30}},
-                color={0,0,255},
-                smooth=Smooth.None));
             connect(pressureMeasure.pressure, pInner) annotation (Line(
                 points={{12,-28},{22,-28},{22,-66},{0,-66},{0,-80},{0,-80}},
                 color={0,0,127},
                 smooth=Smooth.None));
 
+            connect(cIn, RWave.q_in) annotation (Line(
+                points={{-80,0},{-46,0},{-46,2},{-10,2}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(RWave.q_in, cOut) annotation (Line(
+                points={{-10,2},{38,2},{38,0},{80,0}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(RWave.q_out, core.c) annotation (Line(
+                points={{-10,-18},{-10,-31}},
+                color={127,0,0},
+                thickness=0.5));
+            connect(core.c, pressureMeasure.q_in) annotation (Line(
+                points={{-10,-31},{-4,-31},{-4,-30},{2,-30}},
+                color={127,0,0},
+                thickness=0.5));
             annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                    extent={{-100,-100},{100,100}}), graphics), Icon(
+                    extent={{-100,-100},{100,100}})),           Icon(
                   coordinateSystem(preserveAspectRatio=false, extent={{-100,
                       -100},{100,100}}), graphics={Text(
                     extent={{-40,20},{40,80}},
@@ -2375,7 +2366,8 @@ package Complex
           end AdaptableVessels;
 
           model Capillaries "Port for capillaries"
-            extends Auxiliary.RLC.Elements.R(dp=pIn - pOut, R=R_R);
+            extends Auxiliary.RLC.Elements.R_(
+                                             R=R_R);
             import Physiolibrary.Types.RealIO.*;
             import Physiolibrary.Types.*;
 
@@ -2391,7 +2383,8 @@ package Complex
                   origin={39,-57})));
             HydraulicResistance R_R;
           equation
-            der(R_R) = 0;
+            dp=pIn - pOut;
+           // der(R_R) = 0;
             // R is adaptable via reinit()
 
             annotation (Icon(coordinateSystem(preserveAspectRatio=false,
@@ -2448,6 +2441,7 @@ package Complex
                 rotation=-90,
                 origin={0,-70})));
 
+          parameter Density density=1000;
         equation
           VRef = ARef*l;
           V = A*l;
@@ -2462,8 +2456,13 @@ package Complex
           // DISABLING THE ADAPTATION
           p = pRef*((VW + 3*V)/(VW + 3*VRef))^((k - 3)/3);
 
-          c.pressure = p;
-          c.q = der(V);
+          c.p = p;
+          c.m_flow/density = der(V);
+
+          c.C_outflow = c.Medium.C_default;
+          c.h_outflow = c.Medium.h_default;
+
+
 
           annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
                   extent={{-100,-100},{100,100}}), graphics));
@@ -2491,48 +2490,70 @@ package Complex
           import Cardiovascular.Model.Complex.Components.Auxiliary.RLC.Elements.*;
           import Physiolibrary.Types.Volume;
 
+          outer Modelica.Fluid.System system "System wide properties";
+
           input Real pM "Intramyocardial pressure";
 
-          Volume V=Ca.V + Cm.V + Cv.V "Current volume";
+          Volume V=Ca.volume + Cm.volume + Cv.volume "Current volume";
 
-          R Rv(R=200000000) annotation (Placement(transformation(extent={{
-                    38,-10},{58,10}})));
-          R Rm2(R=900000000) annotation (Placement(transformation(extent={{
-                    6,-10},{26,10}})));
-          R Rm1(R=900000000) annotation (Placement(transformation(extent={{
-                    -26,-10},{-6,10}})));
-          R Ra(R=700000000) annotation (Placement(transformation(extent={{-58,
-                    -10},{-38,10}})));
-          C Ca(V_init=6e-06, C(displayUnit="m3/Pa") = 3e-11) annotation (
+          Auxiliary.RLC.Elements.R_ Rv(R=200000000)
+            annotation (Placement(transformation(extent={{38,-10},{58,10}})));
+          Auxiliary.RLC.Elements.R_ Rm2(R=900000000)
+            annotation (Placement(transformation(extent={{6,-10},{26,10}})));
+          Auxiliary.RLC.Elements.R_ Rm1(R=900000000)
+            annotation (Placement(transformation(extent={{-26,-10},{-6,10}})));
+          Auxiliary.RLC.Elements.R_ Ra(R=700000000)
+            annotation (Placement(transformation(extent={{-58,-10},{-38,10}})));
+          C Ca(volume_start=6e-06, Compliance(displayUnit="m3/Pa") = 3e-11,
+            nHydraulicPorts=2)                                              annotation (
               Placement(transformation(extent={{-40,-40},{-20,-20}})));
-          C Cv(V_init=10e-6, C=7e-10) annotation (Placement(transformation(
+          C Cv(volume_start=10e-6, Compliance=7e-10,
+            nHydraulicPorts=2)                       annotation (Placement(transformation(
                   extent={{20,-40},{40,-20}})));
           C Cm(
-            V_init=7e-6,
-            pGround=pM,
-            C=1.4e-09) annotation (Placement(transformation(extent={{-10,-40},
+            volume_start=7e-6,
+            useExternalPressureInput=true,
+            externalPressure=pM+system.p_ambient,
+            Compliance=1.4e-09,
+            nHydraulicPorts=2)  annotation (Placement(transformation(extent={{-10,-40},
                     {10,-20}})));
 
         equation
-          connect(cIn, Ra.cIn) annotation (Line(points={{-80,0},{-56,0}},
-                smooth=Smooth.None));
-          connect(Ra.cOut, Rm1.cIn) annotation (Line(points={{-40,0},{-24,0}},
-                smooth=Smooth.None));
-          connect(Rm1.cOut, Rm2.cIn)
-            annotation (Line(points={{-8,0},{8,0}}, smooth=Smooth.None));
-          connect(Rm2.cOut, Rv.cIn)
-            annotation (Line(points={{24,0},{40,0}}, smooth=Smooth.None));
-          connect(cOut, Rv.cOut)
-            annotation (Line(points={{80,0},{56,0}}, smooth=Smooth.None));
-          connect(Rm1.cIn, Ca.c) annotation (Line(points={{-24,0},{-32,0},{
-                  -32,-25},{-30,-25}}, smooth=Smooth.None));
-          connect(Rm2.cOut, Cv.c) annotation (Line(points={{24,0},{24,-25},
-                  {30,-25}}, smooth=Smooth.None));
-          connect(Rm1.cOut, Cm.c) annotation (Line(points={{-8,0},{-8,-25},
-                  {0,-25}}, smooth=Smooth.None));
 
+          connect(cIn, Ra.q_in) annotation (Line(
+              points={{-80,0},{-58,0}},
+              color={127,0,0},
+              thickness=0.5));
+          connect(Ra.q_out, Ca.q_in[1]) annotation (Line(
+              points={{-38,2.22045e-16},{-34,2.22045e-16},{-34,-28.7},{-30.3,-28.7}},
+              color={127,0,0},
+              thickness=0.5));
+          connect(Ca.q_in[2], Rm1.q_in) annotation (Line(
+              points={{-30.3,-31.3},{-28,-31.3},{-28,2.22045e-16},{-26,2.22045e-16}},
+              color={127,0,0},
+              thickness=0.5));
+          connect(Rm1.q_out, Cm.q_in[1]) annotation (Line(
+              points={{-6,2.22045e-16},{-4,2.22045e-16},{-4,-28.7},{-0.3,-28.7}},
+              color={127,0,0},
+              thickness=0.5));
+          connect(Cm.q_in[2], Rm2.q_in) annotation (Line(
+              points={{-0.3,-31.3},{2,-31.3},{2,0},{6,0}},
+              color={127,0,0},
+              thickness=0.5));
+          connect(Rm2.q_out, Cv.q_in[1]) annotation (Line(
+              points={{26,0},{29.7,0},{29.7,-28.7}},
+              color={127,0,0},
+              thickness=0.5));
+          connect(Cv.q_in[2], Rv.q_in) annotation (Line(
+              points={{29.7,-31.3},{34,-31.3},{34,0},{38,0}},
+              color={127,0,0},
+              thickness=0.5));
+          connect(Rv.q_out, cOut) annotation (Line(
+              points={{58,0},{70,0},{70,0},{80,0}},
+              color={127,0,0},
+              thickness=0.5));
           annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                  extent={{-100,-100},{100,100}}), graphics));
+                  extent={{-100,-100},{100,100}})));
         end CoronaryVessels;
 
         model ConsumingCapillaries
@@ -2617,7 +2638,7 @@ package Complex
 
           parameter Volume V_init=300e-6;
 
-          Physiolibrary.Hydraulic.Sources.UnlimitedPump volumeControl_(
+          Physiolibrary.Fluid.Sources.VolumeInflowSource volumeControl_(
               useSolutionFlowInput=true);
 
         equation
@@ -2664,7 +2685,7 @@ package Complex
 
           parameter Volume V_init=300e-6;
 
-          Physiolibrary.Hydraulic.Sources.UnlimitedPump volumeControl_(
+          Physiolibrary.Fluid.Sources.VolumeInflowSource volumeControl_(
               useSolutionFlowInput=true);
 
         equation
@@ -2675,16 +2696,15 @@ package Complex
           connect(volumeControl_.q_out, cIn);
           // Homely component -> disabling vizualization, even for connection
 
-          pInner = capacitor.c.pressure;
+          pInner =capacitor.q_in[1].p;
 
           connect(cIn, cCannula) annotation (Line(
-              points={{-80,0},{-40,0},{-40,-12},{-60,-12}},
-              color={0,0,255},
-              smooth=Smooth.None));
-
+              points={{-80,0},{-70,0},{-70,-12},{-60,-12}},
+              color={127,0,0},
+              thickness=0.5));
           annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                  extent={{-100,-100},{100,100}}), graphics), Icon(graphics=
-                 {Text(       extent={{-70,64},{52,4}},
+                  extent={{-100,-100},{100,100}})),           Icon(graphics={
+                  Text(       extent={{-70,64},{52,4}},
                   lineColor={0,128,0},
                   lineThickness=1,
                   fillColor={255,0,0},
@@ -2704,7 +2724,7 @@ package Complex
             Rp(displayUnit="(mmHg.s)/ml") = 7599376.082655);
 
         equation
-          pInner = capacitor.c.pressure;
+          pInner =capacitor.q_in[1].p;
 
           connect(cIn, cCannula) annotation (Line(
               points={{-80,0},{-40,0},{-40,-12},{-60,-12}},
@@ -2712,8 +2732,8 @@ package Complex
               smooth=Smooth.None));
 
           annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                  extent={{-100,-100},{100,100}}), graphics), Icon(graphics=
-                 {Text(       extent={{-68,64},{46,8}},
+                  extent={{-100,-100},{100,100}}), graphics), Icon(graphics={
+                  Text(       extent={{-68,64},{46,8}},
                   lineColor={0,128,0},
                   lineThickness=1,
                   fillColor={255,0,0},
@@ -2817,7 +2837,7 @@ package Complex
                     {88,-92}})));
 
         equation
-          pInner = aorticArch2.cIn.pressure;
+          pInner =aorticArch2.cIn.p;
 
           if settings.supports.ECMO_isEnabled then
             if settings.supports.ECMO_cannulaPlacement == CannulaPlacement.ascendingAorta then
@@ -2968,8 +2988,8 @@ package Complex
               smooth=Smooth.None));
 
           annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                  extent={{-100,-100},{100,100}}), graphics), Icon(graphics=
-                 {Text(       extent={{-56,56},{28,10}},
+                  extent={{-100,-100},{100,100}}), graphics), Icon(graphics={
+                  Text(       extent={{-56,56},{28,10}},
                   lineColor={0,128,0},
                   lineThickness=1,
                   fillColor={255,0,0},
@@ -3182,7 +3202,7 @@ package Complex
                     {40,100}})));
 
         equation
-          pInner = aorticArch2.cIn.pressure;
+          pInner =aorticArch2.cIn.p;
 
           if settings.supports.ECMO_isEnabled then
             if settings.supports.ECMO_cannulaPlacement == CannulaPlacement.ascendingAorta then
@@ -3414,8 +3434,8 @@ package Complex
               smooth=Smooth.None));
 
           annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                  extent={{-100,-100},{100,100}}), graphics), Icon(graphics=
-                 {Text(       extent={{-60,50},{36,12}},
+                  extent={{-100,-100},{100,100}}), graphics), Icon(graphics={
+                  Text(       extent={{-60,50},{36,12}},
                   lineColor={0,128,0},
                   lineThickness=1,
                   fillColor={255,0,0},
@@ -3424,2115 +3444,14 @@ package Complex
                   textString="Tree (Abdolrazaghi)")}));
         end Tree_Abdolrazaghi;
 
-        model ComplexTree_Derived "Derived arterial tree"
-          extends SystemicArteries.Abstraction.SystemicArteries_Adapter;
-          import Cardiovascular.Model.Complex.Components.Auxiliary.RLC.Tubes.*;
-          import Cardiovascular.Types.*;
-          import Physiolibrary.Types.*;
-
-          outer Cardiovascular.Model.Complex.Environment.ComplexEnvironment settings
-            "Everything is out there...";
-
-          inner parameter Fraction arterialStiffnessScale=settings.condition.
-              _DT_arterialStiffnessScale
-            "Scaling coefficient for arterial stiffness";
-          inner parameter Cardiovascular.Types.Length cannulaOuterDiameter=settings.supports.
-              _DT_ECMO_cannulaOuterDiameter "Outer diameter of ECMO cannula";
-          inner parameter Cardiovascular.Types.Length cannulaDepth=settings.supports.
-              _DT_ECMO_cannulaDepth "Insertion depth of ECMO cannula";
-          inner parameter Boolean enableIABP=settings.supports.
-              _DT_IABP_isEnabled "Whether IABP is implanted";
-          inner parameter Time tDeflation=settings.supports.
-              _DT_IABP_deflationTime
-            "Time of IABP deflation with respect to start of the cardiac cycle";
-          inner parameter Time tInflation=settings.supports.
-              _DT_IABP_inflationTime
-            "Time of IABP inflation with respect to start of the cardiac cycle";
-
-          inner Time cycleDuration=settings.condition.cycleDuration
-            "Duration of cardiac cycle";
-
-          parameter Fraction aorticArchStenosisRatio=settings.condition.
-              _DT_aorticArchStenosisRatio
-            "Ratio of stenotic narrowing in aortic arch segments";
-          parameter Cardiovascular.Types.CannulaPlacement cannulaPlacement=settings.supports.ECMO_cannulaPlacement
-            "Location of inserted ECMO cannula";
-          parameter Boolean enableECMO=settings.supports.ECMO_isEnabled
-            "Whether ECMO is connected";
-
-          Volume V=ascendingAorta.V + aorticArch1.V + leftSubclavian1.V +
-              leftCommonCarotid1.V + aorticArch2.V + brachiocephalic.V +
-              leftInternalMammary.V + leftSubclavian2.V + leftVertebral.V
-               + leftCommonCarotid2.V + thoracicAorta1.V +
-              rightCommonCarotid1.V + rightVertebral.V + rightSubclavian.V
-               + righInternalMammary.V + leftCostocervical.V +
-              leftAxilliary1.V + leftSuprascapular.V + leftThyrocervical.V
-               + leftCommonCarotid3.V + thoracicAorta2.V +
-              rightCommonCarotid2.V + rightThyrocervical.V +
-              rightSuprascapular.V + rightAxilliary1.V + rightCostocervical.V
-               + leftThoracoacrominal.V + leftAxilliary2.V +
-              leftCircumflexScapular.V + leftSubscapular.V +
-              leftInternalCarotid1.V + leftExternalCarotid.V +
-              leftSuperiorThyroid.V + thoracicAorta3.V +
-              rightSuperiorThyroid.V + rightExternalCarotid.V +
-              rightInternalCarotid1.V + rightSubscapular.V +
-              rightCircumflexScapular.V + rightAxilliary2.V +
-              rightThoracoacrominal.V + leftBrachial1.V + leftLingual.V +
-              leftInternalCarotid2.V + leftFacial.V + leftMiddleCerebral.V
-               + leftCerebral.V + leftOpthalmic.V + coeliac.V +
-              abdominalAorta1.V + rightOpthalmic.V + rightCerebral.V +
-              rightMiddleCerebral.V + rightFacial.V + rightInternalCarotid2.V
-               + rightLingual.V + rightBrachial1.V + leftProfundaBrachi.V
-               + leftBrachial2.V + leftInternalCarotid3.V + gastric1.V +
-              splenic.V + hepatic.V + renal.V + abdominalAorta2.V +
-              superiorMesenteric.V + gastric2.V + rightInternalCarotid3.V
-               + rightBrachial2.V + rightProfundaBrachi.V + leftBrachial3.V
-               + leftSuperiorUlnarCollateral.V + leftSuperficialTemporal.V
-               + leftMaxilliary.V + abdominalAorta3.V + rightMaxilliary.V
-               + rightSuperficialTemporal.V + rightSuperiorUlnarCollateral.V
-               + rightBrachial3.V + leftInferiorUlnarCollateral.V +
-              leftBrachial4.V + leftCommonIlliac.V + inferiorMesenteric.V
-               + rightCommonIlliac.V + rightBrachial4.V +
-              rightInferiorUlnarCollateral.V + leftUlnar1.V + leftRadial1.V
-               + leftExternalIlliac1.V + leftInternalIlliac.V +
-              rightInternalIlliac.V + rightExternalIlliac1.V + rightRadial1.V
-               + rightUlnar1.V + leftUlnar2.V + leftInterossea.V +
-              leftRadial2.V + leftExternalIlliac2.V + rightExternalIlliac2.V
-               + rightRadial2.V + rightInterossea.V + rightUlnar2.V +
-              leftUlnar3.V + leftFemoral1.V + leftProfundis.V +
-              rightProfundis.V + rightFemoral1.V + rightUlnar3.V +
-              leftFemoral2.V + rightFemoral2.V + leftPopliteal1.V +
-              rightPopliteal1.V + leftPopliteal2.V + rightPopliteal2.V +
-              leftAnteriorTibial1.V + leftPosteriorTibial1.V +
-              rightPosteriorTibial1.V + rightAnteriorTibial1.V +
-              leftAnteriorTibial2.V + leftPeroneal1.V +
-              leftPosteriorTibial2.V + rightPosteriorTibial2.V +
-              rightPeroneal1.V + rightAnteriorTibial2.V +
-              leftAnteriorTibial3.V + leftPeroneal2.V + rightPeroneal2.V +
-              rightAnteriorTibial3.V "Current volume";
-
-          Volume V_filling(start=0);
-
-            Real q_filling;
-
-          parameter Fraction speed_factor=5;
-
-          parameter Volume V_init=270e-6;
-
-          Physiolibrary.Hydraulic.Sources.UnlimitedPump volumeControl_(
-              useSolutionFlowInput=true);
-
-          TubeRLC_Derived ascendingAorta(
-            isCannulated=enableECMO and cannulaPlacement ==
-                CannulaPlacement.ascendingAorta,
-            l=0.04,
-            r=0.0145,
-            h=0.00163,
-            E=4e5) annotation (Placement(transformation(extent={{-64,52},{-68,
-                    56}})));
-
-          TubeRLC_Derived aorticArch1(
-            isCannulated=enableECMO and cannulaPlacement ==
-                CannulaPlacement.aorticArch1,
-            l=2e-2,
-            r=1.12e-2*(1 - aorticArchStenosisRatio),
-            h=0.132e-2 + 1.12e-2*aorticArchStenosisRatio,
-            E=4e5) annotation (Placement(transformation(extent={{-62,54},{-66,
-                    58}})));
-
-          TubeRLC_Derived leftSubclavian1(
-            isBranching=true,
-            l=3.4e-2,
-            r=0.42e-2,
-            h=0.067e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-52,60},{-56,
-                    64}})));
-
-          TubeRLC_Derived leftCommonCarotid1(
-            isBranching=true,
-            l=8.9e-2,
-            r=0.37e-2,
-            h=0.063e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-52,66},{-48,
-                    70}})));
-
-          TubeRLC_Derived aorticArch2(
-            isCannulated=enableECMO and cannulaPlacement ==
-                CannulaPlacement.aorticArch2,
-            isBranching=true,
-            l=3.9e-2,
-            r=1.07e-2*(1 - aorticArchStenosisRatio),
-            h=0.127e-2 + 1.07e-2*aorticArchStenosisRatio,
-            E=4e5) annotation (Placement(transformation(
-                extent={{-2,-2},{2,2}},
-                rotation=90,
-                origin={-58,56})));
-
-          TubeRLC_Derived brachiocephalic(
-            isBranching=true,
-            l=3.4e-2,
-            r=0.62e-2,
-            h=0.086e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-64,60},{-60,
-                    64}})));
-
-          TubeRLC_Derived leftInternalMammary(
-            l=15e-2,
-            isBranching=true,
-            r=0.1e-2,
-            h=0.03e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-48,58},{-44,
-                    62}})));
-          TubeRLC_Derived leftSubclavian2(
-            isBranching=true,
-            l=6.8e-2,
-            r=0.4e-2,
-            h=0.066e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-42,62},{-46,
-                    66}})));
-
-          TubeRLC_Derived leftVertebral(
-            l=14.8e-2,
-            isBranching=true,
-            r=0.19e-2,
-            h=0.045e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-48,56},{-44,
-                    60}})));
-          TubeRLC_Derived leftCommonCarotid2(
-            l=8.9e-2,
-            r=0.37e-2,
-            h=0.063e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-52,68},{-48,
-                    72}})));
-
-          TubeRLC_Derived_IABP thoracicAorta1(
-            isCannulated=enableECMO and cannulaPlacement ==
-                CannulaPlacement.thoracicAorta1,
-            useIABP2=true,
-            l=5.2e-2,
-            r=1e-2,
-            h=0.12e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-60,50},{-56,
-                    54}})));
-
-          TubeRLC_Derived rightCommonCarotid1(
-            isBranching=true,
-            l=8.9e-2,
-            r=0.37e-2,
-            h=0.063e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-68,68},{-64,
-                    72}})));
-
-          TubeRLC_Derived rightVertebral(
-            l=14.8e-2,
-            isBranching=true,
-            r=0.19e-2,
-            h=0.045e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-80,58},{-76,
-                    62}})));
-          TubeRLC_Derived rightSubclavian(
-            isBranching=true,
-            l=6.8e-2,
-            r=0.4e-2,
-            h=0.066e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-82,56},{-78,
-                    60}})));
-
-          TubeRLC_Derived righInternalMammary(
-            l=15e-2,
-            isBranching=true,
-            r=0.1e-2,
-            h=0.03e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-80,54},{-76,
-                    58}})));
-          TubeRLC_Derived leftCostocervical(
-            l=5e-2,
-            isBranching=true,
-            r=0.1e-2,
-            h=0.03e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-42,64},{-38,
-                    68}})));
-          TubeRLC_Derived leftAxilliary1(
-            isBranching=true,
-            l=6.1e-2,
-            r=0.36e-2,
-            h=0.062e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-32,62},{-36,
-                    66}})));
-
-          TubeRLC_Derived leftSuprascapular(
-            l=10e-2,
-            isBranching=true,
-            r=0.2e-2,
-            h=0.052e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-42,66},{-38,
-                    70}})));
-          TubeRLC_Derived leftThyrocervical(
-            l=5e-2,
-            isBranching=true,
-            r=0.1e-2,
-            h=0.03e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-42,68},{-38,
-                    72}})));
-          TubeRLC_Derived leftCommonCarotid3(
-            l=3.1e-2,
-            r=0.37e-2,
-            h=0.063e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-52,70},{-48,
-                    74}})));
-
-          TubeRLC_Derived_IABP thoracicAorta2(
-            isCannulated=enableECMO and cannulaPlacement ==
-                CannulaPlacement.thoracicAorta2,
-            l=5.2e-2,
-            r=0.95e-2,
-            h=0.116e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-60,48},{-56,
-                    52}})));
-
-          TubeRLC_Derived rightCommonCarotid2(
-            l=8.9e-2,
-            r=0.37e-2,
-            h=0.063e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-68,70},{-64,
-                    74}})));
-
-          TubeRLC_Derived rightThyrocervical(
-            l=5e-2,
-            isBranching=true,
-            r=0.1e-2,
-            h=0.03e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-86,60},{-82,
-                    64}})));
-          TubeRLC_Derived rightSuprascapular(
-            l=10e-2,
-            isBranching=true,
-            r=0.2e-2,
-            h=0.052e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-86,62},{-82,
-                    66}})));
-          TubeRLC_Derived rightAxilliary1(
-            isBranching=true,
-            l=6.1e-2,
-            r=0.36e-2,
-            h=0.062e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-88,56},{-84,
-                    60}})));
-
-          TubeRLC_Derived rightCostocervical(
-            l=5e-2,
-            isBranching=true,
-            r=0.1e-2,
-            h=0.03e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-86,58},{-82,
-                    62}})));
-          TubeRLC_Derived leftThoracoacrominal(
-            l=3e-2,
-            isBranching=true,
-            r=0.15e-2,
-            h=0.035e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-38,58},{
-                    -34,62}})));
-          TubeRLC_Derived leftAxilliary2(
-            isBranching=true,
-            l=5.6e-2,
-            r=0.31e-2,
-            h=0.057e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-36,54},{-32,
-                    58}})));
-
-          TubeRLC_Derived leftCircumflexScapular(
-            l=5e-2,
-            isBranching=true,
-            r=0.1e-2,
-            h=0.03e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-38,56},{
-                    -34,60}})));
-          TubeRLC_Derived leftSubscapular(
-            l=8e-2,
-            isBranching=true,
-            r=0.15e-2,
-            h=0.035e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-38,60},{
-                    -34,64}})));
-          TubeRLC_Derived leftInternalCarotid1(
-            isBranching=true,
-            l=5.9e-2,
-            r=0.18e-2,
-            h=0.045e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-52,76},{-48,
-                    80}})));
-
-          TubeRLC_Derived leftExternalCarotid(
-            isBranching=true,
-            l=11.8e-2,
-            r=0.15e-2,
-            h=0.042e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-54,74},{-50,
-                    78}})));
-
-          TubeRLC_Derived leftSuperiorThyroid(
-            l=4e-2,
-            isBranching=true,
-            r=0.07e-2,
-            h=0.02e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-54,72},{-50,
-                    76}})));
-          TubeRLC_Derived_IABP thoracicAorta3(
-            l=5.2e-2,
-            r=0.95e-2,
-            h=0.116e-2,
-            E=4e5) annotation (Placement(transformation(
-                extent={{-2,-2},{2,2}},
-                rotation=90,
-                origin={-58,46})));
-
-          TubeRLC_Derived rightSuperiorThyroid(
-            l=4e-2,
-            isBranching=true,
-            r=0.07e-2,
-            h=0.02e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-70,72},{-66,
-                    76}})));
-          TubeRLC_Derived rightExternalCarotid(
-            isBranching=true,
-            l=11.8e-2,
-            r=0.15e-2,
-            h=0.042e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-70,74},{-66,
-                    78}})));
-
-          TubeRLC_Derived rightInternalCarotid1(
-            isBranching=true,
-            l=5.9e-2,
-            r=0.18e-2,
-            h=0.045e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-68,76},{-64,
-                    80}})));
-
-          TubeRLC_Derived rightSubscapular(
-            l=8e-2,
-            isBranching=true,
-            r=0.15e-2,
-            h=0.035e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-94,58},{
-                    -90,62}})));
-          TubeRLC_Derived rightCircumflexScapular(
-            l=5e-2,
-            isBranching=true,
-            r=0.1e-2,
-            h=0.03e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-94,56},{
-                    -90,60}})));
-          TubeRLC_Derived rightAxilliary2(
-            isBranching=true,
-            l=5.6e-2,
-            r=0.31e-2,
-            h=0.057e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-92,52},{-88,
-                    56}})));
-
-          TubeRLC_Derived rightThoracoacrominal(
-            l=3e-2,
-            isBranching=true,
-            r=0.15e-2,
-            h=0.035e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-94,54},{
-                    -90,58}})));
-          TubeRLC_Derived leftBrachial1(
-            l=6.3e-2,
-            r=0.28e-2,
-            h=0.055e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-36,52},{-32,
-                    56}})));
-
-          TubeRLC_Derived leftLingual(
-            l=3e-2,
-            isBranching=true,
-            r=0.1e-2,
-            h=0.03e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-54,78},{-50,
-                    82}})));
-          TubeRLC_Derived leftInternalCarotid2(
-            isBranching=true,
-            l=5.9e-2,
-            r=0.13e-2,
-            h=0.039e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-52,82},{-48,
-                    86}})));
-
-          TubeRLC_Derived leftFacial(
-            l=4e-2,
-            isBranching=true,
-            r=0.1e-2,
-            h=0.03e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-54,80},{
-                    -50,84}})));
-          TubeRLC_Derived leftMiddleCerebral(
-            l=3e-2,
-            isBranching=true,
-            r=0.06e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-60,72},{
-                    -56,76}})));
-          TubeRLC_Derived leftCerebral(
-            l=5.9e-2,
-            isBranching=true,
-            r=0.08e-2,
-            h=0.026e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-60,74},{
-                    -56,78}})));
-          TubeRLC_Derived leftOpthalmic(
-            l=3e-2,
-            isBranching=true,
-            r=0.07e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-60,76},{
-                    -56,80}})));
-          TubeRLC_Derived coeliac(
-            isBranching=true,
-            l=1e-2,
-            r=0.39e-2,
-            h=0.064e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-64,44},{-60,
-                    48}})));
-
-          TubeRLC_Derived_IABP abdominalAorta1(
-            isBranching=true,
-            l=5.3e-2,
-            r=0.87e-2,
-            h=0.108e-2,
-            E=4e5) annotation (Placement(transformation(
-                extent={{-2,-2},{2,2}},
-                rotation=90,
-                origin={-58,40})));
-
-          TubeRLC_Derived rightOpthalmic(
-            l=3e-2,
-            isBranching=true,
-            r=0.07e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-76,72},{
-                    -72,76}})));
-          TubeRLC_Derived rightCerebral(
-            l=5.9e-2,
-            isBranching=true,
-            r=0.08e-2,
-            h=0.026e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-76,74},{
-                    -72,78}})));
-          TubeRLC_Derived rightMiddleCerebral(
-            l=3e-2,
-            isBranching=true,
-            r=0.06e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-76,76},{
-                    -72,80}})));
-          TubeRLC_Derived rightFacial(
-            l=4e-2,
-            r=0.1e-2,
-            h=0.03e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-70,78},{
-                    -66,82}})));
-          TubeRLC_Derived rightInternalCarotid2(
-            isBranching=true,
-            l=5.9e-2,
-            r=0.13e-2,
-            h=0.039e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-68,82},{-64,
-                    86}})));
-
-          TubeRLC_Derived rightLingual(
-            l=3e-2,
-            isBranching=true,
-            r=0.1e-2,
-            h=0.03e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-70,80},{-66,
-                    84}})));
-          TubeRLC_Derived rightBrachial1(
-            isBranching=true,
-            l=6.3e-2,
-            r=0.28e-2,
-            h=0.055e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-94,50},{-90,
-                    54}})));
-
-          TubeRLC_Derived leftProfundaBrachi(
-            l=15e-2,
-            isBranching=true,
-            r=0.15e-2,
-            h=0.035e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-38,50},{-34,
-                    54}})));
-          TubeRLC_Derived leftBrachial2(
-            isBranching=true,
-            l=6.3e-2,
-            r=0.26e-2,
-            h=0.053e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-36,48},{-32,
-                    52}})));
-
-          TubeRLC_Derived leftInternalCarotid3(
-            l=5.9e-2,
-            r=0.08e-2,
-            h=0.026e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-52,84},{
-                    -48,88}})));
-
-          TubeRLC_Derived gastric1(
-            l=7.1e-2,
-            isBranching=true,
-            r=0.18e-2,
-            h=0.045e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-68,46},{-64,
-                    50}})));
-          TubeRLC_Derived splenic(
-            l=6.3e-2,
-            isBranching=true,
-            r=0.28e-2,
-            h=0.054e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-68,44},{-64,
-                    48}})));
-          TubeRLC_Derived hepatic(
-            l=6.6e-2,
-            isBranching=true,
-            r=0.22e-2,
-            h=0.049e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-68,42},{-64,
-                    46}})));
-          TubeRLC_Derived renal(
-            l=3.2e-2,
-            isBranching=true,
-            r=0.26e-2,
-            h=0.053e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-64,40},{-60,
-                    44}})));
-          TubeRLC_Derived abdominalAorta2(
-            isBranching=true,
-            l=5.3e-2,
-            r=0.57e-2,
-            h=0.08e-2,
-            E=4e5) annotation (Placement(transformation(
-                extent={{-2,-2},{2,2}},
-                rotation=90,
-                origin={-58,36})));
-
-          TubeRLC_Derived superiorMesenteric(
-            l=5.9e-2,
-            isBranching=true,
-            r=0.43e-2,
-            h=0.069e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-64,36},{-60,
-                    40}})));
-          TubeRLC_Derived gastric2(
-            l=3.2e-2,
-            isBranching=true,
-            r=0.26e-2,
-            h=0.053e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-64,38},{-60,
-                    42}})));
-          TubeRLC_Derived rightInternalCarotid3(
-            l=5.9e-2,
-            r=0.08e-2,
-            h=0.026e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-68,84},{
-                    -64,88}})));
-
-          TubeRLC_Derived rightBrachial2(
-            isBranching=true,
-            l=6.3e-2,
-            r=0.26e-2,
-            h=0.053e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-94,46},{-90,
-                    50}})));
-
-          TubeRLC_Derived rightProfundaBrachi(
-            l=15e-2,
-            isBranching=true,
-            r=0.15e-2,
-            h=0.035e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-96,48},{-92,
-                    52}})));
-          TubeRLC_Derived leftBrachial3(
-            isBranching=true,
-            l=6.3e-2,
-            r=0.25e-2,
-            h=0.052e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-36,44},{-32,
-                    48}})));
-
-          TubeRLC_Derived leftSuperiorUlnarCollateral(
-            l=5e-2,
-            isBranching=true,
-            r=0.07e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-38,46},{
-                    -34,50}})));
-          TubeRLC_Derived leftSuperficialTemporal(
-            l=4e-2,
-            isBranching=true,
-            r=0.06e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-52,88},{
-                    -48,92}})));
-          TubeRLC_Derived leftMaxilliary(
-            l=5e-2,
-            isBranching=true,
-            r=0.07e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-54,86},{
-                    -50,90}})));
-          TubeRLC_Derived abdominalAorta3(
-            l=5.3e-2,
-            r=0.57e-2,
-            h=0.08e-2,
-            E=4e5) annotation (Placement(transformation(
-                extent={{-2,-2},{2,2}},
-                rotation=90,
-                origin={-58,32})));
-
-          TubeRLC_Derived rightMaxilliary(
-            l=5e-2,
-            isBranching=true,
-            r=0.07e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-70,86},{
-                    -66,90}})));
-          TubeRLC_Derived rightSuperficialTemporal(
-            l=4e-2,
-            isBranching=true,
-            r=0.06e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-68,88},{
-                    -64,92}})));
-          TubeRLC_Derived rightSuperiorUlnarCollateral(
-            l=5e-2,
-            isBranching=true,
-            r=0.07e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-96,44},{
-                    -92,48}})));
-          TubeRLC_Derived rightBrachial3(
-            isBranching=true,
-            l=6.3e-2,
-            r=0.25e-2,
-            h=0.052e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-94,42},{-90,
-                    46}})));
-
-          TubeRLC_Derived leftInferiorUlnarCollateral(
-            l=5e-2,
-            isBranching=true,
-            r=0.06e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-38,42},{
-                    -34,46}})));
-          TubeRLC_Derived leftBrachial4(
-            isBranching=true,
-            l=4.6e-2,
-            r=0.24e-2,
-            h=0.05e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-36,40},{-32,
-                    44}})));
-
-          TubeRLC_Derived leftCommonIlliac(
-            isBranching=true,
-            l=5.8e-2,
-            r=0.52e-2,
-            h=0.076e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-54,26},{-50,
-                    30}})));
-
-          TubeRLC_Derived inferiorMesenteric(
-            l=5e-2,
-            isBranching=true,
-            r=0.16e-2,
-            h=0.043e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-60,26},{-56,
-                    30}})));
-          TubeRLC_Derived rightCommonIlliac(
-            isBranching=true,
-            l=5.8e-2,
-            r=0.52e-2,
-            h=0.076e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-64,26},{-60,
-                    30}})));
-
-          TubeRLC_Derived rightBrachial4(
-            isBranching=true,
-            l=4.6e-2,
-            r=0.24e-2,
-            h=0.05e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-94,38},{-90,
-                    42}})));
-
-          TubeRLC_Derived rightInferiorUlnarCollateral(
-            l=5e-2,
-            isBranching=true,
-            r=0.06e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-96,40},{
-                    -92,44}})));
-          TubeRLC_Derived leftUlnar1(
-            isBranching=true,
-            l=6.7e-2,
-            r=0.21e-2,
-            h=0.049e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-34,38},{-30,
-                    42}})));
-
-          TubeRLC_Derived leftRadial1(
-            isBranching=true,
-            l=11.7e-2,
-            r=0.16e-2,
-            h=0.043e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-40,38},{-36,
-                    42}})));
-
-          TubeRLC_Derived leftExternalIlliac1(
-            isBranching=true,
-            l=8.3e-2,
-            r=0.29e-2,
-            h=0.055e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-54,22},{-50,
-                    26}})));
-
-          TubeRLC_Derived leftInternalIlliac(
-            l=5e-2,
-            isBranching=true,
-            r=0.2e-2,
-            h=0.04e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-56,24},{
-                    -52,28}})));
-          TubeRLC_Derived rightInternalIlliac(
-            l=5e-2,
-            isBranching=true,
-            r=0.2e-2,
-            h=0.04e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-66,24},{
-                    -62,28}})));
-          TubeRLC_Derived rightExternalIlliac1(
-            isBranching=true,
-            l=8.3e-2,
-            r=0.29e-2,
-            h=0.055e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-64,22},{-60,
-                    26}})));
-
-          TubeRLC_Derived rightRadial1(
-            isBranching=true,
-            l=11.7e-2,
-            r=0.16e-2,
-            h=0.043e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-96,36},{-92,
-                    40}})));
-
-          TubeRLC_Derived rightUlnar1(
-            isBranching=true,
-            l=6.7e-2,
-            r=0.21e-2,
-            h=0.049e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-92,34},{-88,
-                    38}})));
-          TubeRLC_Derived leftUlnar2(
-            isBranching=true,
-            l=8.5e-2,
-            r=0.19e-2,
-            h=0.046e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-34,34},{-30,
-                    38}})));
-
-          TubeRLC_Derived leftInterossea(
-            l=7.9e-2,
-            isBranching=true,
-            r=0.09e-2,
-            h=0.028e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-36,36},{
-                    -32,40}})));
-          TubeRLC_Derived leftRadial2(
-            l=11.7e-2,
-            r=0.16e-2,
-            h=0.043e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-42,36},{-38,
-                    40}})));
-          TubeRLC_Derived leftExternalIlliac2(
-            l=6.1e-2,
-            r=0.27e-2,
-            h=0.053e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-54,20},{-50,
-                    24}})));
-
-          TubeRLC_Derived rightExternalIlliac2(
-            l=6.1e-2,
-            r=0.27e-2,
-            h=0.053e-2,
-            E=4e5) annotation (Placement(transformation(extent={{-64,20},{-60,
-                    24}})));
-
-          TubeRLC_Derived rightRadial2(
-            l=11.7e-2,
-            r=0.16e-2,
-            h=0.043e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-98,34},{-94,
-                    38}})));
-          TubeRLC_Derived rightInterossea(
-            l=7.9e-2,
-            isBranching=true,
-            r=0.09e-2,
-            h=0.028e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-94,32},{
-                    -90,36}})));
-          TubeRLC_Derived rightUlnar2(
-            l=8.5e-2,
-            isBranching=true,
-            r=0.19e-2,
-            h=0.046e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-92,30},{-88,
-                    34}})));
-
-          TubeRLC_Derived leftUlnar3(
-            l=8.5e-2,
-            r=0.19e-2,
-            h=0.046e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-34,32},{-30,
-                    36}})));
-          TubeRLC_Derived leftFemoral1(
-            isBranching=true,
-            l=12.7e-2,
-            r=0.24e-2,
-            h=0.05e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-54,16},{-50,
-                    20}})));
-
-          TubeRLC_Derived leftProfundis(
-            l=12.6e-2,
-            isBranching=true,
-            r=0.23e-2,
-            h=0.049e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-56,18},{
-                    -52,22}})));
-          TubeRLC_Derived rightProfundis(
-            l=12.6e-2,
-            isBranching=true,
-            r=0.23e-2,
-            h=0.049e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-66,18},{
-                    -62,22}})));
-          TubeRLC_Derived rightFemoral1(
-            isBranching=true,
-            l=12.7e-2,
-            r=0.24e-2,
-            h=0.05e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-64,16},{-60,
-                    20}})));
-
-          TubeRLC_Derived rightUlnar3(
-            l=8.5e-2,
-            r=0.19e-2,
-            h=0.046e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-92,28},{-88,
-                    32}})));
-          TubeRLC_Derived leftFemoral2(
-            l=12.7e-2,
-            r=0.24e-2,
-            h=0.05e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-54,14},{-50,
-                    18}})));
-
-          TubeRLC_Derived rightFemoral2(
-            l=12.7e-2,
-            r=0.24e-2,
-            h=0.05e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-64,14},{-60,
-                    18}})));
-
-          TubeRLC_Derived leftPopliteal1(
-            l=9.4e-2,
-            r=0.2e-2,
-            h=0.047e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-54,12},{-50,
-                    16}})));
-
-          TubeRLC_Derived rightPopliteal1(
-            l=9.4e-2,
-            r=0.2e-2,
-            h=0.047e-2,
-            E=8e5) annotation (Placement(transformation(extent={{-64,12},{-60,
-                    16}})));
-
-          TubeRLC_Derived leftPopliteal2(
-            l=9.4e-2,
-            r=0.2e-2,
-            h=0.05e-2,
-            E=4e5) annotation (Placement(transformation(
-                extent={{-2,-2},{2,2}},
-                rotation=90,
-                origin={-52,10})));
-
-          TubeRLC_Derived rightPopliteal2(
-            l=9.4e-2,
-            r=0.2e-2,
-            h=0.05e-2,
-            E=4e5) annotation (Placement(transformation(
-                extent={{-2,-2},{2,2}},
-                rotation=90,
-                origin={-62,10})));
-
-          TubeRLC_Derived leftAnteriorTibial1(
-            isBranching=true,
-            l=2.5e-2,
-            r=0.13e-2,
-            h=0.039e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-52,2},{-48,
-                    6}})));
-
-          TubeRLC_Derived leftPosteriorTibial1(
-            isBranching=true,
-            l=16.1e-2,
-            r=0.18e-2,
-            h=0.045e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-58,6},{-54,
-                    10}})));
-
-          TubeRLC_Derived rightPosteriorTibial1(
-            isBranching=true,
-            l=16.1e-2,
-            r=0.18e-2,
-            h=0.045e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-64,-2},{
-                    -60,2}})));
-
-          TubeRLC_Derived rightAnteriorTibial1(
-            isBranching=true,
-            l=2.5e-2,
-            r=0.13e-2,
-            h=0.039e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-68,4},{-64,
-                    8}})));
-
-          TubeRLC_Derived leftAnteriorTibial2(
-            isBranching=true,
-            l=15e-2,
-            r=0.1e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-52,-4},{
-                    -48,0}})));
-
-          TubeRLC_Derived leftPeroneal1(
-            isBranching=true,
-            l=15.9e-2,
-            r=0.13e-2,
-            h=0.039e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-56,-2},{
-                    -52,2}})));
-
-          TubeRLC_Derived leftPosteriorTibial2(
-            l=16.1e-2,
-            r=0.18e-2,
-            h=0.045e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-60,2},{-56,
-                    6}})));
-          TubeRLC_Derived rightPosteriorTibial2(
-            l=16.1e-2,
-            r=0.18e-2,
-            h=0.045e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-68,-4},{
-                    -64,0}})));
-          TubeRLC_Derived rightPeroneal1(
-            isBranching=true,
-            l=15.9e-2,
-            r=0.13e-2,
-            h=0.039e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-70,-2},{
-                    -66,2}})));
-
-          TubeRLC_Derived rightAnteriorTibial2(
-            isBranching=true,
-            l=15e-2,
-            r=0.1e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-72,2},{-68,
-                    6}})));
-
-          TubeRLC_Derived leftAnteriorTibial3(
-            l=15e-2,
-            r=0.1e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-52,-8},{
-                    -48,-4}})));
-          TubeRLC_Derived leftPeroneal2(
-            l=15.9e-2,
-            r=0.13e-2,
-            h=0.019e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-58,-8},{
-                    -54,-4}})));
-          TubeRLC_Derived rightPeroneal2(
-            l=15.9e-2,
-            r=0.13e-2,
-            h=0.019e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-74,-6},{
-                    -70,-2}})));
-          TubeRLC_Derived rightAnteriorTibial3(
-            l=15e-2,
-            r=0.1e-2,
-            h=0.02e-2,
-            E=16e5) annotation (Placement(transformation(extent={{-76,-2},{
-                    -72,2}})));
-        // initial equation
-        //   thoracicAorta3.V = 180e-3;
-
-        equation
-          der(V_filling) = q_filling;
-          q_filling/speed_factor = V_init - V_filling;
-          // - der(V_filling);
-            volumeControl_.solutionFlow = q_filling;
-          connect(volumeControl_.q_out, cIn);
-          // Homely component -> disabling vizualization, even for connection
-
-          pInner = aorticArch2.cIn.pressure;
-
-          if settings.supports.ECMO_isEnabled then
-            if settings.supports.ECMO_cannulaPlacement == CannulaPlacement.ascendingAorta then
-              connect(cCannula, ascendingAorta.cIn);
-            elseif settings.supports.ECMO_cannulaPlacement ==
-                CannulaPlacement.aorticArch1 then
-              connect(cCannula, aorticArch1.cIn);
-            elseif settings.supports.ECMO_cannulaPlacement ==
-                CannulaPlacement.aorticArch2 then
-              connect(cCannula, aorticArch2.cIn);
-            elseif settings.supports.ECMO_cannulaPlacement ==
-                CannulaPlacement.thoracicAorta1 then
-              connect(cCannula, thoracicAorta1.cIn);
-            elseif settings.supports.ECMO_cannulaPlacement ==
-                CannulaPlacement.thoracicAorta2 then
-              connect(cCannula, thoracicAorta2.cIn);
-            else
-              connect(cCannula, cIn);
-            end if;
-          else
-            connect(cCannula, cIn);
-          end if;
-
-          connect(rightAnteriorTibial2.cOut, rightAnteriorTibial3.cIn)
-            annotation (Line(
-              points={{-68.4,4},{-75.6,4},{-75.6,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightPeroneal1.cOut, rightPeroneal2.cIn) annotation (Line(
-              points={{-66.4,0},{-73.6,0},{-73.6,-4}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftPeroneal1.cOut, leftPeroneal2.cIn) annotation (Line(
-              points={{-52.4,0},{-54,0},{-54,-6},{-57.6,-6}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftAnteriorTibial2.cOut, leftAnteriorTibial3.cIn)
-            annotation (Line(
-              points={{-48.4,-2},{-50,-2},{-50,-6},{-51.6,-6}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightAnteriorTibial1.cOut, rightAnteriorTibial2.cIn)
-            annotation (Line(
-              points={{-64.4,6},{-71.6,6},{-71.6,4}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightAnteriorTibial1.cOut, rightPeroneal1.cIn)
-            annotation (Line(
-              points={{-64.4,6},{-69.6,6},{-69.6,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightPosteriorTibial1.cOut, rightPosteriorTibial2.cIn)
-            annotation (Line(
-              points={{-60.4,0},{-67.6,0},{-67.6,-2}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftPosteriorTibial1.cOut, leftPosteriorTibial2.cIn)
-            annotation (Line(
-              points={{-54.4,8},{-59.6,8},{-59.6,4}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftAnteriorTibial1.cOut, leftPeroneal1.cIn) annotation (
-              Line(
-              points={{-48.4,4},{-55.6,4},{-55.6,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftAnteriorTibial1.cOut, leftAnteriorTibial2.cIn)
-            annotation (Line(
-              points={{-48.4,4},{-50,4},{-50,-2},{-51.6,-2}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightPopliteal2.cOut, rightAnteriorTibial1.cIn)
-            annotation (Line(
-              points={{-62,11.6},{-67.6,11.6},{-67.6,6}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightPopliteal2.cOut, rightPosteriorTibial1.cIn)
-            annotation (Line(
-              points={{-62,11.6},{-62,0},{-63.6,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftPopliteal2.cOut, leftPosteriorTibial1.cIn)
-            annotation (Line(
-              points={{-52,11.6},{-54,11.6},{-54,8},{-57.6,8}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftPopliteal2.cOut, leftAnteriorTibial1.cIn) annotation (
-             Line(
-              points={{-52,11.6},{-50,11.6},{-50,4},{-51.6,4}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightPopliteal1.cOut, rightPopliteal2.cIn) annotation (
-              Line(
-              points={{-60.4,14},{-62,14},{-62,8.4}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftPopliteal1.cOut, leftPopliteal2.cIn) annotation (Line(
-              points={{-50.4,14},{-52,14},{-52,8.4}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightFemoral2.cOut, rightPopliteal1.cIn) annotation (Line(
-              points={{-60.4,16},{-62,16},{-62,14},{-63.6,14}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftFemoral2.cOut, leftPopliteal1.cIn) annotation (Line(
-              points={{-50.4,16},{-52,16},{-52,14},{-53.6,14}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightFemoral1.cOut, rightFemoral2.cIn) annotation (Line(
-              points={{-60.4,18},{-62,18},{-62,16},{-63.6,16}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftFemoral1.cOut, leftFemoral2.cIn) annotation (Line(
-              points={{-50.4,18},{-52,18},{-52,16},{-53.6,16}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightUlnar2.cOut, rightUlnar3.cIn) annotation (Line(
-              points={{-88.4,32},{-90,32},{-90,30},{-91.6,30}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightExternalIlliac2.cOut, rightFemoral1.cIn) annotation (
-             Line(
-              points={{-60.4,22},{-62,22},{-62,18},{-63.6,18}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightExternalIlliac2.cOut, rightProfundis.cIn)
-            annotation (Line(
-              points={{-60.4,22},{-65.6,22},{-65.6,20}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftExternalIlliac2.cOut, leftProfundis.cIn) annotation (
-              Line(
-              points={{-50.4,22},{-55.6,22},{-55.6,20}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftExternalIlliac2.cOut, leftFemoral1.cIn) annotation (
-              Line(
-              points={{-50.4,22},{-52,22},{-52,18},{-53.6,18}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftUlnar2.cOut, leftUlnar3.cIn) annotation (Line(
-              points={{-30.4,36},{-32,36},{-32,34},{-33.6,34}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightRadial1.cOut, rightRadial2.cIn) annotation (Line(
-              points={{-92.4,38},{-97.6,38},{-97.6,36}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightExternalIlliac1.cOut, rightExternalIlliac2.cIn)
-            annotation (Line(
-              points={{-60.4,24},{-62,24},{-62,22},{-63.6,22}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftExternalIlliac1.cOut, leftExternalIlliac2.cIn)
-            annotation (Line(
-              points={{-50.4,24},{-52,24},{-52,22},{-53.6,22}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightUlnar1.cOut, rightInterossea.cIn) annotation (Line(
-              points={{-88.4,36},{-93.6,36},{-93.6,34}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightUlnar1.cOut, rightUlnar2.cIn) annotation (Line(
-              points={{-88.4,36},{-90,36},{-90,32},{-91.6,32}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftUlnar1.cOut, leftInterossea.cIn) annotation (Line(
-              points={{-30.4,40},{-35.6,40},{-35.6,38}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftUlnar1.cOut, leftUlnar2.cIn) annotation (Line(
-              points={{-30.4,40},{-32,40},{-32,36},{-33.6,36}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftRadial1.cOut, leftRadial2.cIn) annotation (Line(
-              points={{-36.4,40},{-41.6,40},{-41.6,38}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightBrachial4.cOut, rightRadial1.cIn) annotation (Line(
-              points={{-90.4,40},{-95.6,40},{-95.6,38}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightBrachial4.cOut, rightUlnar1.cIn) annotation (Line(
-              points={{-90.4,40},{-90,40},{-90,36},{-91.6,36}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightCommonIlliac.cOut, rightInternalIlliac.cIn)
-            annotation (Line(
-              points={{-60.4,28},{-65.6,28},{-65.6,26}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightCommonIlliac.cOut, rightExternalIlliac1.cIn)
-            annotation (Line(
-              points={{-60.4,28},{-62,28},{-62,24},{-63.6,24}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftCommonIlliac.cOut, leftInternalIlliac.cIn)
-            annotation (Line(
-              points={{-50.4,28},{-55.6,28},{-55.6,26}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftCommonIlliac.cOut, leftExternalIlliac1.cIn)
-            annotation (Line(
-              points={{-50.4,28},{-52,28},{-52,24},{-53.6,24}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftBrachial4.cOut, leftRadial1.cIn) annotation (Line(
-              points={{-32.4,42},{-39.6,42},{-39.6,40}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftBrachial4.cOut, leftUlnar1.cIn) annotation (Line(
-              points={{-32.4,42},{-32,42},{-32,40},{-33.6,40}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightBrachial3.cOut, rightInferiorUlnarCollateral.cIn)
-            annotation (Line(
-              points={{-90.4,44},{-95.6,44},{-95.6,42}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightBrachial4.cIn, rightBrachial3.cOut) annotation (Line(
-              points={{-93.6,40},{-92,40},{-92,44},{-90.4,44}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightCommonIlliac.cIn, abdominalAorta3.cOut) annotation (
-              Line(
-              points={{-63.6,28},{-60,28},{-60,33.6},{-58,33.6}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(inferiorMesenteric.cIn, abdominalAorta3.cOut) annotation (
-             Line(
-              points={{-59.6,28},{-58,28},{-58,33.6}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftCommonIlliac.cIn, abdominalAorta3.cOut) annotation (
-              Line(points={{-53.6,28},{-54,28},{-54,30},{-58,30},{-58,33.6}},
-                smooth=Smooth.None));
-          connect(leftBrachial4.cIn, leftBrachial3.cOut) annotation (Line(
-              points={{-35.6,42},{-34,42},{-34,46},{-32.4,46}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftBrachial3.cOut, leftInferiorUlnarCollateral.cIn)
-            annotation (Line(
-              points={{-32.4,46},{-37.6,46},{-37.6,44}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightSuperiorUlnarCollateral.cIn, rightBrachial2.cOut)
-            annotation (Line(
-              points={{-95.6,46},{-90.4,46},{-90.4,48}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightBrachial2.cOut, rightBrachial3.cIn) annotation (Line(
-              points={{-90.4,48},{-92,48},{-92,44},{-93.6,44}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightInternalCarotid3.cOut, rightMaxilliary.cIn)
-            annotation (Line(
-              points={{-64.4,86},{-69.6,86},{-69.6,88}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightInternalCarotid3.cOut, rightSuperficialTemporal.cIn)
-            annotation (Line(
-              points={{-64.4,86},{-66,86},{-66,90},{-67.6,90}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(abdominalAorta2.cOut, abdominalAorta3.cIn) annotation (
-              Line(
-              points={{-58,37.6},{-58,30.4}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftInternalCarotid3.cOut, leftMaxilliary.cIn)
-            annotation (Line(
-              points={{-48.4,86},{-53.6,86},{-53.6,88}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftInternalCarotid3.cOut, leftSuperficialTemporal.cIn)
-            annotation (Line(
-              points={{-48.4,86},{-50,86},{-50,90},{-51.6,90}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftBrachial2.cOut, leftSuperiorUlnarCollateral.cIn)
-            annotation (Line(
-              points={{-32.4,50},{-37.6,50},{-37.6,48}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftBrachial2.cOut, leftBrachial3.cIn) annotation (Line(
-              points={{-32.4,50},{-34,50},{-34,46},{-35.6,46}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightInternalCarotid3.cIn, rightInternalCarotid2.cOut)
-            annotation (Line(
-              points={{-67.6,86},{-66,86},{-66,84},{-64.4,84}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightBrachial1.cOut, rightProfundaBrachi.cIn) annotation (
-             Line(
-              points={{-90.4,52},{-95.6,52},{-95.6,50}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightBrachial1.cOut, rightBrachial2.cIn) annotation (Line(
-              points={{-90.4,52},{-92,52},{-92,48},{-93.6,48}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(abdominalAorta1.cOut, abdominalAorta2.cIn) annotation (
-              Line(
-              points={{-58,41.6},{-58,34.4}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(abdominalAorta1.cOut, superiorMesenteric.cIn) annotation (
-             Line(
-              points={{-58,41.6},{-63.6,41.6},{-63.6,38}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(abdominalAorta1.cOut, gastric2.cIn) annotation (Line(
-              points={{-58,41.6},{-63.6,41.6},{-63.6,40}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(abdominalAorta1.cOut, renal.cIn) annotation (Line(
-              points={{-58,41.6},{-63.6,41.6},{-63.6,42}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(coeliac.cOut, splenic.cIn) annotation (Line(
-              points={{-60.4,46},{-67.6,46}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(coeliac.cOut, gastric1.cIn) annotation (Line(
-              points={{-60.4,46},{-67.6,46},{-67.6,48}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(coeliac.cOut, hepatic.cIn) annotation (Line(
-              points={{-60.4,46},{-67.6,46},{-67.6,44}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftInternalCarotid2.cOut, leftInternalCarotid3.cIn)
-            annotation (Line(
-              points={{-48.4,84},{-50,84},{-50,86},{-51.6,86}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftBrachial1.cOut, leftProfundaBrachi.cIn) annotation (
-              Line(
-              points={{-32.4,54},{-37.6,54},{-37.6,52}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftBrachial1.cOut, leftBrachial2.cIn) annotation (Line(
-              points={{-32.4,54},{-34,54},{-34,50},{-35.6,50}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightAxilliary2.cOut, rightBrachial1.cIn) annotation (
-              Line(
-              points={{-88.4,54},{-93.6,54},{-93.6,52}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightInternalCarotid1.cOut, rightFacial.cIn) annotation (
-              Line(
-              points={{-64.4,78},{-69.6,78},{-69.6,80}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightInternalCarotid1.cOut, rightLingual.cIn) annotation (
-             Line(
-              points={{-64.4,78},{-69.6,78},{-69.6,82}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightInternalCarotid1.cOut, rightInternalCarotid2.cIn)
-            annotation (Line(
-              points={{-64.4,78},{-66,78},{-66,84},{-67.6,84}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightCerebral.cIn, rightExternalCarotid.cOut) annotation (
-             Line(
-              points={{-75.6,76},{-66.4,76}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightExternalCarotid.cOut, rightOpthalmic.cIn)
-            annotation (Line(
-              points={{-66.4,76},{-70,76},{-70,74},{-75.6,74}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightExternalCarotid.cOut, rightMiddleCerebral.cIn)
-            annotation (Line(
-              points={{-66.4,76},{-70,76},{-70,78},{-75.6,78}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(thoracicAorta3.cOut, abdominalAorta1.cIn) annotation (
-              Line(
-              points={{-58,47.6},{-58,38.4}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(thoracicAorta3.cOut, coeliac.cIn) annotation (Line(
-              points={{-58,47.6},{-63.6,47.6},{-63.6,46}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftInternalCarotid1.cOut, leftLingual.cIn) annotation (
-              Line(
-              points={{-48.4,78},{-53.6,78},{-53.6,80}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftInternalCarotid1.cOut, leftFacial.cIn) annotation (
-              Line(
-              points={{-48.4,78},{-53.6,78},{-53.6,82}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftInternalCarotid1.cOut, leftInternalCarotid2.cIn)
-            annotation (Line(
-              points={{-48.4,78},{-50,78},{-50,84},{-51.6,84}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftCerebral.cIn, leftExternalCarotid.cOut) annotation (
-              Line(
-              points={{-59.6,76},{-50.4,76}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftExternalCarotid.cOut, leftMiddleCerebral.cIn)
-            annotation (Line(
-              points={{-50.4,76},{-54,76},{-54,74},{-59.6,74}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftExternalCarotid.cOut, leftOpthalmic.cIn) annotation (
-              Line(
-              points={{-50.4,76},{-54,76},{-54,78},{-59.6,78}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftAxilliary2.cOut, leftBrachial1.cIn) annotation (Line(
-              points={{-32.4,56},{-34,56},{-34,54},{-35.6,54}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightAxilliary1.cOut, rightCircumflexScapular.cIn)
-            annotation (Line(
-              points={{-84.4,58},{-93.6,58}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightAxilliary1.cOut, rightThoracoacrominal.cIn)
-            annotation (Line(
-              points={{-84.4,58},{-88,58},{-88,56},{-93.6,56}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightAxilliary1.cOut, rightSubscapular.cIn) annotation (
-              Line(
-              points={{-84.4,58},{-88,58},{-88,60},{-93.6,60}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightAxilliary1.cOut, rightAxilliary2.cIn) annotation (
-              Line(
-              points={{-84.4,58},{-91.6,58},{-91.6,54}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightCommonCarotid2.cOut, rightSuperiorThyroid.cIn)
-            annotation (Line(
-              points={{-64.4,72},{-69.6,72},{-69.6,74}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightCommonCarotid2.cOut, rightExternalCarotid.cIn)
-            annotation (Line(
-              points={{-64.4,72},{-69.6,72},{-69.6,76}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightCommonCarotid2.cOut, rightInternalCarotid1.cIn)
-            annotation (Line(
-              points={{-64.4,72},{-66,72},{-66,78},{-67.6,78}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(thoracicAorta2.cOut, thoracicAorta3.cIn) annotation (Line(
-              points={{-56.4,50},{-58,50},{-58,44.4}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftCommonCarotid3.cOut, leftSuperiorThyroid.cIn)
-            annotation (Line(
-              points={{-48.4,72},{-53.6,72},{-53.6,74}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftCommonCarotid3.cOut, leftExternalCarotid.cIn)
-            annotation (Line(
-              points={{-48.4,72},{-53.6,72},{-53.6,76}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftCommonCarotid3.cOut, leftInternalCarotid1.cIn)
-            annotation (Line(
-              points={{-48.4,72},{-50,72},{-50,78},{-51.6,78}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftAxilliary1.cOut, leftSubscapular.cIn) annotation (
-              Line(
-              points={{-35.6,64},{-35.6,62},{-37.6,62}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftAxilliary1.cOut, leftThoracoacrominal.cIn)
-            annotation (Line(
-              points={{-35.6,64},{-37.6,64},{-37.6,60}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftAxilliary1.cOut, leftCircumflexScapular.cIn)
-            annotation (Line(
-              points={{-35.6,64},{-37.6,64},{-37.6,58}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftAxilliary1.cOut, leftAxilliary2.cIn) annotation (Line(
-              points={{-35.6,64},{-35.6,64},{-35.6,56}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightSubclavian.cOut, rightAxilliary1.cIn) annotation (
-              Line(
-              points={{-78.4,58},{-87.6,58}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightSubclavian.cOut, rightCostocervical.cIn) annotation (
-             Line(
-              points={{-78.4,58},{-85.6,58},{-85.6,60}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightSubclavian.cOut, rightThyrocervical.cIn) annotation (
-             Line(
-              points={{-78.4,58},{-85.6,58},{-85.6,62}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightSubclavian.cOut, rightSuprascapular.cIn) annotation (
-             Line(
-              points={{-78.4,58},{-85.6,58},{-85.6,64}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightCommonCarotid2.cIn, rightCommonCarotid1.cOut)
-            annotation (Line(
-              points={{-67.6,72},{-66,72},{-66,70},{-64.4,70}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(thoracicAorta1.cOut, thoracicAorta2.cIn) annotation (Line(
-              points={{-56.4,52},{-58,52},{-58,50},{-59.6,50}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftCommonCarotid2.cOut, leftCommonCarotid3.cIn)
-            annotation (Line(
-              points={{-48.4,70},{-50,70},{-50,72},{-51.6,72}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftSubclavian2.cOut, leftAxilliary1.cIn) annotation (
-              Line(
-              points={{-45.6,64},{-32.4,64}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftSubclavian2.cOut, leftCostocervical.cIn) annotation (
-              Line(
-              points={{-45.6,64},{-41.6,64},{-41.6,66}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftSubclavian2.cOut, leftSuprascapular.cIn) annotation (
-              Line(
-              points={{-45.6,64},{-41.6,64},{-41.6,68}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftSubclavian2.cOut, leftThyrocervical.cIn) annotation (
-              Line(
-              points={{-45.6,64},{-41.6,64},{-41.6,70}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(aorticArch2.cOut, thoracicAorta1.cIn) annotation (Line(
-              points={{-58,57.6},{-58,52},{-59.6,52}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftCommonCarotid1.cOut, leftCommonCarotid2.cIn)
-            annotation (Line(
-              points={{-48.4,68},{-50,68},{-50,70},{-51.6,70}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftSubclavian1.cOut, leftSubclavian2.cIn) annotation (
-              Line(
-              points={{-55.6,62},{-50,62},{-50,64},{-42.4,64}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftSubclavian1.cOut, leftInternalMammary.cIn)
-            annotation (Line(
-              points={{-55.6,62},{-48,62},{-48,60},{-47.6,60}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftSubclavian1.cOut, leftVertebral.cIn) annotation (Line(
-              points={{-55.6,62},{-48,62},{-48,58},{-47.6,58}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(brachiocephalic.cOut, rightVertebral.cIn) annotation (
-              Line(
-              points={{-60.4,62},{-70,62},{-70,60},{-79.6,60}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(brachiocephalic.cOut, rightSubclavian.cIn) annotation (
-              Line(
-              points={{-60.4,62},{-70,62},{-70,58},{-81.6,58}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(brachiocephalic.cOut, righInternalMammary.cIn)
-            annotation (Line(
-              points={{-60.4,62},{-70,62},{-70,56},{-79.6,56}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(brachiocephalic.cOut, rightCommonCarotid1.cIn)
-            annotation (Line(
-              points={{-60.4,62},{-67.6,62},{-67.6,70}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(ascendingAorta.cIn, cIn) annotation (Line(
-              points={{-64.4,54},{-72,54},{-72,0},{-80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(aorticArch1.cIn, ascendingAorta.cOut) annotation (Line(
-              points={{-62.4,56},{-67.6,56},{-67.6,54}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(aorticArch1.cOut, brachiocephalic.cIn) annotation (Line(
-              points={{-65.6,56},{-62,56},{-62,62},{-63.6,62}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(aorticArch1.cOut, leftCommonCarotid1.cIn) annotation (
-              Line(
-              points={{-65.6,56},{-56,56},{-56,68},{-51.6,68}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(aorticArch1.cOut, aorticArch2.cIn) annotation (Line(
-              points={{-65.6,56},{-60,56},{-60,54.4},{-58,54.4}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(aorticArch1.cOut, leftSubclavian1.cIn) annotation (Line(
-              points={{-65.6,56},{-60,56},{-60,62},{-52.4,62}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightAnteriorTibial3.cOut, cOut) annotation (Line(
-              points={{-72.4,0},{-82,0},{-82,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightPeroneal2.cOut, cOut) annotation (Line(
-              points={{-70.4,-4},{-78,-4},{-78,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightPosteriorTibial2.cOut, cOut) annotation (Line(
-              points={{-64.4,-2},{-78,-2},{-78,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightProfundis.cOut, cOut) annotation (Line(
-              points={{-62.4,20},{-74,20},{-74,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightInternalIlliac.cOut, cOut) annotation (Line(
-              points={{-62.4,26},{-74,26},{-74,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftPeroneal2.cOut, cOut) annotation (Line(
-              points={{-54.4,-6},{-74,-6},{-74,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftAnteriorTibial3.cOut, cOut) annotation (Line(
-              points={{-48.4,-6},{-70,-6},{-70,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftPosteriorTibial2.cOut, cOut) annotation (Line(points=
-                  {{-56.4,4},{-72,4},{-72,0},{80,0}}, smooth=Smooth.None));
-          connect(leftProfundis.cOut, cOut) annotation (Line(
-              points={{-52.4,20},{-70,20},{-70,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftInternalIlliac.cOut, cOut) annotation (Line(
-              points={{-52.4,26},{-70,26},{-70,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(inferiorMesenteric.cOut, cOut) annotation (Line(
-              points={{-56.4,28},{-72,28},{-72,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(superiorMesenteric.cOut, cOut) annotation (Line(
-              points={{-60.4,38},{-74,38},{-74,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(gastric2.cOut, cOut) annotation (Line(
-              points={{-60.4,40},{-74,40},{-74,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(renal.cOut, cOut) annotation (Line(
-              points={{-60.4,42},{-74,42},{-74,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(hepatic.cOut, cOut) annotation (Line(
-              points={{-64.4,44},{-76,44},{-76,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(splenic.cOut, cOut) annotation (Line(
-              points={{-64.4,46},{-74,46},{-74,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(gastric1.cOut, cOut) annotation (Line(
-              points={{-64.4,48},{-76,48},{-76,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightUlnar3.cOut, cOut) annotation (Line(
-              points={{-88.4,30},{-90,30},{-90,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightInterossea.cOut, cOut) annotation (Line(
-              points={{-90.4,34},{80,34},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightRadial2.cOut, cOut) annotation (Line(
-              points={{-94.4,36},{-96,36},{-96,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightInferiorUlnarCollateral.cOut, cOut) annotation (Line(
-              points={{-92.4,42},{80,42},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightSuperiorUlnarCollateral.cOut, cOut) annotation (Line(
-              points={{-92.4,46},{80,46},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightProfundaBrachi.cOut, cOut) annotation (Line(
-              points={{-92.4,50},{80,50},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightThoracoacrominal.cOut, cOut) annotation (Line(
-              points={{-90.4,56},{80,56},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightCircumflexScapular.cOut, cOut) annotation (Line(
-              points={{-90.4,58},{80,58},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightSubscapular.cOut, cOut) annotation (Line(
-              points={{-90.4,60},{80,60},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightCostocervical.cOut, cOut) annotation (Line(
-              points={{-82.4,60},{-86,60},{-86,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightThyrocervical.cOut, cOut) annotation (Line(points={{
-                  -82.4,62},{-86,62},{-86,0},{80,0}}, smooth=Smooth.None));
-          connect(rightSuprascapular.cOut, cOut) annotation (Line(
-              points={{-82.4,64},{-86,64},{-86,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftUlnar3.cOut, cOut) annotation (Line(
-              points={{-30.4,34},{-56,34},{-56,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftInterossea.cOut, cOut) annotation (Line(
-              points={{-32.4,38},{-58,38},{-58,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftRadial2.cOut, cOut) annotation (Line(
-              points={{-38.4,38},{-60,38},{-60,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftInferiorUlnarCollateral.cOut, cOut) annotation (Line(
-              points={{-34.4,44},{-60,44},{-60,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftSuperiorUlnarCollateral.cOut, cOut) annotation (Line(
-              points={{-34.4,48},{-60,48},{-60,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftProfundaBrachi.cOut, cOut) annotation (Line(
-              points={{-34.4,52},{-60,52},{-60,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftCircumflexScapular.cOut, cOut) annotation (Line(
-              points={{-34.4,58},{-58,58},{-58,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftThoracoacrominal.cOut, cOut) annotation (Line(
-              points={{-34.4,60},{-60,60},{-60,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftSubscapular.cOut, cOut) annotation (Line(
-              points={{-34.4,62},{-60,62},{-60,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftCostocervical.cOut, cOut) annotation (Line(
-              points={{-38.4,66},{-62,66},{-62,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftSuprascapular.cOut, cOut) annotation (Line(
-              points={{-38.4,68},{-60,68},{-60,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftThyrocervical.cOut, cOut) annotation (Line(
-              points={{-38.4,70},{-62,70},{-62,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(righInternalMammary.cOut, cOut) annotation (Line(points={
-                  {-76.4,56},{-82,56},{-82,6},{-86,6},{-86,0},{80,0}},
-                smooth=Smooth.None));
-          connect(rightVertebral.cOut, cOut) annotation (Line(
-              points={{-76.4,60},{-82,60},{-82,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftVertebral.cOut, cOut) annotation (Line(points={{-44.4,
-                  58},{-64,58},{-64,12},{-82,12},{-82,6},{-86,6},{-86,0},{
-                  80,0}}, smooth=Smooth.None));
-          connect(leftInternalMammary.cOut, cOut) annotation (Line(points={
-                  {-44.4,60},{-64,60},{-64,10},{-82,10},{-82,6},{-86,6},{-86,
-                  0},{80,0}}, smooth=Smooth.None));
-          connect(rightSuperiorThyroid.cOut, cOut) annotation (Line(
-              points={{-66.4,74},{-78,74},{-78,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightOpthalmic.cOut, cOut) annotation (Line(
-              points={{-72.4,74},{-82,74},{-82,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightCerebral.cOut, cOut) annotation (Line(
-              points={{-72.4,76},{-82,76},{-82,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightMiddleCerebral.cOut, cOut) annotation (Line(
-              points={{-72.4,78},{-82,78},{-82,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightFacial.cOut, cOut) annotation (Line(
-              points={{-66.4,80},{-78,80},{-78,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightLingual.cOut, cOut) annotation (Line(
-              points={{-66.4,82},{-78,82},{-78,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightMaxilliary.cOut, cOut) annotation (Line(
-              points={{-66.4,88},{-78,88},{-78,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(rightSuperficialTemporal.cOut, cOut) annotation (Line(
-              points={{-64.4,90},{-78,90},{-78,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftSuperiorThyroid.cOut, cOut) annotation (Line(
-              points={{-50.4,74},{-70,74},{-70,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftCerebral.cOut, cOut) annotation (Line(
-              points={{-56.4,76},{-74,76},{-74,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftMiddleCerebral.cOut, cOut) annotation (Line(
-              points={{-56.4,74},{-74,74},{-74,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftOpthalmic.cOut, cOut) annotation (Line(
-              points={{-56.4,78},{-74,78},{-74,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftLingual.cOut, cOut) annotation (Line(
-              points={{-50.4,80},{-70,80},{-70,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftFacial.cOut, cOut) annotation (Line(
-              points={{-50.4,82},{-70,82},{-70,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftMaxilliary.cOut, cOut) annotation (Line(
-              points={{-50.4,88},{-70,88},{-70,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-          connect(leftSuperficialTemporal.cOut, cOut) annotation (Line(
-              points={{-48.4,90},{-70,90},{-70,0},{80,0}},
-              color={0,0,0},
-              smooth=Smooth.None));
-
-          annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                  extent={{-100,-100},{100,100}}), graphics), Icon(graphics=
-                 {Text(       extent={{-62,44},{46,24}},
-                  lineColor={0,128,0},
-                  lineThickness=1,
-                  fillColor={255,0,0},
-                  fillPattern=FillPattern.Solid,
-                  textStyle={TextStyle.Bold},
-                  textString="Derived Tree")}));
-        end ComplexTree_Derived;
       end SystemicArteries;
 
       package ECMO "ECMO device and its components"
-        model ECMO "ECMO circuit including cannulas"
-          extends Cardiovascular.Icons.ECMO;
-          extends Auxiliary.BlockKinds.Port;
-          import Cardiovascular.Model.Complex.Components.Auxiliary.RLC.Tubes.*;
-          import Cardiovascular.Model.Complex.Environment.*;
-          import Cardiovascular.Types.*;
-          import Physiolibrary.Hydraulic.Components.IdealValve;
-          import Physiolibrary.Types.*;
-
-          outer Environment.ComplexEnvironment settings
-            "Everything is out there";
-
-          parameter Boolean isEnabled=true "Whether ECMO is enabled";
-          parameter Cardiovascular.Types.PulseShape pulseShapeRef=PulseShape.pulseless
-            "Reference pulse shape (or non-pulsatile)";
-          parameter VolumeFlowRate qMeanRef=1 "Reference mean flow";
-          parameter Time pulseStartTime=settings.supports.ECMO_pulseStartTime
-            "Time delay behind the start of cardiac cycle";
-
-          input Time pulseDuration=cycleDuration
-            "Duration of pulse if using pulsatile ECMO";
-          input Time cycleDuration "Duration of cardiac cycle";
-
-          VolumeFlowRate qRef "Reference flow wave";
-          Time t(start=-pulseStartTime)
-            "Time with respect to the cardiac cycle, offset included";
-
-        protected
-          parameter Boolean _isEnabled=isEnabled and qMeanRef > 0
-            "Whether the ECMO is really enabled - setting mean flow to zero while having ECMO connected is not desired as in reality";
-
-          VolumeFlowRate qPeak "Peak flow in the parabolic pulse";
-          Time tPeak=pulseDuration/2 "Time of peak of the parabolic pulse";
-          Real scale "Parabola scaling coefficient";
-
-        public
-          Pump ecmoPump(qRef=qRef) if _isEnabled annotation (Placement(
-                transformation(extent={{-44,-16},{-8,16}})));
-          Oxygenator ecmoOxygenator(
-            fiberCount=80000,
-            fiberLength=0.15,
-            fiberDiameter(displayUnit="mm") = 0.0002,
-            fiberThickness(displayUnit="mm") = 5e-05) if _isEnabled
-            annotation (Placement(transformation(extent={{6,-20},{50,22}})));
-          TubeR inflowTube(l=0.5, r=0.005) if _isEnabled annotation (
-              Placement(transformation(
-                extent={{-20.0263,-9.02613},{20.0263,9.02613}},
-                rotation=-60,
-                origin={-47.83,22.8302})));
-          TubeR middleTube(l=0.2, r=0.005) if _isEnabled annotation (
-              Placement(transformation(extent={{-10,-10},{42,12}})));
-          TubeR outflowTube(l=0.5, r=0.005) if _isEnabled annotation (
-              Placement(transformation(
-                extent={{-12.6602,-11.7321},{12.6602,11.7321}},
-                rotation=60,
-                origin={56.1699,28.8301})));
-          IdealValve vInflow(_Goff=0, Pknee=0) if _isEnabled annotation (
-              Placement(transformation(
-                extent={{-6.59806,-8.23202},{6.59806,8.23202}},
-                rotation=60,
-                origin={-73.8301,21.8301})));
-          IdealValve vOutflow(_Goff=0, Pknee=0) if _isEnabled annotation (
-              Placement(transformation(
-                extent={{-5.63393,-8.09807},{5.63393,8.09807}},
-                rotation=-60,
-                origin={78.1699,18.8301})));
-          TubeR venousCannula(l=settings.supports.ECMO_cannulaLength, r=
-                settings.supports.ECMO_cannulaInnerDiameter/2) if
-            _isEnabled annotation (Placement(transformation(
-                extent={{-6.23204,-6.86599},{6.23204,6.86599}},
-                rotation=60,
-                origin={-65.1699,35.1699})));
-          TubeR arterialCannula(l=settings.supports.ECMO_cannulaLength, r=
-                settings.supports.ECMO_cannulaInnerDiameter/2) if
-            _isEnabled annotation (Placement(transformation(
-                extent={{-6.99997,-8.4641},{6.99997,8.4641}},
-                rotation=-60,
-                origin={68.8301,30.1699})));
-
-        equation
-          if pulseShapeRef == PulseShape.pulseless then
-            qRef = qMeanRef;
-          elseif pulseShapeRef == PulseShape.square then
-            qRef = if t >= 0 and t <= pulseDuration then qMeanRef*
-              cycleDuration/pulseDuration else 0;
-          elseif pulseShapeRef == PulseShape.parabolic then
-            qRef = max(0, qPeak - ((t - tPeak)^2*scale));
-          else
-            qRef = 0;
-          end if;
-
-          scale*tPeak^2 = qPeak;
-          2*(qPeak*tPeak - scale*tPeak^3/3)/cycleDuration = qMeanRef;
-
-          if not _isEnabled then
-            cIn.q = -cOut.q;
-            cIn.q = 0;
-          end if;
-
-          der(t) = 1;
-          when t >= cycleDuration then
-            reinit(t, t - cycleDuration);
-          end when;
-
-          connect(cOut, vOutflow.q_out) annotation (Line(
-              points={{80,0},{68,0},{68,6},{68,10},{80,10},{80,14},{80,
-                  13.951},{80.9869,13.951}},
-              color={255,0,0},
-              smooth=Smooth.Bezier,
-              thickness=1));
-          connect(cIn, vInflow.q_in) annotation (Line(
-              points={{-80,0},{-66,0},{-66,10},{-77.1291,10},{-77.1291,
-                  16.116}},
-              color={127,5,60},
-              smooth=Smooth.Bezier,
-              thickness=1));
-          connect(inflowTube.cOut, ecmoPump.cIn) annotation (Line(
-              points={{-39.8195,8.95557},{-46,8.95557},{-46,20},{-46,0},{-40.4,
-                  0}},
-              color={127,5,60},
-              smooth=Smooth.Bezier,
-              thickness=1));
-          connect(middleTube.cIn, ecmoPump.cOut) annotation (Line(
-              points={{-4.8,1},{-10,1},{-10,0},{-11.6,0}},
-              color={127,5,60},
-              smooth=Smooth.Bezier,
-              thickness=1));
-          connect(middleTube.cOut, ecmoOxygenator.cIn) annotation (Line(
-              points={{36.8,1},{36.8,1},{10.4,1}},
-              color={127,5,60},
-              smooth=Smooth.Bezier,
-              thickness=1));
-          connect(ecmoOxygenator.cOut, outflowTube.cIn) annotation (Line(
-              points={{45.6,1},{45.6,2},{46,2},{46,2},{46,2},{52,2},{52,
-                  20.0589},{51.1058,20.0589}},
-              color={255,0,0},
-              smooth=Smooth.Bezier,
-              thickness=1));
-          connect(vInflow.q_out, venousCannula.cIn) annotation (Line(
-              points={{-70.5311,27.5442},{-67.6627,27.5442},{-67.6627,
-                  30.8522}},
-              color={127,5,60},
-              thickness=1,
-              smooth=Smooth.Bezier));
-          connect(inflowTube.cIn, venousCannula.cOut) annotation (Line(
-              points={{-55.8405,36.7048},{-55.8405,39.4876},{-62.6771,
-                  39.4876}},
-              color={127,5,60},
-              smooth=Smooth.Bezier,
-              thickness=1));
-          connect(outflowTube.cOut, arterialCannula.cIn) annotation (Line(
-              points={{61.234,37.6013},{66,37.6013},{66,34},{66.0301,34},{
-                  66.0301,35.0196}},
-              color={255,0,0},
-              smooth=Smooth.Bezier,
-              thickness=1));
-          connect(vOutflow.q_in, arterialCannula.cOut) annotation (Line(
-              points={{75.3529,23.7092},{72,23.7092},{72,25.3202},{71.6301,
-                  25.3202}},
-              color={255,0,0},
-              thickness=1,
-              smooth=Smooth.Bezier));
-
-          annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                  extent={{-100,-100},{100,100}}), graphics), Icon(
-                coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-                    {100,100}})));
-        end ECMO;
 
         model Pump
           "ECMO pump with pressure control according to flow feedback and reference flow"
           extends Cardiovascular.Icons.Screw;
-          extends Auxiliary.BlockKinds.Port;
+          extends Physiolibrary.Fluid.Interfaces.OnePort;
           import Cardiovascular.Model.Complex.Environment.*;
           import Physiolibrary.Types.*;
 
@@ -5544,9 +3463,9 @@ package Complex
           Pressure p "Pressure exerted by the pump";
           parameter VolumeFlowRate qRef2;
         equation
-          cIn.q = -cOut.q;
+
           dp = -p;
-          der(p) = (qRef2 - cIn.q)*settings.constants.ecmoPumpPressureAdaptationRate;
+          der(p) =(qRef2 - volumeFlowRate)*settings.constants.ecmoPumpPressureAdaptationRate;
 
           annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
                   extent={{-100,-100},{100,100}}), graphics), Icon(
@@ -5571,138 +3490,139 @@ package Complex
           parameter Cardiovascular.Types.Length fiberThickness
             "Fiber thickness";
 
-          Elements.R resistor(R=8*mu*fiberLength/pi/(0.5*fiberDiameter)^4/
-                fiberCount) annotation (Placement(transformation(extent={{-10,
-                    -10},{10,10}})));
+          Auxiliary.RLC.Elements.R_ resistor(R=8*mu*fiberLength/pi/(0.5*fiberDiameter)
+                ^4/fiberCount)
+            annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
 
         equation
-          connect(cIn, resistor.cIn) annotation (Line(
-              points={{-80,0},{-8,0}},
-              color={0,0,255},
-              smooth=Smooth.None));
-          connect(cOut, resistor.cOut) annotation (Line(
-              points={{80,0},{8,0}},
-              color={0,0,255},
-              smooth=Smooth.None));
 
-          annotation (Diagram(graphics), Icon(coordinateSystem(
+          connect(cIn, resistor.q_in) annotation (Line(
+              points={{-80,0},{-10,0}},
+              color={127,0,0},
+              thickness=0.5));
+          connect(resistor.q_out, cOut) annotation (Line(
+              points={{10,0},{80,0}},
+              color={127,0,0},
+              thickness=0.5));
+          annotation (                   Icon(coordinateSystem(
                   preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
         end Oxygenator;
 
         model ECMO_bare "ECMO circuit including cannulas"
-          extends Cardiovascular.Icons.ECMO;
-          extends Auxiliary.BlockKinds.Port;
-          import Cardiovascular.Model.Complex.Components.Auxiliary.RLC.Tubes.*;
-          import Cardiovascular.Model.Complex.Environment.*;
-          import Cardiovascular.Types.*;
-          import Physiolibrary.Hydraulic.Components.IdealValve;
-          import Physiolibrary.Types.*;
+        extends Cardiovascular.Icons.ECMO;
+        extends Auxiliary.BlockKinds.Port;
+        import Cardiovascular.Model.Complex.Components.Auxiliary.RLC.Tubes.*;
+        import Cardiovascular.Model.Complex.Environment.*;
+        import Cardiovascular.Types.*;
+        import Physiolibrary.Fluid.Components.IdealValve;
+        import Physiolibrary.Types.*;
 
-          outer Environment.ComplexEnvironment settings
-            "Everything is out there";
+        outer Environment.ComplexEnvironment settings
+          "Everything is out there";
 
-          parameter Boolean isEnabled=true "Whether ECMO is enabled";
-          parameter Cardiovascular.Types.PulseShape pulseShapeRef=PulseShape.pulseless
-            "Reference pulse shape (or non-pulsatile)";
-          parameter VolumeFlowRate qMeanRef=1 "Reference mean flow";
-          parameter Time pulseStartTime=settings.supports.ECMO_pulseStartTime
-            "Time delay behind the start of cardiac cycle";
+        parameter Boolean isEnabled=true "Whether ECMO is enabled";
+        parameter Cardiovascular.Types.PulseShape pulseShapeRef=PulseShape.pulseless
+          "Reference pulse shape (or non-pulsatile)";
+        parameter VolumeFlowRate qMeanRef=1 "Reference mean flow";
+        parameter Time pulseStartTime=settings.supports.ECMO_pulseStartTime
+          "Time delay behind the start of cardiac cycle";
 
-          input Time pulseDuration=cycleDuration
-            "Duration of pulse if using pulsatile ECMO";
-          input Time cycleDuration "Duration of cardiac cycle";
+        input Time pulseDuration=cycleDuration
+          "Duration of pulse if using pulsatile ECMO";
+        input Time cycleDuration "Duration of cardiac cycle";
 
-          VolumeFlowRate qRef "Reference flow wave";
-          Time t(start=-pulseStartTime)
-            "Time with respect to the cardiac cycle, offset included";
+        VolumeFlowRate qRef "Reference flow wave";
+        Time t(start=-pulseStartTime)
+          "Time with respect to the cardiac cycle, offset included";
 
         protected
-          parameter Boolean _isEnabled=isEnabled and qMeanRef > 0
-            "Whether the ECMO is really enabled - setting mean flow to zero while having ECMO connected is not desired as in reality";
+        parameter Boolean _isEnabled=isEnabled and qMeanRef > 0
+          "Whether the ECMO is really enabled - setting mean flow to zero while having ECMO connected is not desired as in reality";
 
-          VolumeFlowRate qPeak "Peak flow in the parabolic pulse";
-          Time tPeak=pulseDuration/2 "Time of peak of the parabolic pulse";
-          Real scale "Parabola scaling coefficient";
+        VolumeFlowRate qPeak "Peak flow in the parabolic pulse";
+        Time tPeak=pulseDuration/2 "Time of peak of the parabolic pulse";
+        Real scale "Parabola scaling coefficient";
 
         public
-          Pump ecmoPump(qRef=qRef) if _isEnabled annotation (Placement(
-                transformation(extent={{-44,-16},{-8,16}})));
-          Oxygenator ecmoOxygenator(
-            fiberCount=80000,
-            fiberLength=0.15,
-            fiberDiameter(displayUnit="mm") = 0.0002,
-            fiberThickness(displayUnit="mm") = 5e-05) if _isEnabled
-            annotation (Placement(transformation(extent={{6,-20},{50,22}})));
-          TubeR inflowTube(l=0.5, r=0.005) if _isEnabled annotation (
-              Placement(transformation(
-                extent={{-20.0263,-9.02613},{20.0263,9.02613}},
-                rotation=-60,
-                origin={-47.83,22.8302})));
-          TubeR middleTube(l=0.2, r=0.005) if _isEnabled annotation (
-              Placement(transformation(extent={{-10,-10},{42,12}})));
-          TubeR outflowTube(l=0.5, r=0.005) if _isEnabled annotation (
-              Placement(transformation(
-                extent={{-12.6602,-11.7321},{12.6602,11.7321}},
-                rotation=60,
-                origin={56.1699,28.8301})));
+        Pump ecmoPump(qRef=qRef, qRef2=0) if
+                                    _isEnabled annotation (Placement(
+              transformation(extent={{-44,-16},{-8,16}})));
+        Oxygenator ecmoOxygenator(
+          fiberCount=80000,
+          fiberLength=0.15,
+          fiberDiameter(displayUnit="mm") = 0.0002,
+          fiberThickness(displayUnit="mm") = 5e-05) if _isEnabled
+          annotation (Placement(transformation(extent={{6,-20},{50,22}})));
+        TubeR inflowTube(l=0.5, r=0.005) if _isEnabled annotation (
+            Placement(transformation(
+              extent={{-20.0263,-9.02613},{20.0263,9.02613}},
+              rotation=-60,
+              origin={-47.83,22.8302})));
+        TubeR middleTube(l=0.2, r=0.005) if _isEnabled annotation (
+            Placement(transformation(extent={{-10,-10},{42,12}})));
+        TubeR outflowTube(l=0.5, r=0.005) if _isEnabled annotation (
+            Placement(transformation(
+              extent={{-12.6602,-11.7321},{12.6602,11.7321}},
+              rotation=60,
+              origin={56.1699,28.8301})));
 
         equation
-          if pulseShapeRef == PulseShape.pulseless then
-            qRef = qMeanRef;
-          elseif pulseShapeRef == PulseShape.square then
-            qRef = if t >= 0 and t <= pulseDuration then qMeanRef*
-              cycleDuration/pulseDuration else 0;
-          elseif pulseShapeRef == PulseShape.parabolic then
-            qRef = max(0, qPeak - ((t - tPeak)^2*scale));
-          else
-            qRef = 0;
-          end if;
+        if pulseShapeRef == PulseShape.pulseless then
+          qRef = qMeanRef;
+        elseif pulseShapeRef == PulseShape.square then
+          qRef = if t >= 0 and t <= pulseDuration then qMeanRef*
+            cycleDuration/pulseDuration else 0;
+        elseif pulseShapeRef == PulseShape.parabolic then
+          qRef = max(0, qPeak - ((t - tPeak)^2*scale));
+        else
+          qRef = 0;
+        end if;
 
-          scale*tPeak^2 = qPeak;
-          2*(qPeak*tPeak - scale*tPeak^3/3)/cycleDuration = qMeanRef;
+        scale*tPeak^2 = qPeak;
+        2*(qPeak*tPeak - scale*tPeak^3/3)/cycleDuration = qMeanRef;
 
-          if not _isEnabled then
-            cIn.q = -cOut.q;
-            cIn.q = 0;
-          end if;
+        if not _isEnabled then
+          cIn.m_flow = -cOut.m_flow;
+          cIn.m_flow = 0;
+        end if;
 
-          der(t) = 1;
-          when t >= cycleDuration then
-            reinit(t, t - cycleDuration);
-          end when;
+        der(t) = 1;
+        when t >= cycleDuration then
+          reinit(t, t - cycleDuration);
+        end when;
 
-          connect(inflowTube.cOut, ecmoPump.cIn) annotation (Line(
-              points={{-39.8195,8.95557},{-46,8.95557},{-46,20},{-46,0},{
-                  -40.4,0}},
-              color={127,5,60},
-              smooth=Smooth.Bezier,
-              thickness=1));
-          connect(middleTube.cIn, ecmoPump.cOut) annotation (Line(
-              points={{-4.8,1},{-10,1},{-10,0},{-11.6,0}},
-              color={127,5,60},
-              smooth=Smooth.Bezier,
-              thickness=1));
-          connect(middleTube.cOut, ecmoOxygenator.cIn) annotation (Line(
-              points={{36.8,1},{36.8,1},{10.4,1}},
-              color={127,5,60},
-              smooth=Smooth.Bezier,
-              thickness=1));
-          connect(ecmoOxygenator.cOut, outflowTube.cIn) annotation (Line(
-              points={{45.6,1},{45.6,2},{46,2},{46,2},{46,2},{52,2},{52,
-                  20.0589},{51.1058,20.0589}},
-              color={255,0,0},
-              smooth=Smooth.Bezier,
-              thickness=1));
+        connect(inflowTube.cOut, ecmoPump.q_in) annotation (Line(
+            points={{-39.8195,8.95557},{-46,8.95557},{-46,20},{-46,0},{-44,0}},
+            color={127,5,60},
+            smooth=Smooth.Bezier,
+            thickness=1));
+        connect(middleTube.cIn, ecmoPump.q_out) annotation (Line(
+            points={{-4.8,1},{-10,1},{-10,0},{-8,0}},
+            color={127,5,60},
+            smooth=Smooth.Bezier,
+            thickness=1));
+        connect(middleTube.cOut, ecmoOxygenator.cIn) annotation (Line(
+            points={{36.8,1},{36.8,1},{10.4,1}},
+            color={127,5,60},
+            smooth=Smooth.Bezier,
+            thickness=1));
+        connect(ecmoOxygenator.cOut, outflowTube.cIn) annotation (Line(
+            points={{45.6,1},{45.6,2},{46,2},{46,2},{46,2},{52,2},{52,20.0589},
+                  {51.1058,20.0589}},
+            color={255,0,0},
+            smooth=Smooth.Bezier,
+            thickness=1));
 
-          connect(inflowTube.cIn, cIn) annotation (Line(points={{-55.8405,
-                  36.7048},{-55.8405,18.3524},{-80,18.3524},{-80,0}}, color=
-                 {127,0,0}));
-          connect(outflowTube.cOut, cOut) annotation (Line(points={{61.234,
-                  37.6013},{61.234,19.8007},{80,19.8007},{80,0}}, color={
-                  229,133,64}));
-          annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-                  extent={{-100,-100},{100,100}})), Icon(coordinateSystem(
-                  preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+        connect(inflowTube.cIn, cIn) annotation (Line(points={{-55.8405,36.7048},
+                  {-55.8405,18.3524},{-80,18.3524},{-80,0}},        color=
+               {127,0,0}));
+        connect(outflowTube.cOut, cOut) annotation (Line(points={{61.234,
+                  37.6013},{61.234,19.8007},{80,19.8007},{80,0}},
+                                                                color={
+                229,133,64}));
+        annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
+                extent={{-100,-100},{100,100}})), Icon(coordinateSystem(
+                preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
         end ECMO_bare;
       end ECMO;
     end Main;
@@ -5963,13 +3883,15 @@ package Complex
             rotation=180,
             origin={-8,19})));
 
+      parameter Density density=1000;
+
       Averager avg_SV_pInner(
         redeclare type T = Pressure,
         signal=SV.pInner,
         control=settings.stepCycle);
       Averager avg_SA_q(
         redeclare type T = VolumeFlowRate,
-        signal=SA.cIn.q,
+        signal=SA.cIn.m_flow/density,
         control=settings.stepCycle);
 
     //     input Volume totalVolume;
@@ -6013,8 +3935,8 @@ package Complex
           /settings.condition.aortalFlowRef*settings.constants.systemicResistanceScale);
       end when;
 
-      connect(SC.cOut, SV.cIn) annotation (Line(
-          points={{-32,19},{-32,19},{-46.1,19},{-46.1,10.5},{-47.1,10.5}},
+      connect(SC.q_out, SV.cIn) annotation (Line(
+          points={{-38,19},{-38,19},{-46.1,19},{-46.1,10.5},{-47.1,10.5}},
           color={180,56,148},
           thickness=1,
           smooth=Smooth.Bezier));
@@ -6023,14 +3945,14 @@ package Complex
           color={0,0,127},
           smooth=Smooth.Bezier,
           thickness=1));
-      connect(SC.cIn, SA.cOut) annotation (Line(
-          points={{16,19},{16,22},{40.7318,22},{40.7318,14.8013}},
+      connect(SC.q_in, SA.cOut) annotation (Line(
+          points={{22,19},{22,22},{40.7318,22},{40.7318,14.8013}},
           color={255,0,0},
           smooth=Smooth.Bezier,
           thickness=1));
       connect(SA.pInner, SC.pIn) annotation (Line(
-          points={{60.851,12.2814},{60.851,12.2814},{60.851,14},{3.7,14},{
-              3.7,0.19}},
+          points={{60.851,12.2814},{60.851,12.2814},{60.851,14},{3.7,14},{3.7,
+              0.19}},
           color={0,0,127},
           smooth=Smooth.Bezier,
           thickness=1));
@@ -6079,6 +4001,9 @@ package Complex
       outer Environment.ComplexEnvironment settings
         "Everything is out there...";
 
+
+      parameter Density density=1000;
+
       Main.Vessels.AdaptableArteries PA(
         pRef_init=settings.initialization.PA_pRef,
         ARef_init=settings.initialization.PA_ARef,
@@ -6102,9 +4027,9 @@ package Complex
         annotation (Placement(transformation(extent={{-28,-16},{6,14}})));
 
     protected
-        Averager avg_PC_q(
+      Averager avg_PC_q(
         redeclare type T = VolumeFlowRate,
-        signal=PC.cIn.q,
+        signal=PC.q_in.m_flow/density,
         control=settings.stepCycle);
 
         Averager avg_PC_dp(
@@ -6114,11 +4039,11 @@ package Complex
 
       Averager avg_PA_q(
         redeclare type T = VolumeFlowRate,
-        signal=PA.cIn.q,
+        signal=PA.cIn.m_flow/density,
         control=settings.stepCycle);
       Averager avg_PV_q(
         redeclare type T = VolumeFlowRate,
-        signal=PV.cIn.q,
+        signal=PV.cIn.m_flow/density,
         control=settings.stepCycle);
     equation
 
@@ -6129,13 +4054,13 @@ package Complex
         reinit(PC.R_R, settings.condition.pulmonaryPressureDropRef/avg_PC_q.average);
       end when;
 
-      connect(PA.cOut, PC.cIn) annotation (Line(
-          points={{-53.5696,0.6412},{-53.5696,-1},{-24.6,-1}},
+      connect(PA.cOut, PC.q_in) annotation (Line(
+          points={{-53.5696,0.6412},{-53.5696,-1},{-28,-1}},
           color={102,6,44},
           smooth=Smooth.Bezier,
           thickness=1));
-      connect(PC.cOut, PV.cIn) annotation (Line(
-          points={{2.6,-1},{45.5557,-1},{45.5557,1.6095}},
+      connect(PC.q_out, PV.cIn) annotation (Line(
+          points={{6,-1},{45.5557,-1},{45.5557,1.6095}},
           color={255,0,0},
           smooth=Smooth.Bezier,
           thickness=1));
@@ -6180,65 +4105,6 @@ package Complex
     end HeartCannulated;
   end Components;
 
-  model Cardio
-    extends Cardiovascular.System(
-      redeclare Components.Pulmonary pulmonaryCirculation,
-      redeclare Components.Heart heart,
-      redeclare Components.Systemic systemicCirculation(redeclare
-          Components.Main.SystemicArteries.Original_CircAdapt SA));
-      extends Cardiovascular.Icons.Runnable_System;
-    import Cardiovascular.Model.Complex.Components.Auxiliary.Analyzers.*;
-    import Cardiovascular.Constants.*;
-    import Cardiovascular.Types.*;
-    import Physiolibrary.Hydraulic.Sources.*;
-    import Physiolibrary.Types.*;
-
-    inner Environment.ComplexEnvironment settings(
-      redeclare Environment.Supports.No supports,
-      redeclare Environment.Conditions.Rest_MinimalAdapt condition,
-      redeclare Environment.Initialization.PhysiologicalAdapted
-        initialization,
-      redeclare Environment.ModelConstants.Standard constants)
-      annotation (Placement(transformation(extent={{-22,26},{-6,40}})));
-
-  // protected
-  //   Averager avg_V(
-  //     redeclare type T = Volume,
-  //     signal = V,
-  //     control = settings. stepCycle);
-
-    Components.Main.ECMO.ECMO ecmo(
-      cycleDuration=settings.supports.ECMO_cycleDuration,
-      pulseDuration=settings.supports.ECMO_pulseDuration,
-      pulseShapeRef=settings.supports.ECMO_pulseShapeRef,
-      qMeanRef=settings.supports.ECMO_qMeanRef,
-      isEnabled=settings.supports.ECMO_isEnabled)
-      annotation (Placement(transformation(extent={{-12,-72},{12,-48}})));
-  equation
-    connect(systemicCirculation.q_out, heart.rightHeartInflow) annotation (
-        Line(
-        points={{-10,-26},{-14,-26},{-14,-1.6},{-9.84,-1.6}},
-        color={0,0,0},
-        thickness=1));
-    connect(systemicCirculation.q_out, ecmo.cIn) annotation (Line(
-        points={{-10,-26},{-14,-26},{-14,-60},{-9.6,-60}},
-        color={0,0,0},
-        thickness=1));
-    connect(systemicCirculation.AortaCannulla, ecmo.cOut) annotation (Line(
-        points={{7,-35},{14,-35},{14,-60},{9.6,-60}},
-        color={0,0,0},
-        thickness=1));
-    annotation (
-      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-20,-80},{
-              20,40}})),
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-20,-80},
-              {20,40}})),
-      experiment(
-        StartTime=400,
-        StopTime=415,
-        Tolerance=1e-006,
-        __Dymola_Algorithm="Sdirk34hw"));
-  end Cardio;
   annotation (Documentation(info="<html>
 <p>Complex combined model, as presented in [1], made compatible with the simple models.</p>
 <p><br><span style=\"font-family: Times New Roman; font-size: 10pt;\"><a name=\"docs-internal-guid-c7f7882d-1492-9270-5abc-b09ff77c8742\">[</a><span style=\"background-color: #000000;\">1]	<a href=\"http://paperpile.com/b/74sbye/FfEpD\">Kaleck&yacute; K. Relationship of heart&rsquo;s pumping function and pressure-flow patterns in reduced arterial tree. Czech Technical Unversity; 2015.</a> Available at </span>https://dspace.cvut.cz/bitstream/handle/10467/61792/F3-DP-2015-Kalecky-Karel-Karel&percnt;20Kalecky&percnt;20-&percnt;20Relationship&percnt;20of&percnt;20Heart&percnt;27s&percnt;20Pumping&percnt;20Function&percnt;20and&percnt;20Pressure-Flow&percnt;20Patterns&percnt;20in&percnt;20Reduced&percnt;20Arterial&percnt;20Tree&percnt;20&percnt;282015&percnt;29.pdf</p>

@@ -18,9 +18,9 @@ package GlucoseInsulinPhysiolibrary
       parameter Real B=1430; //insulinProductionCoefficient in ml*mU/mg/hour
       Real insulinProductionCoefficient=B*0.001/3600; //in m3*U/kg/sec
       Physiolibrary.Types.MolarFlowRate insulinProduction;
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_b insulinOutflow annotation (Placement(
-            transformation(extent={{-362,-12},{-342,8}}), iconTransformation(extent=
-               {{72,46},{92,66}})));
+      Physiolibrary.Obsolete.ObsoleteChemical.Interfaces.ChemicalPort_b insulinOutflow
+        annotation (Placement(transformation(extent={{-362,-12},{-342,8}}),
+            iconTransformation(extent={{72,46},{92,66}})));
     equation
 
       glucoseMassConcentration = glucoseConcentration*glucoseMolarMass;
@@ -43,9 +43,9 @@ package GlucoseInsulinPhysiolibrary
 
     model GlucoseRenalExcretion
       extends Physiolibrary.Icons.Kidney;
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a glucoseInflowPort annotation (Placement(
-            transformation(extent={{-90,-4},{-70,16}}), iconTransformation(extent={{
-                8,-12},{32,12}})));
+      Physiolibrary.Obsolete.ObsoleteChemical.Interfaces.ChemicalPort_a
+        glucoseInflowPort annotation (Placement(transformation(extent={{-90,-4},
+                {-70,16}}), iconTransformation(extent={{8,-12},{32,12}})));
       parameter Physiolibrary.Types.VolumeFlowRate glomerularFlowRate = 120;//[ml/sec]; mu =7200 ml/min = 7200/60 = 120 [ml/sec]
       parameter Modelica.SIunits.MolarMass molarMass = 0.180156; //glucoseMolarMass = 0.180156 kg/mol;
       parameter Real theta=2.5; //theta = 2.5  Glucose threshod concentration in [mg/ml]
@@ -76,8 +76,8 @@ package GlucoseInsulinPhysiolibrary
     model GlucoseInsulinDependendUtilisation
     extends Physiolibrary.Icons.Cell;
 
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a glucoseInflow annotation (
-          Placement(transformation(extent={{-88,54},{-68,74}}),
+      Physiolibrary.Obsolete.ObsoleteChemical.Interfaces.ChemicalPort_a glucoseInflow
+        annotation (Placement(transformation(extent={{-88,54},{-68,74}}),
             iconTransformation(extent={{-8,-14},{12,6}})));
       Physiolibrary.Types.RealIO.ConcentrationInput insulinConcentration
         annotation (Placement(transformation(extent={{-98,-26},{-58,14}}),
@@ -171,71 +171,6 @@ package GlucoseInsulinPhysiolibrary
               textString="%name")}));
     end MassToMolarFlow;
 
-    model GlucoseInsulinDependendUtilisationOld
-    extends Physiolibrary.Icons.Cell;
-
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a glucoseInflow annotation (
-          Placement(transformation(extent={{-88,54},{-68,74}}),
-            iconTransformation(extent={{-8,-14},{12,6}})));
-      Physiolibrary.Types.RealIO.ConcentrationInput insulinConcentration
-        annotation (Placement(transformation(extent={{-98,-26},{-58,14}}),
-            iconTransformation(extent={{-112,-62},{-72,-22}})));
-      parameter Real Nu = 139000; //insulin receptor sensitivity parameter in [ml*ml/mU/hour]
-      Real insulinReceptorSensitivity = Nu * 1e-9/3600; // //insulin receptor sensitivity parameter in [m3*m3/U/sec]
-      Physiolibrary.Types.MolarFlowRate glucoseFlow;
-      Physiolibrary.Types.MassConcentration glucoseMassConcentration;
-      Physiolibrary.Types.MassFlowRate glucoseMassInflow;
-      constant Modelica.SIunits.MolarMass glucoseMolarMass = 0.180156; //glucoseMolarMass = 0.180156 kg/mol;
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut unlimitedSolutePumpOut(
-          useSoluteFlowInput=true)
-        annotation (Placement(transformation(extent={{-28,54},{-8,74}})));
-      MolarToMassConcentration molarToMassConcentration
-        annotation (Placement(transformation(extent={{-42,28},{-22,48}})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure
-        annotation (Placement(transformation(extent={{-56,54},{-36,74}})));
-      Modelica.Blocks.Math.Product product
-        annotation (Placement(transformation(extent={{-2,22},{18,42}})));
-      Modelica.Blocks.Sources.Constant const(k=139000/3600*1e-9)
-        annotation (Placement(transformation(extent={{0,-10},{20,10}})));
-      Modelica.Blocks.Math.Product product1
-        annotation (Placement(transformation(extent={{40,10},{60,30}})));
-      MassToMolarFlow massToMolarFlow
-        annotation (Placement(transformation(extent={{68,10},{88,30}})));
-    equation
-       glucoseMassConcentration = glucoseInflow.conc*glucoseMolarMass;
-       glucoseMassInflow=glucoseMassConcentration*insulinConcentration*insulinReceptorSensitivity;
-       glucoseInflow.q=glucoseMassInflow/glucoseMolarMass;
-
-      connect(glucoseInflow, unlimitedSolutePumpOut.q_in) annotation (Line(
-          points={{-78,64},{-28,64}},
-          color={107,45,134},
-          thickness=1));
-      connect(glucoseInflow, concentrationMeasure.q_in) annotation (Line(
-          points={{-78,64},{-46,64}},
-          color={107,45,134},
-          thickness=1));
-      connect(concentrationMeasure.concentration, molarToMassConcentration.concentration)
-        annotation (Line(points={{-46,56},{-46,38.2},{-41.6,38.2}}, color={0,0,127}));
-      connect(molarToMassConcentration.massConcentration, product.u1) annotation (
-          Line(points={{-21.7,38.3},{-12.85,38.3},{-12.85,38},{-4,38}}, color={0,0,127}));
-      connect(insulinConcentration, product.u2) annotation (Line(points={{-78,-6},{-50,
-              -6},{-50,-4},{-12,-4},{-12,26},{-4,26}}, color={0,0,127}));
-      connect(const.y, product1.u2)
-        annotation (Line(points={{21,0},{28,0},{28,14},{38,14}}, color={0,0,127}));
-      connect(product.y, product1.u1) annotation (Line(points={{19,32},{28,32},{28,26},
-              {38,26}}, color={0,0,127}));
-      connect(product1.y, massToMolarFlow.massflowrate) annotation (Line(points={{61,
-              20},{64,20},{64,20.2},{67.6,20.2}}, color={0,0,127}));
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={Text(
-              extent={{-280,-108},{286,-142}},
-              lineColor={28,108,200},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="%name"), Rectangle(extent={{-100,100},{98,-100}},
-                lineColor={28,108,200})}),
-                                     Diagram(coordinateSystem(preserveAspectRatio=false)));
-    end GlucoseInsulinDependendUtilisationOld;
-
     model MolarToMassFlow
     extends Modelica.Icons.RotationalSensor;
       Physiolibrary.Types.RealIO.MolarFlowRateInput molarFlow
@@ -259,8 +194,8 @@ package GlucoseInsulinPhysiolibrary
     model GlucoseIndependentDependendUtilisation
     extends Physiolibrary.Icons.Cell;
 
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a glucoseInflow annotation (
-          Placement(transformation(extent={{-88,54},{-68,74}}),
+      Physiolibrary.Obsolete.ObsoleteChemical.Interfaces.ChemicalPort_a glucoseInflow
+        annotation (Placement(transformation(extent={{-88,54},{-68,74}}),
             iconTransformation(extent={{-8,-14},{12,6}})));
       parameter Real Lambda = 2470; //clearance in [ml/hour]
       Physiolibrary.Types.VolumeFlowRate glucoseClearance = Lambda*1e-6/3600; // glucose clearance in SI [m3/sec]
@@ -286,11 +221,11 @@ package GlucoseInsulinPhysiolibrary
 
   package Models
     model Glucose_insulin_model
-      Physiolibrary.Chemical.Components.Substance insulin(useNormalizedVolume=false,
-          solute_start=0.851)
+      Physiolibrary.Obsolete.ObsoleteChemical.Components.Substance insulin(
+          useNormalizedVolume=false, solute_start=0.851)
         annotation (Placement(transformation(extent={{-22,-50},{-2,-30}})));
-      Physiolibrary.Chemical.Components.Substance glucose(useNormalizedVolume=false,
-          solute_start=0.0675248)
+      Physiolibrary.Obsolete.ObsoleteChemical.Components.Substance glucose(
+          useNormalizedVolume=false, solute_start=0.0675248)
         "1 mmol  = 180156mg; initial 12165 mg = 12165/180156 = 67.5248 mmol"
         annotation (Placement(transformation(extent={{-8,28},{12,48}})));
       Physiolibrary.Types.Constants.MolarFlowRateConst GlucoceInputFlowRate(k=0.0084/
@@ -298,13 +233,15 @@ package GlucoseInsulinPhysiolibrary
         annotation (Placement(transformation(extent={{-74,52},{-58,62}})));
       Physiolibrary.Types.Constants.VolumeConst ECF_Volume(k(displayUnit="ml")=
           0.015) annotation (Placement(transformation(extent={{-44,68},{-30,78}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePump glucoseInput(
+      Physiolibrary.Obsolete.ObsoleteChemical.Sources.UnlimitedSolutePump glucoseInput(
           useSoluteFlowInput=true)
         annotation (Placement(transformation(extent={{-46,28},{-26,48}})));
-      Physiolibrary.Chemical.Components.Clearance insulinDestructionRate(Clearance=
-           7600e-6/3600,        useSolutionFlowInput=false)
+      Physiolibrary.Obsolete.ObsoleteChemical.Components.Clearance
+        insulinDestructionRate(Clearance=7600e-6/3600, useSolutionFlowInput=
+            false)
         annotation (Placement(transformation(extent={{44,-50},{64,-30}})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure molarGlucoseConcentration
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.ConcentrationMeasure
+        molarGlucoseConcentration
         annotation (Placement(transformation(extent={{20,28},{38,48}})));
       Components.GlucoseRenalExcretion glucoseRenalExcretion annotation (
           Placement(transformation(
@@ -315,11 +252,13 @@ package GlucoseInsulinPhysiolibrary
         glucoseInsulinDependendUtilisation
         "Nu insulin receptor sesitivity [ml ml/mU/hour] - decrease in diabetes type 2"
         annotation (Placement(transformation(extent={{58,0},{78,20}})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure molarGlucoseConcentration1
-        annotation (Placement(transformation(extent={{-9,-10},{9,10}},
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.ConcentrationMeasure
+        molarGlucoseConcentration1 annotation (Placement(transformation(
+            extent={{-9,-10},{9,10}},
             rotation=180,
             origin={23,-40})));
-      Physiolibrary.Chemical.Components.Clearance insulinIndependentUtilisation(
+      Physiolibrary.Obsolete.ObsoleteChemical.Components.Clearance
+        insulinIndependentUtilisation(
         Clearance(displayUnit="m3/s") = 2470e-6/3600,
         K=1/0.180156,
         useSolutionFlowInput=false)
@@ -428,8 +367,9 @@ package GlucoseInsulinPhysiolibrary
       Components.GlucoseInsulinDependendUtilisation
         glucoseInsulinDependendUtilisation(Nu=139000)
         annotation (Placement(transformation(extent={{70,-6},{90,14}})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure molarGlucoseConcentration
-        annotation (Placement(transformation(extent={{-9,-10},{9,10}},
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.ConcentrationMeasure
+        molarGlucoseConcentration annotation (Placement(transformation(
+            extent={{-9,-10},{9,10}},
             rotation=180,
             origin={49,4})));
       Components.MolarToMassConcentration glucoseMassConcentration
@@ -440,16 +380,17 @@ package GlucoseInsulinPhysiolibrary
       Physiolibrary.Types.Constants.MassFlowRateConst glucoseInflow(k(
             displayUnit="kg/s") = 0.0064/3600)
         annotation (Placement(transformation(extent={{-108,20},{-92,32}})));
-      Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure1
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.MolarFlowMeasure
+        molarFlowMeasure1
         annotation (Placement(transformation(extent={{-8,-6},{12,14}})));
       Components.MassToMolarFlow massToMolarFlow
         annotation (Placement(transformation(extent={{-78,14},{-58,34}})));
-      Physiolibrary.Chemical.Components.Substance Glucose1(useNormalizedVolume=
-            false, solute_start=0.0675248)
+      Physiolibrary.Obsolete.ObsoleteChemical.Components.Substance Glucose1(
+          useNormalizedVolume=false, solute_start=0.0675248)
         "1 mmol  = 180156mg; initial 12165 mg = 12165/180156 = 67.5248 mmol"
         annotation (Placement(transformation(extent={{-44,-6},{-24,14}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump(
-          useSoluteFlowInput=true)
+      Physiolibrary.Obsolete.ObsoleteChemical.Sources.UnlimitedSolutePump
+        unlimitedSolutePump(useSoluteFlowInput=true)
         annotation (Placement(transformation(extent={{-80,-20},{-60,0}})));
     equation
       connect(concentration.y, glucoseInsulinDependendUtilisation.insulinConcentration)
@@ -494,12 +435,13 @@ package GlucoseInsulinPhysiolibrary
       Components.GlucoseInsulinDependendUtilisation
         glucoseInsulinDependendUtilisation
         annotation (Placement(transformation(extent={{70,-6},{90,14}})));
-      Physiolibrary.Chemical.Components.Substance Glucose(useNormalizedVolume=
-            false, solute_start=0.0675248)
+      Physiolibrary.Obsolete.ObsoleteChemical.Components.Substance Glucose(
+          useNormalizedVolume=false, solute_start=0.0675248)
         "1 mmol  = 180156mg; initial 12165 mg = 12165/180156 = 67.5248 mmol"
         annotation (Placement(transformation(extent={{-28,-6},{-8,14}})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure molarGlucoseConcentration
-        annotation (Placement(transformation(extent={{-9,-10},{9,10}},
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.ConcentrationMeasure
+        molarGlucoseConcentration annotation (Placement(transformation(
+            extent={{-9,-10},{9,10}},
             rotation=180,
             origin={49,4})));
       Components.MolarToMassConcentration glucoseMassConcentration
@@ -507,24 +449,27 @@ package GlucoseInsulinPhysiolibrary
       Physiolibrary.Types.Constants.VolumeConst ECF_Volume(k(displayUnit="ml")=
              0.015)
                  annotation (Placement(transformation(extent={{-56,62},{-42,72}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePump GlucoseInput(
+      Physiolibrary.Obsolete.ObsoleteChemical.Sources.UnlimitedSolutePump GlucoseInput(
           useSoluteFlowInput=true)
         annotation (Placement(transformation(extent={{-88,-6},{-68,14}})));
       Physiolibrary.Types.Constants.MolarFlowRateConst GlucoceInputFlowRate(k=0.0084/
             0.180156/3600)
         annotation (Placement(transformation(extent={{-96,58},{-80,68}})));
-      Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.MolarFlowMeasure molarFlowMeasure
         annotation (Placement(transformation(extent={{-54,-6},{-34,14}})));
-      Physiolibrary.Chemical.Sensors.MolarFlowMeasure insulinDependentMolarFlowMeasure
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.MolarFlowMeasure
+        insulinDependentMolarFlowMeasure
         annotation (Placement(transformation(extent={{8,-4},{28,16}})));
       Components.GlucoseRenalExcretion glucoseRenalExcretion annotation (
           Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=0,
             origin={60,86})));
-      Physiolibrary.Chemical.Sensors.MolarFlowMeasure insulinIndependentMolarFlowMeasure
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.MolarFlowMeasure
+        insulinIndependentMolarFlowMeasure
         annotation (Placement(transformation(extent={{10,52},{30,72}})));
-      Physiolibrary.Chemical.Sensors.MolarFlowMeasure kidneyMolarFlowMeasure
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.MolarFlowMeasure
+        kidneyMolarFlowMeasure
         annotation (Placement(transformation(extent={{10,80},{30,100}})));
       Components.MolarToMassFlow molarToMassFlowIndIndependent
         annotation (Placement(transformation(extent={{28,36},{48,56}})));
@@ -606,12 +551,13 @@ package GlucoseInsulinPhysiolibrary
       Components.GlucoseInsulinDependendUtilisation
         glucoseInsulinDependendUtilisation
         annotation (Placement(transformation(extent={{70,-6},{90,14}})));
-      Physiolibrary.Chemical.Components.Substance Glucose(useNormalizedVolume=
-            false, solute_start=0.0675248)
+      Physiolibrary.Obsolete.ObsoleteChemical.Components.Substance Glucose(
+          useNormalizedVolume=false, solute_start=0.0675248)
         "1 mmol  = 180156mg; initial 12165 mg = 12165/180156 = 67.5248 mmol"
         annotation (Placement(transformation(extent={{-28,-8},{-8,12}})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure molarGlucoseConcentration
-        annotation (Placement(transformation(extent={{-9,-10},{9,10}},
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.ConcentrationMeasure
+        molarGlucoseConcentration annotation (Placement(transformation(
+            extent={{-9,-10},{9,10}},
             rotation=180,
             origin={49,4})));
       Components.MolarToMassConcentration glucoseMassConcentration
@@ -619,24 +565,27 @@ package GlucoseInsulinPhysiolibrary
       Physiolibrary.Types.Constants.VolumeConst ECF_Volume(k(displayUnit="ml")=
              0.015)
                  annotation (Placement(transformation(extent={{-56,62},{-42,72}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePump GlucoseInput(
+      Physiolibrary.Obsolete.ObsoleteChemical.Sources.UnlimitedSolutePump GlucoseInput(
           useSoluteFlowInput=true)
         annotation (Placement(transformation(extent={{-88,-6},{-68,14}})));
       Physiolibrary.Types.Constants.MolarFlowRateConst GlucoceInputFlowRate(k=0.0084/
             0.180156/3600)
         annotation (Placement(transformation(extent={{-96,58},{-80,68}})));
-      Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.MolarFlowMeasure molarFlowMeasure
         annotation (Placement(transformation(extent={{-54,-6},{-34,14}})));
-      Physiolibrary.Chemical.Sensors.MolarFlowMeasure insulinDependentMolarFlowMeasure
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.MolarFlowMeasure
+        insulinDependentMolarFlowMeasure
         annotation (Placement(transformation(extent={{8,-4},{28,16}})));
       Components.GlucoseRenalExcretion glucoseRenalExcretion annotation (
           Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=0,
             origin={60,86})));
-      Physiolibrary.Chemical.Sensors.MolarFlowMeasure insulinIndependentMolarFlowMeasure
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.MolarFlowMeasure
+        insulinIndependentMolarFlowMeasure
         annotation (Placement(transformation(extent={{10,52},{30,72}})));
-      Physiolibrary.Chemical.Sensors.MolarFlowMeasure kidneyMolarFlowMeasure
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.MolarFlowMeasure
+        kidneyMolarFlowMeasure
         annotation (Placement(transformation(extent={{10,80},{30,100}})));
       Components.MolarToMassFlow molarToMassFlowIndIndependent
         annotation (Placement(transformation(extent={{28,36},{48,56}})));
@@ -644,30 +593,32 @@ package GlucoseInsulinPhysiolibrary
         annotation (Placement(transformation(extent={{22,64},{42,84}})));
       Components.MolarToMassFlow molarToMassFlowInsDependent
         annotation (Placement(transformation(extent={{22,-28},{42,-8}})));
-      Physiolibrary.Chemical.Components.Clearance InsulinIndependentUtilisation(
+      Physiolibrary.Obsolete.ObsoleteChemical.Components.Clearance
+        InsulinIndependentUtilisation(
         Clearance(displayUnit="m3/s") = 2470e-6/3600,
         K=1/0.180156,
         useSolutionFlowInput=false)
         annotation (Placement(transformation(extent={{54,50},{78,74}})));
-      Physiolibrary.Chemical.Components.Substance Insulin(useNormalizedVolume=
-            false, solute_start=0.851)
+      Physiolibrary.Obsolete.ObsoleteChemical.Components.Substance Insulin(
+          useNormalizedVolume=false, solute_start=0.851)
         annotation (Placement(transformation(extent={{-34,-76},{-14,-56}})));
       Components.InsulinProductionRate insulinProductionRate
         annotation (Placement(transformation(extent={{-76,-82},{-56,-62}})));
-      Physiolibrary.Chemical.Components.Clearance InsulinDestructionRate(Clearance=
-           7600e-6/3600, useSolutionFlowInput=false)
+      Physiolibrary.Obsolete.ObsoleteChemical.Components.Clearance
+        InsulinDestructionRate(Clearance=7600e-6/3600, useSolutionFlowInput=
+            false)
         annotation (Placement(transformation(extent={{60,-80},{80,-60}})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure insulinConcentration
-        annotation (Placement(transformation(
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.ConcentrationMeasure
+        insulinConcentration annotation (Placement(transformation(
             extent={{-9,-10},{9,10}},
             rotation=180,
             origin={23,-70})));
       Physiolibrary.Types.Constants.ConcentrationConst concentration(k(
             displayUnit="mmol/ml") = 56.7)
         annotation (Placement(transformation(extent={{14,-48},{22,-40}})));
-      Physiolibrary.Chemical.Sensors.MolarFlowMeasure insulinInflow
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.MolarFlowMeasure insulinInflow
         annotation (Placement(transformation(extent={{-52,-76},{-32,-56}})));
-      Physiolibrary.Chemical.Sensors.MolarFlowMeasure insulinOutflow
+      Physiolibrary.Obsolete.ObsoleteChemical.Sensors.MolarFlowMeasure insulinOutflow
         annotation (Placement(transformation(extent={{34,-80},{54,-60}})));
     equation
       connect(molarGlucoseConcentration.concentration, glucoseMassConcentration.concentration)
@@ -767,9 +718,9 @@ package GlucoseInsulinPhysiolibrary
   end Test;
 
   package Types
-    replaceable type InsulinUnit = Physiolibrary.Types.AmountOfSubstance (quantity "InsulinUnit", unit = "IU", displayUnit = "mIU", nominal = 1e-3);
+    replaceable type InsulinUnit = Real (quantity "InsulinUnit", unit = "IU", displayUnit = "mIU", nominal = 1e-3);
     replaceable type InsulinConcentration =
-                       Physiolibrary.Types.Concentration (quantity "InsulinConcentration", unit = "IU/m3", displayUnit = "mIU/l", nominal = 1);
+                       Real (quantity "InsulinConcentration", unit = "IU/m3", displayUnit = "mIU/l", nominal = 1);
   end Types;
   annotation ();
 end GlucoseInsulinPhysiolibrary;

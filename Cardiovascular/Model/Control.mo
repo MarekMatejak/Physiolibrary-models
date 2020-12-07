@@ -265,15 +265,15 @@ package Control "models of control mechanism and additional components"
 
     model Erythropoetin
 
-      EPO_Physiolibrary.Chemical.Components.Substance erythropoetin(
+      EPO_Physiolibrary.Obsolete.ObsoleteChemical.Components.Substance erythropoetin(
           useNormalizedVolume=false, solute_start(displayUnit="mol") = 79.5)
         annotation (Placement(transformation(extent={{-30,6},{2,40}})));
-      EPO_Physiolibrary.Chemical.Sources.UnlimitedSolutePump secretion(
+      EPO_Physiolibrary.Obsolete.ObsoleteChemical.Sources.UnlimitedSolutePump secretion(
           useSoluteFlowInput=true) annotation (Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=180,
             origin={144,62})));
-      EPO_Physiolibrary.Chemical.Sensors.ConcentrationMeasure
+      EPO_Physiolibrary.Obsolete.ObsoleteChemical.Sensors.ConcentrationMeasure
         concentrationMeasure annotation (Placement(transformation(
             extent={{-21,-21},{21,21}},
             rotation=90,
@@ -341,7 +341,7 @@ package Control "models of control mechanism and additional components"
       Physiolibrary.Types.Constants.MolarFlowRateConst molarFlowRate(k(
             displayUnit="mol/min") = 0.011166666666667)
         annotation (Placement(transformation(extent={{30,40},{44,50}})));
-      EPO_Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut clearance(
+      EPO_Physiolibrary.Obsolete.ObsoleteChemical.Sources.UnlimitedSolutePumpOut clearance(
           useSoluteFlowInput=true)   annotation (Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=0,
@@ -597,54 +597,57 @@ package Control "models of control mechanism and additional components"
 
     model Plasma2
 
-      Physiolibrary.Osmotic.Sources.SolventInflux transfusion(
-          useSolutionFlowInput=false) annotation (Placement(transformation(
-              extent={{-44,-38},{-24,-18}})));
-      Physiolibrary.Osmotic.Sources.SolventOutflux hemorrhage(
+      Physiolibrary.Obsolete.ObsoleteOsmotic.Sources.SolventInflux transfusion(
+          useSolutionFlowInput=false)
+        annotation (Placement(transformation(extent={{-44,-38},{-24,-18}})));
+      Physiolibrary.Obsolete.ObsoleteOsmotic.Sources.SolventOutflux hemorrhage(
           useSolutionFlowInput=false) annotation (Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=180,
             origin={-34,-54})));
-      Physiolibrary.Osmotic.Sources.SolventInflux IVDrip(
-          useSolutionFlowInput=false) annotation (Placement(transformation(
-              extent={{-44,-48},{-24,-28}})));
-      Physiolibrary.Osmotic.Sources.SolventInflux FoodAndDrink(
+      Physiolibrary.Obsolete.ObsoleteOsmotic.Sources.SolventInflux IVDrip(
+          useSolutionFlowInput=false)
+        annotation (Placement(transformation(extent={{-44,-48},{-24,-28}})));
+      Physiolibrary.Obsolete.ObsoleteOsmotic.Sources.SolventInflux FoodAndDrink(
           useSolutionFlowInput=false, SolutionFlow(displayUnit="l/day")=
           2.4305555555556e-08) annotation (Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=0,
             origin={-34,-10})));
-      Physiolibrary.Osmotic.Sources.SolventInflux Metabolism(
+      Physiolibrary.Obsolete.ObsoleteOsmotic.Sources.SolventInflux Metabolism(
           useSolutionFlowInput=false, SolutionFlow(displayUnit="ml/day")=
           3.4722222222222e-09) annotation (Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=0,
             origin={26,-28})));
-      Physiolibrary.Osmotic.Sources.SolventOutflux SkinAndLungsLoss(
-          useSolutionFlowInput=false, SolutionFlow(displayUnit="ml/day")=
-          1.0416666666667e-08) annotation (Placement(transformation(
+      Physiolibrary.Obsolete.ObsoleteOsmotic.Sources.SolventOutflux
+        SkinAndLungsLoss(useSolutionFlowInput=false, SolutionFlow(displayUnit=
+              "ml/day") = 1.0416666666667e-08) annotation (Placement(
+            transformation(
             extent={{-11,-11},{11,11}},
             rotation=0,
             origin={53,-27})));
-      Physiolibrary.Osmotic.Sources.SolventOutflux Urine(SolutionFlow(
-            displayUnit="ml/day") = 1.7361111111111e-08,
+      Physiolibrary.Obsolete.ObsoleteOsmotic.Sources.SolventOutflux Urine(
+          SolutionFlow(displayUnit="ml/day") = 1.7361111111111e-08,
           useSolutionFlowInput=true) annotation (Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=0,
             origin={0,-28})));
-      Physiolibrary.Osmotic.Sources.SolventOutflux Feces(
+      Physiolibrary.Obsolete.ObsoleteOsmotic.Sources.SolventOutflux Feces(
           useSolutionFlowInput=false, SolutionFlow(displayUnit="ml/day")=
           1.1574074074074e-09) annotation (Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=0,
             origin={0,-8})));
-      Physiolibrary.Osmotic.Components.Membrane capillaryMembrane(
+      Physiolibrary.Obsolete.ObsoleteOsmotic.Components.Membrane
+        capillaryMembrane(
         HydraulicPressureIn(displayUnit="mmHg") = 2359.8062572455,
         cond(displayUnit="m3/(Pa.s)") = 3.7265559293265e-11,
         HydraulicPressureOut=-549.2882361498,
         T(displayUnit="K"))
         annotation (Placement(transformation(extent={{4,-70},{24,-50}})));
-      Physiolibrary.Osmotic.Components.OsmoticCell interstitialFluid(
+      Physiolibrary.Obsolete.ObsoleteOsmotic.Components.OsmoticCell
+        interstitialFluid(
         NumberOfMembraneTypes=2,
         volume_start=0.01175,
         ImpermeableSolutes={0.0061,3.1})
@@ -656,16 +659,16 @@ package Control "models of control mechanism and additional components"
         Kuo(displayUnit="m3/s"),
         Jun(displayUnit="m3/s"))
         annotation (Placement(transformation(extent={{-10,-28},{48,24}})));
-      Physiolibrary.Osmotic.Components.SolventFlux lymphatic(SolutionFlow(
-            displayUnit="l/day") = 3.45e-08) annotation (Placement(
+      Physiolibrary.Obsolete.ObsoleteOsmotic.Components.SolventFlux lymphatic(
+          SolutionFlow(displayUnit="l/day") = 3.45e-08) annotation (Placement(
             transformation(
             extent={{-7,-7},{7,7}},
             rotation=180,
             origin={11,-39})));
       Physiolibrary.Types.BusConnector busConnector
         annotation (Placement(transformation(extent={{44,-24},{84,16}})));
-      Physiolibrary.Osmotic.Components.OsmoticCell plasma(
-        Simulation=Physiolibrary.Types.SimulationType.NoInit,
+      Physiolibrary.Obsolete.ObsoleteOsmotic.Components.OsmoticCell plasma(
+        Simulation=Physiolibrary.Obsolete.ObsoleteTypes.SimulationType.NoInit,
         NumberOfMembraneTypes=2,
         ImpermeableSolutes(displayUnit="mmol") = {0.00356,0.82})
         annotation (Placement(transformation(extent={{-26,-70},{-6,-50}})));
@@ -783,10 +786,10 @@ package Control "models of control mechanism and additional components"
 
       DesiredFlowrate desiredFlowrate(flowtime(displayUnit="s") = 1)
         annotation (Placement(transformation(extent={{-4,6},{16,26}})));
-      Physiolibrary.Hydraulic.Interfaces.HydraulicPort_b port_b annotation (
-         Placement(transformation(extent={{56,-26},{76,-6}}),
-            iconTransformation(extent={{82,-100},{102,-80}})));
-      Physiolibrary.Hydraulic.Sources.UnlimitedPump volumeRefill(
+      Physiolibrary.Fluid.Interfaces.FluidPort_b port_b annotation (Placement(
+            transformation(extent={{56,-26},{76,-6}}), iconTransformation(
+              extent={{82,-100},{102,-80}})));
+      Physiolibrary.Fluid.Sources.VolumeInflowSource volumeRefill(
           useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{-14,-26},{6,-6}})));
       Modelica.Blocks.Logical.Switch switch1
@@ -796,11 +799,11 @@ package Control "models of control mechanism and additional components"
             extent={{-8,-6},{8,6}},
             rotation=180,
             origin={38,-4})));
-      Physiolibrary.Hydraulic.Sensors.PressureMeasure pressureMeasure
+      Physiolibrary.Fluid.Sensors.PressureMeasure pressureMeasure
         annotation (Placement(transformation(extent={{70,10},{50,30}})));
       Modelica.Blocks.Logical.GreaterThreshold greaterThreshold(threshold=0)
         annotation (Placement(transformation(extent={{46,8},{30,24}})));
-      Physiolibrary.Hydraulic.Components.Conductor conductor(Conductance(
+      Physiolibrary.Fluid.Components.Conductor conductor(Conductance(
             displayUnit="ml/(mmHg.s)") = 7.5006157584566e-08)
         annotation (Placement(transformation(extent={{28,-26},{48,-6}})));
       Physiolibrary.Types.BusConnector busConnector
@@ -1116,7 +1119,7 @@ above 0 mmHg.")}));
       extends Plasma2(
         hemorrhage(useSolutionFlowInput=true),
         transfusion(useSolutionFlowInput=true),
-        plasma(Simulation=Physiolibrary.Types.SimulationType.NoInit));
+        plasma(Simulation=Physiolibrary.Obsolete.ObsoleteTypes.SimulationType.NoInit));
     equation
       connect(hemorrhage.solutionFlow, busConnector.plasmableed)
         annotation (Line(
@@ -1142,8 +1145,7 @@ above 0 mmHg.")}));
     model RBCBleeding
       extends RedBloodCells2(
         transfusion(useChangeInput=true),
-        hemorrhage(useChangeInput=true),
-        RBC(Simulation=Physiolibrary.Types.SimulationType.NoInit));
+        hemorrhage(useChangeInput=true));
     equation
       connect(transfusion.populationChange, busConnector.RBCtransfusion)
         annotation (Line(
@@ -1171,19 +1173,18 @@ above 0 mmHg.")}));
   /*  Physiolibrary.Types.BusConnector busConnector annotation (Placement(
         transformation(extent={{-40,2},{0,42}}), iconTransformation(
           extent={{-38,4},{2,44}})));*/
-    replaceable BloodVolume.Plasma2 plasma(plasma(Simulation=Physiolibrary.Types.SimulationType.NoInit))
+    replaceable BloodVolume.Plasma2 plasma(plasma(Simulation=Physiolibrary.Obsolete.ObsoleteTypes.SimulationType.NoInit))
       constrainedby BloodVolume.Plasma2
       annotation (Placement(transformation(extent={{-28,26},{4,58}})));
                                //(plasma(volume_start=bloodProperties.BloodVolume.y))
-    replaceable BloodVolume.RedBloodCells2 redBloodCells(RBC(
-          population_start=2, Simulation=Physiolibrary.Types.SimulationType.NoInit))
+    replaceable BloodVolume.RedBloodCells2 redBloodCells(RBC(population_start=2))
       constrainedby BloodVolume.RedBloodCells2
       annotation (Placement(transformation(extent={{-20,-18},{14,14}})));
     BloodVolume.BloodProperties bloodProperties annotation (Placement(
           transformation(rotation=0, extent={{-18,-40},{10,-12}})));
   initial algorithm
     plasma.plasma.state := bloodProperties.InitialPlasmaVolume.y;
-    redBloodCells.RBC.state := redBloodCells.InitialPopulation.y;
+    redBloodCells.RBC.population := redBloodCells.InitialPopulation.y;
 
   equation
     connect(plasma.busConnector, busConnector) annotation (Line(
@@ -1225,7 +1226,7 @@ above 0 mmHg.")}));
   end BloodVolumeControl;
 
   model MeanAortaPressureMeasurement
-    extends Physiolibrary.Hydraulic.Sensors.PressureMeasure;
+    extends Physiolibrary.Fluid.Sensors.PressureMeasure;
     import Physiolibrary.Types.RealIO.*;
     import Physiolibrary.Types.*;
     discrete PressureOutput Pmean(start=11300)
@@ -1240,8 +1241,8 @@ above 0 mmHg.")}));
     discrete Time HP(start=0.75) "length of cardiac cycle";
   //protected
   equation
-    b = der(q_in.pressure) > 0;
-    der(SumPressure) = q_in.pressure;
+    b = der(q_in.p) > 0;
+    der(SumPressure) = q_in.p;
    when {edge(b)} then
       T0 =   time "initial time of current cardiac cycle";
       HP =   if pre(T0) > 0 then time - pre(T0) else 0.75;
@@ -1262,7 +1263,7 @@ above 0 mmHg.")}));
 
   model BloodFlowMeasurement
     "measures flow, diastolic, systolic and mean pressure"
-    extends Physiolibrary.Hydraulic.Sensors.FlowMeasure;
+    extends Physiolibrary.Fluid.Sensors.FlowMeasure;
     import Physiolibrary.Types.RealIO.*;
     import Physiolibrary.Types.*;
     PressureOutput Ps "Systolic pressure during heart cycle" annotation (
@@ -1309,13 +1310,13 @@ above 0 mmHg.")}));
           rotation=270,
           origin={-60,100})));
   initial algorithm
-    Ps := q_in.pressure;
-    Pd := q_in.pressure;
-    Pmean := q_in.pressure;
+    Ps := q_in.p;
+    Pd := q_in.p;
+    Pmean := q_in.p;
     HP := 1/HR;
   equation
-    Pmax = max(Pmax, q_in.pressure);
-    Pmin = min(Pmin, q_in.pressure);
+    Pmax = max(Pmax, q_in.p);
+    Pmin = min(Pmin, q_in.p);
     b = time - pre(T0) >= pre(HP) "b=true when new cardiac cycle begins";
     when {b} then
       T0 = time "initial time of current cardiac cycle";
@@ -1330,11 +1331,11 @@ above 0 mmHg.")}));
         "cardiac output calculation from systolic volume and heart period";
       reinit(Volume, 0) "reinitialisation of volume";
       reinit(SumPressure, 0) "reinitialisation of sum pressure";
-      reinit(Pmax, q_in.pressure) "reinitialisation of maximal pressure";
-      reinit(Pmin, q_in.pressure) "reinitialisation minimal pressure";
+      reinit(Pmax, q_in.p) "reinitialisation of maximal pressure";
+      reinit(Pmin, q_in.p) "reinitialisation minimal pressure";
     end when;
-    der(Volume) = q_in.q;
-    der(SumPressure) = q_in.pressure;
+    der(Volume) = q_in.m_flow/density;
+    der(SumPressure) = q_in.p;
     annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
               -100},{100,100}}), graphics={Text(
                   extent={{-52,11},{52,-11}},
@@ -1383,7 +1384,7 @@ above 0 mmHg.")}));
   end BloodFlowMeasurement;
 
   model AortaPressureMeasurement
-    extends Physiolibrary.Hydraulic.Sensors.PressureMeasure;
+    extends Physiolibrary.Fluid.Sensors.PressureMeasure;
     import Physiolibrary.Types.RealIO.*;
     import Physiolibrary.Types.*;
     discrete PressureOutput Ps "Systolic pressure during heart cycle"
@@ -1414,17 +1415,17 @@ above 0 mmHg.")}));
     Pressure Pmean2 "approximation of mean pressure";
   /*initial algorithm
 
-  Ps := q_in.pressure;
-  Pd := q_in.pressure;
-  Pmean:=q_in.pressure;*/
+  Ps := q_in.p;
+  Pd := q_in.p;
+  Pmean:=q_in.p;*/
   equation
-    Pmax = if not (initial() or edge(b)) then max(Pmax, q_in.pressure)
-       else q_in.pressure;
-    Pmin = if not (initial() or edge(b)) then min(Pmin, q_in.pressure)
-       else q_in.pressure;
+    Pmax = if not (initial() or edge(b)) then max(Pmax, q_in.p)
+       else q_in.p;
+    Pmin = if not (initial() or edge(b)) then min(Pmin, q_in.p)
+       else q_in.p;
     PmeanA = (2/3)*Pmin + (1/3)*Pmax;
-    b = der(q_in.pressure) > 0;
-    der(SumPressure) = q_in.pressure;
+    b = der(q_in.p) > 0;
+    der(SumPressure) = q_in.p;
    when {initial(),edge(b)} then
       T0 =   time "initial time of current cardiac cycle";
       HP =   if pre(T0) > 0 then time - pre(T0) else 1;
@@ -1438,11 +1439,11 @@ above 0 mmHg.")}));
                //if ((SumPressure / pre(HP))<Pd) then PmeanA else
       reinit(SumPressure,  0) "reinitialisation of sum pressure";
                //if (Pmean2>Pd) then Pmean1 else Pmean2;
-  //     Pmax = pre(q_in.pressure) "reinitialisation of maximal pressure";
-  //    Pmin = pre(q_in.pressure) "reinitialisation minimal pressure";
+  //     Pmax = pre(q_in.p) "reinitialisation of maximal pressure";
+  //    Pmin = pre(q_in.p) "reinitialisation minimal pressure";
 
-               //     reinit(Pmax,  q_in.pressure) "reinitialisation of maximal pressure";
-  //     reinit(Pmin,  q_in.pressure) "reinitialisation minimal pressure";
+               //     reinit(Pmax,  q_in.p) "reinitialisation of maximal pressure";
+  //     reinit(Pmin,  q_in.p) "reinitialisation minimal pressure";
    end when;
     annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
               -100},{100,100}}), graphics={Text(
