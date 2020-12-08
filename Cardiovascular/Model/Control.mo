@@ -1241,8 +1241,8 @@ above 0 mmHg.")}));
     discrete Time HP(start=0.75) "length of cardiac cycle";
   //protected
   equation
-    b = der(q_in.p) > 0;
-    der(SumPressure) = q_in.p;
+    b = der(pressure) > 0;
+    der(SumPressure) = pressure;
    when {edge(b)} then
       T0 =   time "initial time of current cardiac cycle";
       HP =   if pre(T0) > 0 then time - pre(T0) else 0.75;
@@ -1419,13 +1419,13 @@ above 0 mmHg.")}));
   Pd := q_in.p;
   Pmean:=q_in.p;*/
   equation
-    Pmax = if not (initial() or edge(b)) then max(Pmax, q_in.p)
-       else q_in.p;
-    Pmin = if not (initial() or edge(b)) then min(Pmin, q_in.p)
-       else q_in.p;
+    Pmax = if not (initial() or edge(b)) then max(Pmax, pressure)
+       else pressure;
+    Pmin = if not (initial() or edge(b)) then min(Pmin, pressure)
+       else pressure;
     PmeanA = (2/3)*Pmin + (1/3)*Pmax;
-    b = der(q_in.p) > 0;
-    der(SumPressure) = q_in.p;
+    b = der(pressure) > 0;
+    der(SumPressure) = pressure;
    when {initial(),edge(b)} then
       T0 =   time "initial time of current cardiac cycle";
       HP =   if pre(T0) > 0 then time - pre(T0) else 1;

@@ -17,25 +17,27 @@ package Avolio1980
           parameter Real kkLfactor =  8 * (0.2057 - 0.0392);
           parameter Real myfactor = 1;
         //  Physiolibrary.Types.Conductance Z0;
-      Physiolibrary.Fluid.Interfaces.FluidPort_a port_a annotation (Placement(
+          Physiolibrary.Fluid.Interfaces.FluidPort_a port_a annotation (Placement(
             transformation(extent={{-110,-10},{-90,10}}), iconTransformation(
               extent={{-120,-20},{-80,20}})));
-      Physiolibrary.Fluid.Interfaces.FluidPort_b port_b annotation (Placement(
+          Physiolibrary.Fluid.Interfaces.FluidPort_b port_b annotation (Placement(
             transformation(extent={{90,-10},{110,10}}), iconTransformation(
               extent={{80,-20},{120,20}})));
-      Physiolibrary.Fluid.Components.Resistor resistance(final Resistance=8*mi*
+          Physiolibrary.Fluid.Components.Resistor resistance(final Resistance=8*mi*
             L/(Modelica.Constants.pi*R^4))
         annotation (Placement(transformation(extent={{-58,-22},{-14,22}})));
-      Physiolibrary.Fluid.Components.Inertia inertia(I=((kkLfactor*ro*L)/(
+          Physiolibrary.Fluid.Components.Inertia inertia(I=
+                                                       ((kkLfactor*ro*L)/(
             myfactor*Modelica.Constants.pi*R^2))/1000, massFlow_start=0)
         annotation (Placement(transformation(extent={{-90,-10},{-70,10}})));
 
-      Physiolibrary.Fluid.Components.Conductor terminalresistance(
+          Physiolibrary.Fluid.Components.Conductor terminalresistance(
           final Conductance=
                       if terminal then R/(Rbref*h) else 1/Modelica.Constants.eps)
         annotation (Placement(transformation(extent={{42,-22},{86,22}})));
-      Physiolibrary.Fluid.Components.ElasticVessel elastance(
+          Physiolibrary.Fluid.Components.ElasticVessel elastance(
         ZeroPressureVolume=R^2*L*Modelica.Constants.pi,
+        volume_start=R^2*L*Modelica.Constants.pi,
         Compliance=kkCfactor*Modelica.Constants.pi*R^3*L/(E*h),
         nHydraulicPorts=2)
         annotation (Placement(transformation(extent={{2,-10},{22,10}})));
@@ -53,11 +55,13 @@ package Avolio1980
               points={{-70,0},{-58,0}},
               color={0,0,0},
               thickness=1));
-      connect(resistance.q_out, elastance.q_in[1]) annotation (Line(
+          connect(
+              resistance.q_out, elastance.q_in[1]) annotation (Line(
           points={{-14,0},{-2,0},{-2,1.3},{11.7,1.3}},
           color={127,0,0},
           thickness=0.5));
-      connect(elastance.q_in[2], terminalresistance.q_in) annotation (Line(
+          connect(
+              elastance.q_in[2], terminalresistance.q_in) annotation (Line(
           points={{11.7,-1.3},{26,-1.3},{26,0},{42,0}},
           color={127,0,0},
           thickness=0.5));

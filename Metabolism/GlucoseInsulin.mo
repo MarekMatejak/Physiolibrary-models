@@ -3,29 +3,12 @@ package GlucoseInsulin
   package Components
     model Compartment
       parameter Modelica.SIunits.Mass initialSubstanceAmmount(displayUnit = "mg");
-      GlucoseInsulin.Interfaces.VolumeInput volume(displayUnit="ml")
-        annotation (Placement(
-          visible=true,
-          transformation(
-            origin={0,0},
-            extent={{-10,-10},{10,10}},
-            rotation=0),
-          iconTransformation(
-            origin={-59,-19},
-            extent={{-41,-41},{41,41}},
-            rotation=0)));
+      GlucoseInsulin.Interfaces.VolumeInput volume(displayUnit = "ml") annotation (
+        Placement(visible = true, transformation(origin = {0, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {-59, -19}, extent = {{-41, -41}, {41, 41}}, rotation = 0)));
       Modelica.SIunits.Mass substanceAmmount(displayUnit = "mg", start = initialSubstanceAmmount);
       Modelica.SIunits.MassConcentration substanceConcentration(displayUnit = "mg/ml");
-      GlucoseInsulin.Interfaces.MassFlow qin annotation (Placement(
-          visible=true,
-          transformation(
-            origin={-100,0},
-            extent={{-10,-10},{10,10}},
-            rotation=0),
-          iconTransformation(
-            origin={1,101},
-            extent={{-31,-31},{31,31}},
-            rotation=0)));
+      GlucoseInsulin.Interfaces.MassFlow qin annotation (
+        Placement(visible = true, transformation(origin = {-100, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {1, 101}, extent = {{-31, -31}, {31, 31}}, rotation = 0)));
     equation
       der(substanceAmmount) = qin.q;
       substanceConcentration = substanceAmmount / volume;
@@ -41,7 +24,7 @@ package GlucoseInsulin
       //Insulin: 1 IU is equivalent to 0.0347 mg of human insulin, 1 mU = 0.0347 * 1e-9 kg
       parameter Real initialSubstanceAmmountmU(displayUnit = "mU");
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio = false), graphics={  Text(extent = {{-260, -142}, {284, -178}}, lineColor = {0, 0, 0}, textString = "initial %initialSubstanceAmmountmU mU")}),
+        Icon(coordinateSystem(preserveAspectRatio = false), graphics = {Text(extent = {{-260, -142}, {284, -178}}, lineColor = {0, 0, 0}, textString = "initial %initialSubstanceAmmountmU mU")}),
         Diagram(coordinateSystem(preserveAspectRatio = false)));
     end CompartmentIU;
 
@@ -50,20 +33,12 @@ package GlucoseInsulin
         Icon(coordinateSystem(preserveAspectRatio = false)),
         Diagram(coordinateSystem(preserveAspectRatio = false)));
       annotation (
-        Icon(graphics={  Text(extent = {{-262, -134}, {314, -174}}, lineColor = {0, 0, 0}, textString = "initial %initialSubstanceAmmount")}));
+        Icon(graphics = {Text(extent = {{-262, -134}, {314, -174}}, lineColor = {0, 0, 0}, textString = "initial %initialSubstanceAmmount")}));
     end CompartmentMass;
 
     partial model ProductionFlowRate
-      GlucoseInsulin.Interfaces.MassFlow outflow annotation (Placement(
-          visible=true,
-          transformation(
-            origin={100,0},
-            extent={{-10,-10},{10,10}},
-            rotation=0),
-          iconTransformation(
-            origin={101,-1},
-            extent={{-27,-27},{27,27}},
-            rotation=0)));
+      GlucoseInsulin.Interfaces.MassFlow outflow annotation (
+        Placement(visible = true, transformation(origin = {100, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {101, -1}, extent = {{-27, -27}, {27, 27}}, rotation = 0)));
       annotation (
         Icon(graphics={  Polygon(origin = {-20, 10}, fillColor = {173, 127, 168},
                 fillPattern =                                                                   FillPattern.Solid, points = {{-80, 30}, {-80, -50}, {102, -10}, {-80, 30}}), Text(origin = {0, -46}, extent = {{-280, 18}, {278, -18}}, textString = "%name")}, coordinateSystem(initialScale = 0.1)));
@@ -111,22 +86,14 @@ package GlucoseInsulin
     equation
       outflow.q = if x > phi then -(x - phi) * beta else 0;
       annotation (
-        Icon(graphics={  Text(extent = {{-258, -60}, {242, -102}}, lineColor = {0, 0, 0}, fillColor = {255, 213, 170},
-                fillPattern =                                                                                                        FillPattern.None, textString = "beta=%beta_mu"), Text(extent = {{-260, -102}, {242, -140}}, lineColor = {0, 0, 0}, fillColor = {255, 213, 170},
-                fillPattern =                                                                                                                                                                                                        FillPattern.None, textString = "phi=%phi")}));
+        Icon(graphics = {Text(extent = {{-258, -60}, {242, -102}}, lineColor = {0, 0, 0}, fillColor = {255, 213, 170}, fillPattern = FillPattern.None, textString = "beta=%beta_mu"), Text(extent = {{-260, -102}, {242, -140}}, lineColor = {0, 0, 0}, fillColor = {255, 213, 170}, fillPattern = FillPattern.None, textString = "phi=%phi")}));
     end ProductionFlowRateGain;
 
     partial model DegradationRate
-      GlucoseInsulin.Interfaces.MassFlow inflow annotation (Placement(
-          visible=true,
-          transformation(extent={{-110,-10},{-90,10}}, rotation=0),
-          iconTransformation(
-            origin={-99,-1},
-            extent={{-29,-29},{29,29}},
-            rotation=0)));
+      GlucoseInsulin.Interfaces.MassFlow inflow annotation (
+        Placement(visible = true, transformation(extent = {{-110, -10}, {-90, 10}}, rotation = 0), iconTransformation(origin = {-99, -1}, extent = {{-29, -29}, {29, 29}}, rotation = 0)));
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={  Polygon(origin = {-10, 10}, fillColor = {173, 127, 168},
-                fillPattern =                                                                                                                                      FillPattern.Solid, points = {{-70, 36}, {-70, -50}, {110, -10}, {-70, 36}}), Text(fillColor = {255, 213, 170}, extent = {{-338, -42}, {360, -78}}, textString = "%name")}),
+        Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics = {Polygon(origin = {-10, 10}, fillColor = {173, 127, 168}, fillPattern = FillPattern.Solid, points = {{-70, 36}, {-70, -50}, {110, -10}, {-70, 36}}), Text(fillColor = {255, 213, 170}, extent = {{-338, -42}, {360, -78}}, textString = "%name")}),
         Diagram(coordinateSystem(preserveAspectRatio = false)));
     end DegradationRate;
 
@@ -139,26 +106,20 @@ package GlucoseInsulin
       //inflow.q = if (inflow.c>threshold) then desiredFlowRate * (inflow.c-threshold) else 0;
       inflow.q = desiredFlowRate * inflow.c;
       annotation (
-        Icon(graphics={  Text(origin = {-40, 0}, fillColor = {255, 213, 170}, extent = {{-300, -82}, {378, -116}}, textString = "%paramName=%desiredFlowRate")}, coordinateSystem(initialScale = 0.1)));
+        Icon(graphics = {Text(origin = {-40, 0}, fillColor = {255, 213, 170}, extent = {{-300, -82}, {378, -116}}, textString = "%paramName=%desiredFlowRate")}, coordinateSystem(initialScale = 0.1)));
     end DegradationRateParam;
 
     model ConcentrationSensor
       extends Modelica.Icons.RotationalSensor;
-      GlucoseInsulin.Interfaces.MassFlow p annotation (Placement(
-          visible=true,
-          transformation(extent={{-10,-10},{10,10}}, rotation=0),
-          iconTransformation(
-            origin={2,0},
-            extent={{-18,-18},{18,18}},
-            rotation=0)));
+      GlucoseInsulin.Interfaces.MassFlow p annotation (
+        Placement(visible = true, transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {2, 0}, extent = {{-18, -18}, {18, 18}}, rotation = 0)));
       Interfaces.MassConcentrationOutput conc annotation (
         Placement(transformation(extent = {{-4, 82}, {16, 102}}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {0, 110})));
     equation
       conc = p.c;
       p.q = 0;
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio = false), graphics={  Text(extent = {{-302, -22}, {300, -62}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
-                fillPattern =                                                                                                                                                  FillPattern.None, textString = "%name
+        Icon(coordinateSystem(preserveAspectRatio = false), graphics = {Text(extent = {{-302, -22}, {300, -62}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255}, fillPattern = FillPattern.None, textString = "%name
         ")}),
         Diagram(coordinateSystem(preserveAspectRatio = false)));
     end ConcentrationSensor;
@@ -172,19 +133,13 @@ package GlucoseInsulin
     equation
       inflow.q = if inflow.c > threshold then desiredFlowRate * (inflow.c - threshold) else 0;
       annotation (
-        Icon(graphics={  Text(fillColor = {255, 213, 170}, extent = {{-244, -80}, {240, -120}}, textString = "%paramName=%desiredFlowRate"), Text(fillColor = {0, 0, 255}, extent = {{-364, -122}, {326, -160}}, textString = "%thresholdName=%threshold")}, coordinateSystem(initialScale = 0.1)));
+        Icon(graphics = {Text(fillColor = {255, 213, 170}, extent = {{-244, -80}, {240, -120}}, textString = "%paramName=%desiredFlowRate"), Text(fillColor = {0, 0, 255}, extent = {{-364, -122}, {326, -160}}, textString = "%thresholdName=%threshold")}, coordinateSystem(initialScale = 0.1)));
     end DegradationRateParamThreshold;
 
     model DegradationRateParamConc
       extends DegradationRate;
       GlucoseInsulin.Interfaces.MassConcentrationInput conc annotation (
-          Placement(
-          visible=true,
-          transformation(extent={{-100,-82},{-60,-42}}, rotation=0),
-          iconTransformation(
-            origin={2,46},
-            extent={{-20,-20},{20,20}},
-            rotation=-90)));
+        Placement(visible = true, transformation(extent = {{-100, -82}, {-60, -42}}, rotation = 0), iconTransformation(origin = {2, 46}, extent = {{-20, -20}, {20, 20}}, rotation = -90)));
       parameter Types.VolumeVolumePerMassHour Nu = Nu_ml2perhour / Types.from_mIU(1 / Nu_permu);
       //139000e-12/3600/0.0347e-9
       parameter Types.VolumeVolumePerHour Nu_ml2perhour(displayUnit = "(ml.ml)/h");
@@ -192,115 +147,85 @@ package GlucoseInsulin
     equation
       inflow.q = inflow.c * conc * Nu;
       annotation (
-        Icon(graphics={  Text(origin = {32, 0}, fillColor = {0, 0, 255}, extent = {{-322, -80}, {296, -120}}, textString = "Nu=%Nu_permu (ml.ml)/(mIU.h)", fontName = "Source Code Pro")}, coordinateSystem(initialScale = 0.1)));
+        Icon(graphics = {Text(origin = {32, 0}, fillColor = {0, 0, 255}, extent = {{-322, -80}, {296, -120}}, textString = "Nu=%Nu_permu (ml.ml)/(mIU.h)", fontName = "Source Code Pro")}, coordinateSystem(initialScale = 0.1)));
     end DegradationRateParamConc;
   end Components;
 
   package Models
     model GIRegulationComponent
-      GlucoseInsulin.Components.CompartmentMass glucose(initialSubstanceAmmount=
-           0.012165)
-        annotation (Placement(transformation(extent={{-36,-8},{-16,12}})));
-      GlucoseInsulin.Components.CompartmentIU insulin(initialSubstanceAmmountmU=
-           851)
-        annotation (Placement(transformation(extent={{-18,-60},{2,-40}})));
-      GlucoseInsulin.Components.ProductionFlowRateParam glucoseProduction(
-          desiredFlowRate(displayUnit="mg/h") = 2.3333333333333e-6)
-        annotation (Placement(transformation(extent={{-52,52},{-32,72}})));
-      GlucoseInsulin.Components.VolumeConst ECFVolume(desiredVolume=0.015)
-        annotation (Placement(transformation(extent={{-70,-32},{-50,-12}})));
-      GlucoseInsulin.Components.ProductionFlowRateInput glucoseIngestion
-        annotation (Placement(transformation(extent={{-52,68},{-32,88}})));
-      GlucoseInsulin.Interfaces.MassFlowRateInput glucoseInput
-        annotation (Placement(transformation(extent={{-98,54},{-58,94}})));
-      GlucoseInsulin.Components.ProductionFlowRateGain insulinProduction(
-        phi=0.51,
-        beta_mu=1430,
-        beta_perhour(displayUnit="ml/(mg.h)") = 0.00027777777777778)
-        annotation (Placement(transformation(extent={{-36,-34},{-16,-14}})));
-      GlucoseInsulin.Components.DegradationRateParam insulinDegradation(paramName=
-           "Alpha", desiredFlowRate=2.1111111111111e-6)
-        annotation (Placement(transformation(extent={{36,-34},{56,-14}})));
+      GlucoseInsulin.Components.CompartmentMass glucose(initialSubstanceAmmount = 0.012165) annotation (
+        Placement(transformation(extent = {{-36, -8}, {-16, 12}})));
+      GlucoseInsulin.Components.CompartmentIU insulin(initialSubstanceAmmountmU = 851) annotation (
+        Placement(transformation(extent = {{-18, -60}, {2, -40}})));
+      GlucoseInsulin.Components.ProductionFlowRateParam glucoseProduction(desiredFlowRate(displayUnit = "mg/h") = 2.3333333333333e-6) annotation (
+        Placement(transformation(extent = {{-52, 52}, {-32, 72}})));
+      GlucoseInsulin.Components.VolumeConst ECFVolume(desiredVolume = 0.015) annotation (
+        Placement(transformation(extent = {{-70, -32}, {-50, -12}})));
+      GlucoseInsulin.Components.ProductionFlowRateInput glucoseIngestion annotation (
+        Placement(transformation(extent = {{-52, 68}, {-32, 88}})));
+      GlucoseInsulin.Interfaces.MassFlowRateInput glucoseInput annotation (
+        Placement(transformation(extent = {{-98, 54}, {-58, 94}})));
+      GlucoseInsulin.Components.ProductionFlowRateGain insulinProduction(phi = 0.51, beta_mu = 1430, beta_perhour(displayUnit = "ml/(mg.h)") = 0.00027777777777778) annotation (
+        Placement(transformation(extent = {{-36, -34}, {-16, -14}})));
+      GlucoseInsulin.Components.DegradationRateParam insulinDegradation(paramName = "Alpha", desiredFlowRate = 2.1111111111111e-6) annotation (
+        Placement(transformation(extent = {{36, -34}, {56, -14}})));
       GlucoseInsulin.Components.ConcentrationSensor glucoseSensor annotation (
-          Placement(transformation(
-            extent={{-10,-10},{10,10}},
-            rotation=270,
-            origin={-26,32})));
-      GlucoseInsulin.Components.ConcentrationSensor insulinSensor
-        annotation (Placement(transformation(extent={{4,-34},{24,-14}})));
-      GlucoseInsulin.Components.DegradationRateParam tissueUtilization(paramName=
-           "Lambda", desiredFlowRate=6.8611111111111e-7)
-        annotation (Placement(transformation(extent={{32,52},{52,72}})));
-      GlucoseInsulin.Components.DegradationRateParamThreshold renalLoss(
-        threshold=2.5,
-        paramName="Mu",
-        thresholdName="Theta",
-        desiredFlowRate=2e-6)
-        annotation (Placement(transformation(extent={{30,74},{50,94}})));
+        Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 270, origin = {-26, 32})));
+      GlucoseInsulin.Components.ConcentrationSensor insulinSensor annotation (
+        Placement(transformation(extent = {{4, -34}, {24, -14}})));
+      GlucoseInsulin.Components.DegradationRateParam tissueUtilization(paramName = "Lambda", desiredFlowRate = 6.8611111111111e-7) annotation (
+        Placement(transformation(extent = {{32, 52}, {52, 72}})));
+      GlucoseInsulin.Components.DegradationRateParamThreshold renalLoss(threshold = 2.5, paramName = "Mu", thresholdName = "Theta", desiredFlowRate = 2e-6) annotation (
+        Placement(transformation(extent = {{30, 74}, {50, 94}})));
       Components.DegradationRateParamConc tissueUtilizationInsulinDependent(Nu_permu = 139000, Nu_ml2perhour(displayUnit = "(ml.ml)/h") = 2.7777777777778e-16) annotation (
         Placement(transformation(extent = {{36, 34}, {56, 54}})));
       GlucoseInsulin.Interfaces.MassConcentrationOutput glucoseConc annotation (
-         Placement(
-          visible=true,
-          transformation(extent={{-4,6},{16,26}}, rotation=0),
-          iconTransformation(extent={{80,44},{100,64}}, rotation=0)));
+        Placement(visible = true, transformation(extent = {{-4, 6}, {16, 26}}, rotation = 0), iconTransformation(extent = {{80, 44}, {100, 64}}, rotation = 0)));
       Modelica.Blocks.Interfaces.RealOutput insulinConc(displayUnit = "mU/ml") annotation (
         Placement(visible = true, transformation(extent = {{46, -4}, {66, 16}}, rotation = 0), iconTransformation(extent = {{80, -40}, {100, -20}}, rotation = 0)));
       Modelica.Blocks.Math.Gain to_mU(k = 1e+3 / 0.0347) annotation (
         Placement(visible = true, transformation(origin = {32, 6}, extent = {{-12, -12}, {12, 12}}, rotation = 0)));
     equation
       connect(ECFVolume.volume, glucose.volume) annotation (
-        Line(points={{-49.9,-21.9},{-46,-21.9},{-46,0.1},{-31.9,0.1}},  color = {0, 0, 127}));
+        Line(points = {{-49.9, -21.9}, {-46, -21.9}, {-46, 0.1}, {-31.9, 0.1}}, color = {0, 0, 127}));
       connect(insulin.volume, glucose.volume) annotation (
-        Line(points={{-13.9,-51.9},{-46,-51.9},{-46,0.1},{-31.9,0.1}},color = {0, 0, 127}));
+        Line(points = {{-13.9, -51.9}, {-46, -51.9}, {-46, 0.1}, {-31.9, 0.1}}, color = {0, 0, 127}));
       connect(glucoseIngestion.desiredFlowRate, glucoseInput) annotation (
         Line(points = {{-50, 86}, {-59, 86}, {-59, 74}, {-78, 74}}, color = {0, 0, 127}));
       connect(insulinProduction.outflow, insulin.qin) annotation (
-        Line(points={{-15.9,-24.1},{-7.9,-24.1},{-7.9,-39.9}},
-                                                          color = {173, 127, 168}, thickness = 1));
+        Line(points = {{-15.9, -24.1}, {-7.9, -24.1}, {-7.9, -39.9}}, color = {173, 127, 168}, thickness = 1));
       connect(glucoseSensor.conc, insulinProduction.x) annotation (
         Line(points = {{-15, 32}, {-6, 32}, {-6, -18}, {-28, -18}}, color = {0, 0, 127}));
       connect(glucose.qin, glucoseSensor.p) annotation (
-        Line(points={{-25.9,12.1},{-25.9,21.8},{-26,21.8},{-26,31.8}},
-                                              color = {173, 127, 168}, thickness = 1));
+        Line(points = {{-25.9, 12.1}, {-25.9, 21.8}, {-26, 21.8}, {-26, 31.8}}, color = {173, 127, 168}, thickness = 1));
       connect(glucoseProduction.outflow, glucose.qin) annotation (
-        Line(points={{-31.9,61.9},{-25.9,61.9},{-25.9,12.1}},
-                                                         color = {173, 127, 168}, thickness = 1));
+        Line(points = {{-31.9, 61.9}, {-25.9, 61.9}, {-25.9, 12.1}}, color = {173, 127, 168}, thickness = 1));
       connect(glucoseIngestion.outflow, glucose.qin) annotation (
-        Line(points={{-31.9,77.9},{-25.9,77.9},{-25.9,12.1}},
-                                                         color = {173, 127, 168}, thickness = 1));
+        Line(points = {{-31.9, 77.9}, {-25.9, 77.9}, {-25.9, 12.1}}, color = {173, 127, 168}, thickness = 1));
       connect(renalLoss.inflow, glucose.qin) annotation (
-        Line(points={{30.1,83.9},{-25.9,83.9},{-25.9,12.1}},
-                                                        color = {173, 127, 168}, thickness = 1));
+        Line(points = {{30.1, 83.9}, {-25.9, 83.9}, {-25.9, 12.1}}, color = {173, 127, 168}, thickness = 1));
       connect(tissueUtilization.inflow, glucose.qin) annotation (
-        Line(points={{32.1,61.9},{-25.9,61.9},{-25.9,12.1}},
-                                                        color = {173, 127, 168}, thickness = 1));
+        Line(points = {{32.1, 61.9}, {-25.9, 61.9}, {-25.9, 12.1}}, color = {173, 127, 168}, thickness = 1));
       connect(tissueUtilizationInsulinDependent.inflow, glucose.qin) annotation (
-        Line(points={{36.1,43.9},{36.1,42},{-25.9,42},{-25.9,12.1}},
-                                                                  color = {173, 127, 168}, thickness = 1));
+        Line(points = {{36.1, 43.9}, {36.1, 42}, {-25.9, 42}, {-25.9, 12.1}}, color = {173, 127, 168}, thickness = 1));
       connect(insulinDegradation.inflow, insulinProduction.outflow) annotation (
-        Line(points={{36.1,-24.1},{24,-24.1},{24,-24},{10.1,-24},{10.1,-24.1},{
-              -15.9,-24.1}},                   color = {173, 127, 168}, thickness = 1));
+        Line(points = {{36.1, -24.1}, {24, -24.1}, {24, -24}, {10.1, -24}, {10.1, -24.1}, {-15.9, -24.1}}, color = {173, 127, 168}, thickness = 1));
       connect(insulinSensor.p, insulinProduction.outflow) annotation (
-        Line(points={{14.2,-24},{0,-24},{0,-24.1},{-15.9,-24.1}},
-                                               color = {173, 127, 168}, thickness = 1));
+        Line(points = {{14.2, -24}, {0, -24}, {0, -24.1}, {-15.9, -24.1}}, color = {173, 127, 168}, thickness = 1));
       connect(insulinDegradation.inflow, insulinSensor.p) annotation (
-        Line(points={{36.1,-24.1},{26.2,-24.1},{26.2,-24},{14.2,-24}},
-                                              color = {173, 127, 168}, thickness = 1));
+        Line(points = {{36.1, -24.1}, {26.2, -24.1}, {26.2, -24}, {14.2, -24}}, color = {173, 127, 168}, thickness = 1));
       connect(glucoseSensor.conc, glucoseConc) annotation (
         Line(points = {{-15, 32}, {-4, 32}, {-4, 16}, {6, 16}}, color = {0, 0, 127}));
       connect(glucoseConc, glucoseConc) annotation (
         Line(points = {{6, 16}, {6, 16}}, color = {0, 0, 127}));
       connect(to_mU.u, insulinSensor.conc) annotation (
-        Line(points={{17.6,6},{14,6},{14,-13}},      color = {0, 0, 127}));
+        Line(points = {{17.6, 6}, {14, 6}, {14, -13}}, color = {0, 0, 127}));
       connect(to_mU.y, insulinConc) annotation (
-        Line(points={{45.2,6},{56,6}},    color = {0, 0, 127}));
+        Line(points = {{45.2, 6}, {56, 6}}, color = {0, 0, 127}));
       connect(tissueUtilizationInsulinDependent.conc, insulinSensor.conc) annotation (
-        Line(points={{46.2,48.6},{14,48.6},{14,-14},{14,-13},{14,-13}},      color = {0, 0, 127}));
+        Line(points = {{46.2, 48.6}, {14, 48.6}, {14, -14}, {14, -13}, {14, -13}}, color = {0, 0, 127}));
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={  Rectangle(lineColor = {28, 108, 200}, fillColor = {255, 213, 170},
-                fillPattern =                                                                                                                                                FillPattern.Solid, extent = {{-80, 80}, {80, -80}}), Text(fillColor = {0, 0, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, extent = {{-280, -78}, {276, -120}}, textString = "%name")}),
+        Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics = {Rectangle(lineColor = {28, 108, 200}, fillColor = {255, 213, 170}, fillPattern = FillPattern.Solid, extent = {{-80, 80}, {80, -80}}), Text(fillColor = {0, 0, 255}, fillPattern = FillPattern.Solid, extent = {{-280, -78}, {276, -120}}, textString = "%name")}),
         Diagram(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1)));
     end GIRegulationComponent;
 
@@ -450,8 +375,7 @@ package GlucoseInsulin
       connect(product.y, nu.u) annotation (
         Line(points = {{-61, -14}, {-56, -14}, {-56, -14}, {-54, -14}}, color = {0, 0, 127}));
       annotation (
-        Icon(graphics={  Rectangle(origin = {-4, 6}, fillColor = {233, 185, 110},
-                fillPattern =                                                                   FillPattern.Solid, extent = {{-96, 74}, {96, -74}}), Text(origin = {11, -84}, extent = {{-131, 16}, {131, -16}}, textString = "%name")}));
+        Icon(graphics = {Rectangle(origin = {-4, 6}, fillColor = {233, 185, 110}, fillPattern = FillPattern.Solid, extent = {{-96, 74}, {96, -74}}), Text(origin = {11, -84}, extent = {{-131, 16}, {131, -16}}, textString = "%name")}));
     end GIRegulationBlock;
   end Models;
 
@@ -459,10 +383,8 @@ package GlucoseInsulin
     connector MassConcentrationInput = input Modelica.SIunits.MassConcentration
                                                                                 "input MassConcentration as connector" annotation (
       defaultComponentName = "concentration",
-      Icon(graphics={  Polygon(points = {{-100, 100}, {100, 0}, {-100, -100}, {-100, 100}}, lineColor = {0, 0, 127}, fillColor = {0, 0, 127},
-              fillPattern =                                                                                                                                 FillPattern.Solid)}, coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.2)),
-      Diagram(coordinateSystem(preserveAspectRatio = true, initialScale = 0.2, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics={  Polygon(points = {{0, 50}, {100, 0}, {0, -50}, {0, 50}}, lineColor = {0, 0, 127}, fillColor = {0, 0, 127},
-              fillPattern =                                                                                                                                                                                                        FillPattern.Solid), Text(extent = {{-10, 85}, {-10, 60}}, lineColor = {0, 0, 127}, textString = "%name")}),
+      Icon(graphics = {Polygon(points = {{-100, 100}, {100, 0}, {-100, -100}, {-100, 100}}, lineColor = {0, 0, 127}, fillColor = {0, 0, 127}, fillPattern = FillPattern.Solid)}, coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.2)),
+      Diagram(coordinateSystem(preserveAspectRatio = true, initialScale = 0.2, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics = {Polygon(points = {{0, 50}, {100, 0}, {0, -50}, {0, 50}}, lineColor = {0, 0, 127}, fillColor = {0, 0, 127}, fillPattern = FillPattern.Solid), Text(extent = {{-10, 85}, {-10, 60}}, lineColor = {0, 0, 127}, textString = "%name")}),
       Documentation(info = "<html>
   <p>
   Connector with one output signal of type Real.
@@ -470,10 +392,8 @@ package GlucoseInsulin
   </html>"));
     connector MassFlowRateInput = input Modelica.SIunits.MassFlowRate "input MassFlowRate as connector" annotation (
       defaultComponentName = "massflowrate",
-      Icon(graphics={  Polygon(points = {{-100, 100}, {100, 0}, {-100, -100}, {-100, 100}}, lineColor = {0, 0, 127}, fillColor = {0, 0, 127},
-              fillPattern =                                                                                                                                 FillPattern.Solid)}, coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.2)),
-      Diagram(coordinateSystem(preserveAspectRatio = true, initialScale = 0.2, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics={  Polygon(points = {{0, 50}, {100, 0}, {0, -50}, {0, 50}}, lineColor = {0, 0, 127}, fillColor = {0, 0, 127},
-              fillPattern =                                                                                                                                                                                                        FillPattern.Solid), Text(extent = {{-10, 85}, {-10, 60}}, lineColor = {0, 0, 127}, textString = "%name")}),
+      Icon(graphics = {Polygon(points = {{-100, 100}, {100, 0}, {-100, -100}, {-100, 100}}, lineColor = {0, 0, 127}, fillColor = {0, 0, 127}, fillPattern = FillPattern.Solid)}, coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.2)),
+      Diagram(coordinateSystem(preserveAspectRatio = true, initialScale = 0.2, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics = {Polygon(points = {{0, 50}, {100, 0}, {0, -50}, {0, 50}}, lineColor = {0, 0, 127}, fillColor = {0, 0, 127}, fillPattern = FillPattern.Solid), Text(extent = {{-10, 85}, {-10, 60}}, lineColor = {0, 0, 127}, textString = "%name")}),
       Documentation(info = "<html>
     <p>
     Connector with one input signal of type MassFlowRate.
@@ -493,10 +413,8 @@ package GlucoseInsulin
     connector MassConcentrationOutput = output
         Modelica.SIunits.MassConcentration                                        annotation (
       defaultComponentName = "conc",
-      Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics={  Polygon(points = {{-100, 100}, {100, 0}, {-100, -100}, {-100, 100}}, lineColor = {0, 0, 127}, fillColor = {255, 255, 255},
-              fillPattern =                                                                                                                                                                                                        FillPattern.Solid)}),
-      Diagram(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics={  Polygon(points = {{-100, 50}, {0, 0}, {-100, -50}, {-100, 50}}, lineColor = {0, 0, 127}, fillColor = {255, 255, 255},
-              fillPattern =                                                                                                                                                                                                        FillPattern.Solid), Text(extent = {{30, 110}, {30, 60}}, lineColor = {0, 0, 127}, textString = "%name")}),
+      Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics = {Polygon(points = {{-100, 100}, {100, 0}, {-100, -100}, {-100, 100}}, lineColor = {0, 0, 127}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid)}),
+      Diagram(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics = {Polygon(points = {{-100, 50}, {0, 0}, {-100, -50}, {-100, 50}}, lineColor = {0, 0, 127}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid), Text(extent = {{30, 110}, {30, 60}}, lineColor = {0, 0, 127}, textString = "%name")}),
       Documentation(info = "<html>
     <p>
     Connector with one output signal of type Real.
@@ -564,13 +482,13 @@ package GlucoseInsulin
         Placement(visible = true, transformation(origin = {16, 86}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     equation
       connect(glucoseInfusion.y, healthy.glucoseInput) annotation (
-        Line(points={{-75,-2},{-64,-2},{-64,71.4},{-49.8,71.4}},    color = {0, 0, 127}));
+        Line(points = {{-75, -2}, {-64, -2}, {-64, 71.4}, {-49.8, 71.4}}, color = {0, 0, 127}));
       connect(glucoseInfusion.y, type1diabetes.glucoseInput) annotation (
-        Line(points={{-75,-2},{-64,-2},{-64,1.4},{-49.8,1.4}},    color = {0, 0, 127}));
+        Line(points = {{-75, -2}, {-64, -2}, {-64, 1.4}, {-49.8, 1.4}}, color = {0, 0, 127}));
       connect(glucoseInfusion.y, type2diabetes.glucoseInput) annotation (
-        Line(points={{-75,-2},{-64,-2},{-64,-60.6},{-47.8,-60.6}},    color = {0, 0, 127}));
+        Line(points = {{-75, -2}, {-64, -2}, {-64, -60.6}, {-47.8, -60.6}}, color = {0, 0, 127}));
       connect(giblock.in1, glucoseInfusion.y) annotation (
-        Line(points={{6,90.4},{-74,90.4},{-74,-2},{-75,-2}},      color = {0, 0, 127}));
+        Line(points = {{6, 90.4}, {-74, 90.4}, {-74, -2}, {-75, -2}}, color = {0, 0, 127}));
       annotation (
         Icon(coordinateSystem(preserveAspectRatio = false)),
         Diagram(coordinateSystem(preserveAspectRatio = false)),
@@ -600,60 +518,17 @@ package GlucoseInsulin
     model GiRegulationSchema
       annotation (
         Icon(coordinateSystem(preserveAspectRatio = false)),
-        Diagram(coordinateSystem(preserveAspectRatio = false), graphics={  Rectangle(extent = {{-22, 24}, {24, -4}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                            FillPattern.Solid), Rectangle(extent = {{-36, 78}, {24, 28}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid), Rectangle(extent = {{-60, 66}, {-36, 58}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid), Rectangle(extent = {{-38, 64}, {-32, 60}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid), Rectangle(extent = {{-60, 64}, {-54, 60}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid), Rectangle(extent = {{-12, 4}, {12, -4}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, origin = {36, 64}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, origin = {45, 64}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, origin = {27, 64}, rotation = 180), Rectangle(extent = {{-12, 4}, {12, -4}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, origin = {36, 50}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, origin = {45, 50}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, origin = {27, 50}, rotation = 180), Rectangle(extent = {{-12, 4}, {12, -4}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, origin = {36, 38}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, origin = {45, 38}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, origin = {27, 38}, rotation = 180), Line(points = {{-64, 62}, {-54, 62}}, color = {0, 0, 0}, arrow = {Arrow.None, Arrow.Filled}, thickness = 0.5), Text(extent = {{-84, 70}, {-62, 56}}, lineColor = {0, 0, 0},
-                lineThickness =                                                                                                                                                                                                        1, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, textString = "Glucose Input
-    Flow Rate"), Text(extent = {{-16, 66}, {10, 50}}, lineColor = {0, 0, 0},
-                lineThickness =                                                              1, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                              FillPattern.Solid, textString = "Plasma Glucose
-    Concentration"), Text(extent = {{52, 72}, {80, 58}}, lineColor = {0, 0, 0},
-                lineThickness =                                                                 0.5, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                   FillPattern.Solid, textString = "Renal Loss Rate"), Text(extent = {{50, 56}, {88, 46}}, lineColor = {0, 0, 0},
-                lineThickness =                                                                                                                                                                                                        0.5, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, textString = "Tissue Utilization Rate
-    (insulin independent)"), Text(extent = {{50, 42}, {88, 32}}, lineColor = {0, 0, 0},
-                lineThickness =                                                                         0.5, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                           FillPattern.Solid, textString = "Tissue Utilization Rate
-    (insulin dependent)"), Line(points = {{40, 64}, {50, 64}}, color = {0, 0, 0}, arrow = {Arrow.None, Arrow.Filled}, thickness = 0.5), Line(points = {{40, 50}, {50, 50}}, color = {0, 0, 0}, arrow = {Arrow.None, Arrow.Filled}, thickness = 0.5), Line(points = {{40, 38}, {50, 38}}, color = {0, 0, 0}, arrow = {Arrow.None, Arrow.Filled}, thickness = 0.5), Rectangle(extent = {{-88, 18}, {-50, 0}}, lineColor = {28, 108, 200}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid), Text(extent = {{-84, 14}, {-54, 6}}, lineColor = {0, 0, 0}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, textString = "Pancreas
-    Beta Cells"), Rectangle(extent = {{-50, 12}, {-22, 4}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                   FillPattern.Solid), Rectangle(extent = {{-24, 10}, {-18, 6}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid), Rectangle(extent = {{-52, 10}, {-46, 6}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid), Line(points = {{-44, 8}, {-34, 8}}, color = {0, 0, 0}, arrow = {Arrow.None, Arrow.Filled}, thickness = 0.5), Text(extent = {{-12, 20}, {10, 6}}, lineColor = {0, 0, 0},
-                lineThickness =                                                                                                                                                                                                        1, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, textString = "Plasma Insulin
-    Concentration"), Ellipse(extent = {{22, 62}, {24, 60}}, lineColor = {0, 0, 0}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                 FillPattern.Solid,
-                lineThickness =                                                                                                                                  0.5), Line(points = {{22, 66}, {24, 62}}, color = {0, 0, 0}, thickness = 0.5), Line(points = {{22, 40}, {24, 36}}, color = {0, 0, 0}, thickness = 0.5), Ellipse(extent = {{22, 36}, {24, 34}}, lineColor = {0, 0, 0}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid,
-                lineThickness =                                                                                                                                                                                                        0.5), Ellipse(extent = {{-22, 12}, {-20, 10}}, lineColor = {0, 0, 0}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid,
-                lineThickness =                                                                                                                                                                                                        0.5), Line(points = {{-20, 12}, {-18, 8}}, color = {0, 0, 0}, thickness = 0.5), Text(extent = {{-48, 24}, {-24, 8}}, lineColor = {0, 0, 0},
-                lineThickness =                                                                                                                                                                                                        1, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, textString = "Pancreatic Insulin
-    Production Rate"), Rectangle(extent = {{-12, 4}, {12, -4}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                       FillPattern.Solid, origin = {36, 10}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, origin = {45, 10}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, origin = {27, 10}, rotation = 180), Text(extent = {{52, 16}, {90, 6}}, lineColor = {0, 0, 0},
-                lineThickness =                                                                                                                                                                                                        0.5, fillColor = {213, 170, 255},
-                fillPattern =                                                                                                                                                                                                        FillPattern.Solid, textString = "Insulin Destruction Rate"), Line(points = {{40, 10}, {50, 10}}, color = {0, 0, 0}, arrow = {Arrow.None, Arrow.Filled}, thickness = 0.5), Line(points = {{-20, 50}, {-58, 42}, {-60, 18}}, color = {0, 0, 0}, smooth = Smooth.Bezier, arrow = {Arrow.None, Arrow.Filled}, pattern = LinePattern.Dash), Line(points = {{2, 48}, {-18, 34}, {-22, 14}}, color = {0, 0, 0}, smooth = Smooth.Bezier, arrow = {Arrow.None, Arrow.Filled}, pattern = LinePattern.Dash), Line(points = {{20, 12}, {28, 22}, {26, 34}}, color = {0, 0, 0}, smooth = Smooth.Bezier, arrow = {Arrow.None, Arrow.Filled}, pattern = LinePattern.Dash)}),
+        Diagram(coordinateSystem(preserveAspectRatio = false), graphics = {Rectangle(extent = {{-22, 24}, {24, -4}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid), Rectangle(extent = {{-36, 78}, {24, 28}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid), Rectangle(extent = {{-60, 66}, {-36, 58}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid), Rectangle(extent = {{-38, 64}, {-32, 60}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid), Rectangle(extent = {{-60, 64}, {-54, 60}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid), Rectangle(extent = {{-12, 4}, {12, -4}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, origin = {36, 64}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, origin = {45, 64}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, origin = {27, 64}, rotation = 180), Rectangle(extent = {{-12, 4}, {12, -4}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, origin = {36, 50}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, origin = {45, 50}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, origin = {27, 50}, rotation = 180), Rectangle(extent = {{-12, 4}, {12, -4}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, origin = {36, 38}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, origin = {45, 38}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, origin = {27, 38}, rotation = 180), Line(points = {{-64, 62}, {-54, 62}}, color = {0, 0, 0}, arrow = {Arrow.None, Arrow.Filled}, thickness = 0.5), Text(extent = {{-84, 70}, {-62, 56}}, lineColor = {0, 0, 0}, lineThickness = 1, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, textString = "Glucose Input
+    Flow Rate"), Text(extent = {{-16, 66}, {10, 50}}, lineColor = {0, 0, 0}, lineThickness = 1, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, textString = "Plasma Glucose
+    Concentration"), Text(extent = {{52, 72}, {80, 58}}, lineColor = {0, 0, 0}, lineThickness = 0.5, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, textString = "Renal Loss Rate"), Text(extent = {{50, 56}, {88, 46}}, lineColor = {0, 0, 0}, lineThickness = 0.5, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, textString = "Tissue Utilization Rate
+    (insulin independent)"), Text(extent = {{50, 42}, {88, 32}}, lineColor = {0, 0, 0}, lineThickness = 0.5, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, textString = "Tissue Utilization Rate
+    (insulin dependent)"), Line(points = {{40, 64}, {50, 64}}, color = {0, 0, 0}, arrow = {Arrow.None, Arrow.Filled}, thickness = 0.5), Line(points = {{40, 50}, {50, 50}}, color = {0, 0, 0}, arrow = {Arrow.None, Arrow.Filled}, thickness = 0.5), Line(points = {{40, 38}, {50, 38}}, color = {0, 0, 0}, arrow = {Arrow.None, Arrow.Filled}, thickness = 0.5), Rectangle(extent = {{-88, 18}, {-50, 0}}, lineColor = {28, 108, 200}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid), Text(extent = {{-84, 14}, {-54, 6}}, lineColor = {0, 0, 0}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, textString = "Pancreas
+    Beta Cells"), Rectangle(extent = {{-50, 12}, {-22, 4}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid), Rectangle(extent = {{-24, 10}, {-18, 6}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid), Rectangle(extent = {{-52, 10}, {-46, 6}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid), Line(points = {{-44, 8}, {-34, 8}}, color = {0, 0, 0}, arrow = {Arrow.None, Arrow.Filled}, thickness = 0.5), Text(extent = {{-12, 20}, {10, 6}}, lineColor = {0, 0, 0}, lineThickness = 1, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, textString = "Plasma Insulin
+    Concentration"), Ellipse(extent = {{22, 62}, {24, 60}}, lineColor = {0, 0, 0}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, lineThickness = 0.5), Line(points = {{22, 66}, {24, 62}}, color = {0, 0, 0}, thickness = 0.5), Line(points = {{22, 40}, {24, 36}}, color = {0, 0, 0}, thickness = 0.5), Ellipse(extent = {{22, 36}, {24, 34}}, lineColor = {0, 0, 0}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, lineThickness = 0.5), Ellipse(extent = {{-22, 12}, {-20, 10}}, lineColor = {0, 0, 0}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, lineThickness = 0.5), Line(points = {{-20, 12}, {-18, 8}}, color = {0, 0, 0}, thickness = 0.5), Text(extent = {{-48, 24}, {-24, 8}}, lineColor = {0, 0, 0}, lineThickness = 1, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, textString = "Pancreatic Insulin
+    Production Rate"), Rectangle(extent = {{-12, 4}, {12, -4}}, lineColor = {0, 0, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, origin = {36, 10}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, origin = {45, 10}, rotation = 180), Rectangle(extent = {{-3, 2}, {3, -2}}, lineColor = {213, 170, 255}, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, origin = {27, 10}, rotation = 180), Text(extent = {{52, 16}, {90, 6}}, lineColor = {0, 0, 0}, lineThickness = 0.5, fillColor = {213, 170, 255}, fillPattern = FillPattern.Solid, textString = "Insulin Destruction Rate"), Line(points = {{40, 10}, {50, 10}}, color = {0, 0, 0}, arrow = {Arrow.None, Arrow.Filled}, thickness = 0.5), Line(points = {{-20, 50}, {-58, 42}, {-60, 18}}, color = {0, 0, 0}, smooth = Smooth.Bezier, arrow = {Arrow.None, Arrow.Filled}, pattern = LinePattern.Dash), Line(points = {{2, 48}, {-18, 34}, {-22, 14}}, color = {0, 0, 0}, smooth = Smooth.Bezier, arrow = {Arrow.None, Arrow.Filled}, pattern = LinePattern.Dash), Line(points = {{20, 12}, {28, 22}, {26, 34}}, color = {0, 0, 0}, smooth = Smooth.Bezier, arrow = {Arrow.None, Arrow.Filled}, pattern = LinePattern.Dash)}),
         Documentation(info = "<html><head></head><body><br></body></html>"));
     end GiRegulationSchema;
+
   end Test;
   annotation (
     Documentation(info = "<html><head></head><body>The Glucose-Insulin regulation model as presented by Stolwik and Hardy\cite{stolwijk1974regulation} and further described by Khoo \cite{khoo2000} consists of glucose compartment and insulin compartment. Each compartment has inflow and one or several outflows. Insulin production is triggered by glucose concentration and insulin influence rapidly the tissue utilization rate (insulin dependent)<div><br></div><div>Components - contains supporting user defined components</div><div>Models - contains implementation using different&nbsp;</div><div>Interfaces - input,output and acausal connectors</div><div>Types - custom types&nbsp;</div><div>Test - experiment with models - setting healthy, diabetes type 1 and 2</div></body></html>"));

@@ -184,22 +184,22 @@ package Burkhoff
           origin={50,-4})));
   equation
     connect(AOV.q_in, LV.q_in[1]) annotation (Line(
-        points={{90,-4},{102,-4}},
+        points={{90,-4},{101.7,-4}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(LV.q_in[1], MV.q_out) annotation (Line(
-        points={{102,-4},{112,-4}},
+        points={{101.7,-4},{112,-4}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(TV.q_out, RV.q_in[1]) annotation (Line(
-        points={{14,-40},{26,-40}},
+        points={{14,-40},{25.7,-40}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(RV.q_in[1], PV.q_in) annotation (Line(
-        points={{26,-40},{40,-40}},
+        points={{25.7,-40},{40,-40}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
@@ -264,12 +264,12 @@ package Burkhoff
         color={0,0,127},
         smooth=Smooth.None));
     connect(RA.q_in[1], TV.q_in) annotation (Line(
-        points={{-50,-40},{-6,-40}},
+        points={{-50.3,-40},{-6,-40}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(LA.q_in[1], MV.q_in) annotation (Line(
-        points={{168,-4},{132,-4}},
+        points={{167.7,-4},{132,-4}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
@@ -279,7 +279,7 @@ package Burkhoff
         thickness=1,
         smooth=Smooth.None));
     connect(Rvp.q_out, LA.q_in[1]) annotation (Line(
-        points={{186,8},{186,-4},{168,-4}},
+        points={{186,8},{186,-4},{167.7,-4}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
@@ -319,7 +319,7 @@ package Burkhoff
         thickness=1,
         smooth=Smooth.None));
     connect(Rvs.q_out, RA.q_in[1]) annotation (Line(
-        points={{-64,-40},{-50,-40}},
+        points={{-64,-40},{-50.3,-40}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
@@ -328,19 +328,19 @@ package Burkhoff
         color={0,0,127},
         smooth=Smooth.None));
     connect(LVElastance.Ct, LV.compliance) annotation (Line(
-        points={{103.6,17.4},{103.6,17.21},{102,17.21},{102,4}},
+        points={{103.6,17.4},{103.6,17.21},{102,17.21},{102,6}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(LAElastance.Ct, LA.compliance) annotation (Line(
-        points={{169.7,25.12},{169.7,18},{168,18},{168,4}},
+        points={{169.7,25.12},{169.7,18},{168,18},{168,6}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(RVElastance.Ct, RV.compliance) annotation (Line(
-        points={{28.3,-12.6},{28.3,-25.79},{26,-25.79},{26,-32}},
+        points={{28.3,-12.6},{28.3,-25.79},{26,-25.79},{26,-30}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(RAElastance.Ct, RA.compliance) annotation (Line(
-        points={{-40.4,-16.6},{-40.4,-26},{-50,-26},{-50,-32}},
+        points={{-40.4,-16.6},{-40.4,-26},{-50,-26},{-50,-30}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(RV.StressedVolume, RVElastance.Vs) annotation (Line(
@@ -348,12 +348,12 @@ package Burkhoff
         color={0,0,127},
         smooth=Smooth.None));
     connect(LV.q_in[1], pressureMeasure.q_in) annotation (Line(
-        points={{102,-4},{103.6,-4},{103.6,-20}},
+        points={{101.7,-4},{103.6,-4},{103.6,-20}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(pressureMeasure1.q_in, RV.q_in[1]) annotation (Line(
-        points={{21.8,-56},{24,-56},{24,-40},{26,-40}},
+        points={{21.8,-56},{24,-56},{24,-40},{25.7,-40}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
@@ -370,11 +370,11 @@ package Burkhoff
         color={0,0,127},
         smooth=Smooth.None));
     connect(RV.externalPressure, add2.y) annotation (Line(
-        points={{34,-32},{34,-28.3},{35,-28.3}},
+        points={{34,-30},{34,-28.3},{35,-28.3}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(add.y, RA.externalPressure) annotation (Line(
-        points={{-34.4,-32},{-42,-32}},
+        points={{-34.4,-32},{-38,-32},{-38,-30},{-42,-30}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(RAElastance.Pt, add.u3) annotation (Line(
@@ -383,11 +383,11 @@ package Burkhoff
         smooth=Smooth.None));
 
     connect(LV.externalPressure, add3.y) annotation (Line(
-        points={{110,4},{110,7.7},{109,7.7}},
+        points={{110,6},{110,7.7},{109,7.7}},
         color={0,190,190},
         smooth=Smooth.None));
     connect(LA.externalPressure, add1.y) annotation (Line(
-        points={{176,4},{176,9.6}},
+        points={{176,6},{176,9.6}},
         color={0,190,190},
         smooth=Smooth.None));
     connect(pressureMeasure.pressure, LAVGain.u) annotation (Line(
@@ -753,22 +753,22 @@ package Burkhoff
         annotation (Placement(transformation(extent={{-14,-58},{0,-48}})));
     equation
       connect(rightHeartInflow, RA.q_in[1]) annotation (Line(
-          points={{-100,40},{-74,40},{-74,42},{-50,42}},
+          points={{-100,40},{-74,40},{-74,42},{-50.3,42}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(RA.q_in[1], TV.q_in) annotation (Line(
-          points={{-50,42},{-6,42}},
+          points={{-50.3,42},{-6,42}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(TV.q_out, RV.q_in[1]) annotation (Line(
-          points={{14,42},{26,42}},
+          points={{14,42},{25.7,42}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(RV.q_in[1], PV.q_in) annotation (Line(
-          points={{26,42},{40,42}},
+          points={{25.7,42},{40,42}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
@@ -778,31 +778,31 @@ package Burkhoff
           thickness=1,
           smooth=Smooth.None));
       connect(leftHeartInflow, LA.q_in[1]) annotation (Line(
-          points={{100,-20},{84,-20},{84,-18},{64,-18},{64,-40},{40,-40}},
+          points={{100,-20},{84,-20},{84,-18},{64,-18},{64,-40},{39.7,-40}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(LA.q_in[1], MV.q_in) annotation (Line(
-          points={{40,-40},{4,-40}},
+          points={{39.7,-40},{4,-40}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(MV.q_out, LV.q_in[1]) annotation (Line(
-          points={{-16,-40},{-28,-40}},
+          points={{-16,-40},{-28.3,-40}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(LV.q_in[1], AOV.q_in) annotation (Line(
-          points={{-28,-40},{-42,-40}},
+          points={{-28.3,-40},{-42,-40}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(ventricularElastance1.Ct, LV.compliance) annotation (Line(
-          points={{-29.9,-18.18},{-28,-18.18},{-28,-32}},
+          points={{-29.9,-18.18},{-28,-18.18},{-28,-30}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(ventricularElastance.Ct, RV.compliance) annotation (Line(
-          points={{38.1,65.96},{38.1,63.65},{26,63.65},{26,50}},
+          points={{38.1,65.96},{38.1,63.65},{26,63.65},{26,52}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(heartRate.y, atrialElastance.HR) annotation (Line(
@@ -851,11 +851,11 @@ package Burkhoff
           smooth=Smooth.None));
       connect(ventricularElastance1.Pt, LV.externalPressure) annotation (
           Line(
-          points={{-21.06,-18.18},{-20,-18.18},{-20,-32}},
+          points={{-21.06,-18.18},{-20,-18.18},{-20,-30}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(LA.externalPressure, add.y) annotation (Line(
-          points={{48,-32},{50,-32},{50,-26.5},{51,-26.5}},
+          points={{48,-30},{50,-30},{50,-26.5},{51,-26.5}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(atrialElastance1.HR, heartRate.y) annotation (Line(
@@ -867,7 +867,7 @@ package Burkhoff
           color={0,0,127},
           smooth=Smooth.None));
       connect(add1.y, RA.externalPressure) annotation (Line(
-          points={{-41,53.5},{-41,53.75},{-42,53.75},{-42,50}},
+          points={{-41,53.5},{-41,53.75},{-42,53.75},{-42,52}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(add1.u1, RAVGain.y) annotation (Line(
@@ -879,7 +879,7 @@ package Burkhoff
           color={0,0,127},
           smooth=Smooth.None));
       connect(pressureMeasure1.q_in, LV.q_in[1]) annotation (Line(
-          points={{-9.8,-56},{-24,-56},{-24,-40},{-28,-40}},
+          points={{-9.8,-56},{-24,-56},{-24,-40},{-28.3,-40}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
@@ -888,7 +888,7 @@ package Burkhoff
           color={0,0,127},
           smooth=Smooth.None));
       connect(pressureMeasure.q_in, RV.q_in[1]) annotation (Line(
-          points={{13.8,54.4},{14,54.4},{14,46},{26,46},{26,42}},
+          points={{13.8,54.4},{14,54.4},{14,46},{25.7,46},{25.7,42}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
@@ -897,7 +897,7 @@ package Burkhoff
           color={0,0,127},
           smooth=Smooth.None));
       connect(RA.compliance, atrialElastance.Ct) annotation (Line(
-          points={{-50,50},{-50,58},{-59.2,58},{-59.2,64.1}},
+          points={{-50,52},{-50,58},{-59.2,58},{-59.2,64.1}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(atrialElastance1.Pt, add.u2) annotation (Line(
@@ -905,16 +905,16 @@ package Burkhoff
           color={0,0,127},
           smooth=Smooth.None));
       connect(LA.compliance, atrialElastance1.Ct) annotation (Line(
-          points={{40,-32},{38,-32},{38,-8.18},{36.1,-8.18}},
+          points={{40,-30},{38,-30},{38,-8.18},{36.1,-8.18}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(RV.externalPressure, ventricularElastance.Pt) annotation (
           Line(
-          points={{34,50},{34,56},{46.94,56},{46.94,65.96}},
+          points={{34,52},{34,56},{46.94,56},{46.94,65.96}},
           color={0,0,127},
           smooth=Smooth.None));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-              extent={{-100,-100},{100,100}}), graphics), Icon(graphics={
+              extent={{-100,-100},{100,100}})),           Icon(graphics={
               Text(   extent={{-100,60},{100,100}},
               lineColor={0,0,0},
               textString="Burkhoff")}));
