@@ -727,8 +727,6 @@ package Burkhoff
       replaceable Physiolibrary.Types.Constants.FrequencyConst heartRate(k=
             1.3333333333333)
         annotation (Placement(transformation(extent={{-98,8},{-84,22}})));
-      Control.BloodFlowMeasurement bloodFlowMeasurement annotation (
-          Placement(transformation(extent={{-76,-50},{-96,-30}})));
       Modelica.Blocks.Math.Add add annotation (Placement(transformation(
             extent={{-5,-5},{5,5}},
             rotation=270,
@@ -834,21 +832,6 @@ package Burkhoff
               -78.24,89.45}},
           color={0,0,127},
           smooth=Smooth.None));
-      connect(bloodFlowMeasurement.q_in, AOV.q_out) annotation (Line(
-          points={{-76,-40},{-62,-40}},
-          color={0,0,0},
-          thickness=1,
-          smooth=Smooth.None));
-      connect(bloodFlowMeasurement.q_out, leftHeartOutflow) annotation (
-          Line(
-          points={{-96,-40},{-100,-40},{-100,-20}},
-          color={0,0,0},
-          thickness=1,
-          smooth=Smooth.None));
-      connect(bloodFlowMeasurement.HR, heartRate.y) annotation (Line(
-          points={{-80,-30},{-82,-30},{-82,15},{-82.25,15}},
-          color={0,0,127},
-          smooth=Smooth.None));
       connect(ventricularElastance1.Pt, LV.externalPressure) annotation (
           Line(
           points={{-21.06,-18.18},{-20,-18.18},{-20,-30}},
@@ -913,6 +896,10 @@ package Burkhoff
           points={{34,52},{34,56},{46.94,56},{46.94,65.96}},
           color={0,0,127},
           smooth=Smooth.None));
+      connect(leftHeartOutflow, AOV.q_out) annotation (Line(
+          points={{-100,-20},{-100,-40},{-62,-40}},
+          color={0,0,0},
+          thickness=1));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
               extent={{-100,-100},{100,100}})),           Icon(graphics={
               Text(   extent={{-100,60},{100,100}},
