@@ -18,7 +18,6 @@ package Control "models of control mechanism and additional components"
             quantity="EPO Internal Energy",
             unit="J",
             displayUnit="cal/iu")));
-
   model Baroreflex
     extends Cardiovascular.Interfaces.Controlled.ShortTermControl;
   /*  Physiolibrary.Types.BusConnector busConnector annotation (Placement(
@@ -27,14 +26,7 @@ package Control "models of control mechanism and additional components"
     Baroreceptor baroreceptor(activationDelay(displayUnit="s"))
       annotation (Placement(transformation(extent={{18,-54},{80,18}})));
   equation
-    connect(baroreceptor.RS, busConnector.peripheralconductance)
-      annotation (Line(
-        points={{25.44,-26.64},{-8,-26.64},{-8,34}},
-        color={0,0,127},
-        smooth=Smooth.None), Text(
-        string="%second",
-        index=1,
-        extent={{6,3},{6,3}}));
+
     connect(baroreceptor.evright, busConnector.rvcompliance) annotation (
         Line(
         points={{25.44,-14.4},{-8,-14.4},{-8,34}},
@@ -66,18 +58,22 @@ package Control "models of control mechanism and additional components"
         string="%second",
         index=1,
         extent={{6,3},{6,3}}));
-    connect(baroreceptor.evenacava, busConnector.venacavacompliance)
-      annotation (Line(
-        points={{24.82,-38.88},{-8,-38.88},{-8,34}},
-        color={0,0,127},
-        smooth=Smooth.None), Text(
+
+    connect(baroreceptor.RS, busConnector.peripheralresistance) annotation (Line(
+          points={{25.44,-26.64},{-8,-26.64},{-8,34}}, color={0,0,127}), Text(
         string="%second",
         index=1,
-        extent={{6,3},{6,3}}));
+        extent={{-6,3},{-6,3}},
+        horizontalAlignment=TextAlignment.Right));
+    connect(baroreceptor.evenacava, busConnector.venacavaelastance) annotation (
+        Line(points={{24.82,-38.88},{-8,-38.88},{-8,34}}, color={0,0,127}), Text(
+        string="%second",
+        index=1,
+        extent={{-6,3},{-6,3}},
+        horizontalAlignment=TextAlignment.Right));
     annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
               -100},{100,100}}), graphics), Diagram(coordinateSystem(
-            preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
-          graphics));
+            preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
   end Baroreflex;
 
   model Baroreceptor
@@ -128,13 +124,13 @@ package Control "models of control mechanism and additional components"
           origin={-80,42})));
     Physiolibrary.Types.HydraulicElastance evrightref;
     Physiolibrary.Types.HydraulicElastance evleftref;
-    Physiolibrary.Types.RealIO.HydraulicComplianceOutput evenacava
+    Physiolibrary.Types.RealIO.HydraulicElastanceOutput evenacava
       annotation (Placement(transformation(extent={{78,-54},{98,-34}}),
           iconTransformation(
           extent={{-16,-16},{16,16}},
           rotation=180,
           origin={-78,-58})));
-    Physiolibrary.Types.RealIO.HydraulicConductanceOutput RS annotation (
+    Physiolibrary.Types.RealIO.HydraulicResistanceOutput RS annotation (
         Placement(transformation(extent={{80,-90},{100,-70}}),
           iconTransformation(
           extent={{-14,-14},{14,14}},
@@ -172,9 +168,9 @@ package Control "models of control mechanism and additional components"
     evleftref = 1/evleft;
     //recount to SI
     H3.u = deadZone.y;
-    evenacava = EV0venacava + H3.y*1e-006/133.322387415;
+    evenacava = 1/(EV0venacava + H3.y*1e-006/133.322387415);
     H4.u = deadZone.y;
-    RS = 1/(RS0 + H4.y*1000000.0*133.322387415);
+    RS = (RS0 + H4.y*1000000.0*133.322387415);
     //recount to conductance
     annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
               -100},{100,100}}), graphics={Ellipse(

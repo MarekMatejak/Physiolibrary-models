@@ -212,44 +212,43 @@ package Complex
 
           parameter Pressure SA_pRef
             "Reference pressure for systemic arteries";
-          parameter Cardiovascular.Types.Area SA_ARef
+          parameter Physiolibrary.Types.Area SA_ARef
             "Reference cavity cross-sectional area for systemic arteries";
-          parameter Cardiovascular.Types.Area SA_AW
+          parameter Physiolibrary.Types.Area SA_AW
             "Wall cross-sectional area for systemic arteries";
-          parameter Cardiovascular.Types.Length SA_l
+          parameter Physiolibrary.Types.Length SA_l
             "Length of systemic arteries";
           parameter Real SA_k
             "Stiffness non-linearity coefficient for systemic arteries";
 
           parameter Pressure SV_pRef
             "Reference pressure for systemic veins";
-          parameter Cardiovascular.Types.Area SV_ARef
+          parameter Physiolibrary.Types.Area SV_ARef
             "Reference cavity cross-sectional area for systemic veins";
-          parameter Cardiovascular.Types.Area SV_AW
+          parameter Physiolibrary.Types.Area SV_AW
             "Wall cross-sectional area for systemic veins";
-          parameter Cardiovascular.Types.Length SV_l "Length of systemic veins";
+          parameter Physiolibrary.Types.Length SV_l "Length of systemic veins";
           parameter Real SV_k
             "Stiffness non-linearity coefficient for systemic veins";
 
           parameter Pressure PA_pRef
             "Reference pressure for pulmonary arteries";
-          parameter Cardiovascular.Types.Area PA_ARef
+          parameter Physiolibrary.Types.Area PA_ARef
             "Reference cavity cross-sectional area for pulmonary arteries";
-          parameter Cardiovascular.Types.Area PA_AW
+          parameter Physiolibrary.Types.Area PA_AW
             "Wall cross-sectional area for pulmonary arteries";
-          parameter Cardiovascular.Types.Length PA_l
+          parameter Physiolibrary.Types.Length PA_l
             "Length of pulmonary arteries";
           parameter Real PA_k
             "Stiffness non-linearity coefficient for pulmonary arteries";
 
           parameter Pressure PV_pRef
             "Reference pressure for pulmonary veins";
-          parameter Cardiovascular.Types.Area PV_ARef
+          parameter Physiolibrary.Types.Area PV_ARef
             "Reference cavity cross-sectional area for pulmonary veins";
-          parameter Cardiovascular.Types.Area PV_AW
+          parameter Physiolibrary.Types.Area PV_AW
             "Wall cross-sectional area for pulmonary veins";
-          parameter Cardiovascular.Types.Length PV_l
-            "Length of pulmonary veins";
+          parameter Physiolibrary.Types.Length PV_l "Length of pulmonary veins";
           parameter Real PV_k
             "Stiffness non-linearity coefficient for pulmonary veins";
 
@@ -258,9 +257,9 @@ package Complex
           parameter HydraulicResistance PC_R
             "Resistence of pulmonary capillaries";
 
-          parameter Cardiovascular.Types.Area vLAV_ARef
+          parameter Physiolibrary.Types.Area vLAV_ARef
             "Reference cross-sectional area of left atrio-ventricular valve";
-          parameter Cardiovascular.Types.Length vLAV_l
+          parameter Physiolibrary.Types.Length vLAV_l
             "Length of left atrio-ventricular valve";
           parameter Real vLAV_Ko
             "Time coefficient for opening of left atrio-ventricular valve";
@@ -275,9 +274,9 @@ package Complex
           parameter Pressure vLAV_dpC
             "Closing pressure for left atrio-ventricular valve";
 
-          parameter Cardiovascular.Types.Area vRAV_ARef
+          parameter Physiolibrary.Types.Area vRAV_ARef
             "Reference cross-sectional area of right atrio-ventricular valve";
-          parameter Cardiovascular.Types.Length vRAV_l
+          parameter Physiolibrary.Types.Length vRAV_l
             "Length of right atrio-ventricular valve";
           parameter Real vRAV_Ko
             "Time coefficient for opening of right atrio-ventricular valve";
@@ -292,9 +291,9 @@ package Complex
           parameter Pressure vRAV_dpC
             "Closing pressure for right atrio-ventricular valve";
 
-          parameter Cardiovascular.Types.Area vSA_ARef
+          parameter Physiolibrary.Types.Area vSA_ARef
             "Reference cross-sectional area of aortic valve";
-          parameter Cardiovascular.Types.Length vSA_l "Length of aortic valve";
+          parameter Physiolibrary.Types.Length vSA_l "Length of aortic valve";
           parameter Real vSA_Ko
             "Time coefficient for opening of aortic valve";
           parameter Real vSA_Kc
@@ -305,10 +304,9 @@ package Complex
           parameter Pressure vSA_dpO "Opening pressure for aortic valve";
           parameter Pressure vSA_dpC "Closing pressure for aortic valve";
 
-          parameter Cardiovascular.Types.Area vPA_ARef
+          parameter Physiolibrary.Types.Area vPA_ARef
             "Reference cross-sectional area of pulmonary valve";
-          parameter Cardiovascular.Types.Length vPA_l
-            "Length of pulmonary valve";
+          parameter Physiolibrary.Types.Length vPA_l "Length of pulmonary valve";
           parameter Real vPA_Ko
             "Time coefficient for opening of pulmonary valve";
           parameter Real vPA_Kc
@@ -319,9 +317,9 @@ package Complex
           parameter Pressure vPA_dpO "Opening pressure for pulmonary valve";
           parameter Pressure vPA_dpC "Closing pressure for pulmonary valve";
 
-          parameter Cardiovascular.Types.Area vSV_ARef
+          parameter Physiolibrary.Types.Area vSV_ARef
             "Reference cross-sectional area of left atrial inlet";
-          parameter Cardiovascular.Types.Length vSV_l
+          parameter Physiolibrary.Types.Length vSV_l
             "Length of left atrial inlet";
           parameter Real vSV_Ko
             "Time coefficient for opening of left atrial inlet";
@@ -336,9 +334,9 @@ package Complex
           parameter Pressure vSV_dpC
             "Closing pressure for left atrial inlet";
 
-          parameter Cardiovascular.Types.Area vPV_ARef
+          parameter Physiolibrary.Types.Area vPV_ARef
             "Reference cross-sectional area of right atrial inlet";
-          parameter Cardiovascular.Types.Length vPV_l
+          parameter Physiolibrary.Types.Length vPV_l
             "Length of right atrial inlet";
           parameter Real vPV_Ko
             "Time coefficient for opening of right atrial inlet";
@@ -354,9 +352,9 @@ package Complex
             "Closing pressure for right atrial inlet";
 
           parameter Volume RA_Am "Mid-wall area of right atrium";
-          parameter Cardiovascular.Types.Area RA_AmRef
+          parameter Physiolibrary.Types.Area RA_AmRef
             "Reference mid-wall area of right atrium";
-          parameter Cardiovascular.Types.Area RA_Am0
+          parameter Physiolibrary.Types.Area RA_Am0
             "Dead space mid-wall area of right atrium";
           parameter Volume RA_VW "Wall volume of right atrium";
           parameter Pressure RA_sigmaPRef
@@ -371,9 +369,9 @@ package Complex
             "Activation delay fraction of cardiac cycle duration for right atrium";
 
           parameter Volume LA_Am "Mid-wall area of left atrium";
-          parameter Cardiovascular.Types.Area LA_AmRef
+          parameter Physiolibrary.Types.Area LA_AmRef
             "Reference mid-wall area of left atrium";
-          parameter Cardiovascular.Types.Area LA_Am0
+          parameter Physiolibrary.Types.Area LA_Am0
             "Dead space mid-wall area of left atrium";
           parameter Volume LA_VW "Wall volume of left atrium";
           parameter Pressure LA_sigmaPRef
@@ -387,11 +385,11 @@ package Complex
           parameter Real LA_tDelay_CycleFraction
             "Activation delay fraction of cardiac cycle duration for left atrium";
 
-          parameter Cardiovascular.Types.Area LW_EAmRef
+          parameter Physiolibrary.Types.Area LW_EAmRef
             "Correctional coefficient of ventricle geometry for left ventricular wall";
-          parameter Cardiovascular.Types.Area LW_AmRef
+          parameter Physiolibrary.Types.Area LW_AmRef
             "Reference mid-wall area of left ventricular wall";
-          parameter Cardiovascular.Types.Area LW_Am0
+          parameter Physiolibrary.Types.Area LW_Am0
             "Dead space mid-wall area of left ventricular wall";
           parameter Volume LW_VW "Wall volume of left ventricular wall";
           parameter Pressure LW_sigmaPRef
@@ -405,11 +403,11 @@ package Complex
           parameter Real LW_tDelay_CycleFraction
             "Activation delay fraction of cardiac cycle duration for left ventricular wall";
 
-          parameter Cardiovascular.Types.Area SW_EAmRef
+          parameter Physiolibrary.Types.Area SW_EAmRef
             "Correctional coefficient of ventricle geometry for sepal wall";
-          parameter Cardiovascular.Types.Area SW_AmRef
+          parameter Physiolibrary.Types.Area SW_AmRef
             "Reference mid-wall area of sepal wall";
-          parameter Cardiovascular.Types.Area SW_Am0
+          parameter Physiolibrary.Types.Area SW_Am0
             "Dead space mid-wall area of sepal wall";
           parameter Volume SW_VW "Wall volume of sepal wall";
           parameter Pressure SW_sigmaPRef
@@ -423,11 +421,11 @@ package Complex
           parameter Real SW_tDelay_CycleFraction
             "Activation delay fraction of cardiac cycle duration for sepal wall";
 
-          parameter Cardiovascular.Types.Area RW_EAmRef
+          parameter Physiolibrary.Types.Area RW_EAmRef
             "Correctional coefficient of ventricle geometry for right ventricular wall";
-          parameter Cardiovascular.Types.Area RW_AmRef
+          parameter Physiolibrary.Types.Area RW_AmRef
             "Reference mid-wall area of right ventricular wall";
-          parameter Cardiovascular.Types.Area RW_Am0
+          parameter Physiolibrary.Types.Area RW_Am0
             "Dead space mid-wall area of right ventricular wall";
           parameter Volume RW_VW "Wall volume of right ventricular wall";
           parameter Pressure RW_sigmaPRef
@@ -652,13 +650,13 @@ package Complex
           parameter Cardiovascular.Types.CannulaPlacement ECMO_cannulaPlacement=
               CannulaPlacement.ascendingAorta
             "Insertion location of ECMO cannula (arterial trees only)";
-          parameter Cardiovascular.Types.Length ECMO_cannulaLength=0.15
+          parameter Physiolibrary.Types.Length ECMO_cannulaLength=0.15
             "Length of ECMO cannulas";
-          parameter Cardiovascular.Types.Length ECMO_cannulaInnerDiameter=0.005
+          parameter Physiolibrary.Types.Length ECMO_cannulaInnerDiameter=0.005
             "Inner diameter of ECMO cannulas";
-          parameter Cardiovascular.Types.Length _DT_ECMO_cannulaOuterDiameter=0.007
-            "Outer diameter of ECMO cannulas (derived tree only)";
-          parameter Cardiovascular.Types.Length _DT_ECMO_cannulaDepth=0.007
+          parameter Physiolibrary.Types.Length _DT_ECMO_cannulaOuterDiameter=
+              0.007 "Outer diameter of ECMO cannulas (derived tree only)";
+          parameter Physiolibrary.Types.Length _DT_ECMO_cannulaDepth=0.007
             "Insertion depth of ECMO cannulas (derived tree only)";
 
           annotation (__Dymola_Commands);
@@ -702,19 +700,19 @@ package Complex
           parameter Real CRest "Contractility when myofiber is at rest";
           parameter Real ecmoPumpPressureAdaptationRate
             "Speed of adjusting ECMO pump pressure to reference value";
-          parameter Cardiovascular.Types.Length Lsc0
+          parameter Physiolibrary.Types.Length Lsc0
             "Length of contractile sarcomere element with zero passive stress";
-          parameter Cardiovascular.Types.Length LseIso
+          parameter Physiolibrary.Types.Length LseIso
             "Reference length of isometrically stressed elastic sarcomere element";
-          parameter Cardiovascular.Types.Length LsMaxAdapt
+          parameter Physiolibrary.Types.Length LsMaxAdapt
             "Maximal sarcomere length for adaptation";
-          parameter Cardiovascular.Types.Length LsMinAdapt
+          parameter Physiolibrary.Types.Length LsMinAdapt
             "Minimal sarcomere length for adaptation";
-          parameter Cardiovascular.Types.Length LsP0
+          parameter Physiolibrary.Types.Length LsP0
             "Sarcomere length with zero passive stress";
-          parameter Cardiovascular.Types.Length LsRef
+          parameter Physiolibrary.Types.Length LsRef
             "Reference sarcomere length";
-          parameter Cardiovascular.Types.Length atriumDLsP
+          parameter Physiolibrary.Types.Length atriumDLsP
             "Passive stress coefficient for atria";
           parameter Pressure atriumSigmaARef
             "Reference active myofiber stress in atria";
@@ -724,7 +722,7 @@ package Complex
             "Contractility time coefficient for atria";
           parameter Velocity atriumVMax
             "Maximal sarcomere velocity in atria";
-          parameter Cardiovascular.Types.Length ventricleDLsP
+          parameter Physiolibrary.Types.Length ventricleDLsP
             "Passive stress coefficient for ventricles";
           parameter Pressure ventricleSigmaARef
             "Reference active myofiber stress in ventricles";
@@ -1027,10 +1025,10 @@ package Complex
             parameter HydraulicResistance R "Constant resistance";
             parameter HydraulicCompliance C "Constant compliance";
 
-            Volume V=capacitor.volume "Segment volume";
+            Volume V=capacitor.fluidVolume "Segment volume";
 
-            Elements.C capacitor(Compliance=C, nHydraulicPorts=2)
-                                      annotation (Placement(transformation(
+            Elements.C capacitor(Compliance=C, nPorts=2) annotation (Placement(
+                  transformation(
                   extent={{-10,-10},{10,10}},
                   rotation=0,
                   origin={40,-6})));
@@ -1075,10 +1073,10 @@ package Complex
             parameter Physiolibrary.Obsolete.ObsoleteTypes.VolumetricHydraulicInertance L "Constant inertance";
             parameter HydraulicCompliance C "Constant compliance";
 
-            Volume V=capacitor.volume "Segment volume";
+            Volume V=capacitor.fluidVolume "Segment volume";
 
-            Elements.C capacitor(Compliance=C, nHydraulicPorts=2)
-                                      annotation (Placement(transformation(
+            Elements.C capacitor(Compliance=C, nPorts=2) annotation (Placement(
+                  transformation(
                   extent={{-10,-10},{10,10}},
                   rotation=0,
                   origin={40,-6})));
@@ -1129,10 +1127,10 @@ package Complex
             parameter Physiolibrary.Obsolete.ObsoleteTypes.VolumetricHydraulicInertance L "Constant inertance";
             parameter HydraulicResistance R "Constant resistance";
 
-            Volume V=capacitor.volume "Segment volume";
+            Volume V=capacitor.fluidVolume "Segment volume";
 
-            Elements.C capacitor(Compliance=C, nHydraulicPorts=2)
-                                               annotation (Placement(transformation(
+            Elements.C capacitor(Compliance=C, nPorts=2) annotation (Placement(
+                  transformation(
                   extent={{-10,-10},{10,10}},
                   rotation=0,
                   origin={-40,-6})));
@@ -1183,10 +1181,10 @@ package Complex
             parameter HydraulicResistance R "Constant resistance";
             parameter Physiolibrary.Obsolete.ObsoleteTypes.VolumetricHydraulicInertance L "Constant inertance";
 
-            Volume V=capacitor.volume "Segment volume";
+            Volume V=capacitor.fluidVolume "Segment volume";
 
-            Elements.C capacitor(Compliance=C, nHydraulicPorts=2)
-                                      annotation (Placement(transformation(
+            Elements.C capacitor(Compliance=C, nPorts=2) annotation (Placement(
+                  transformation(
                   extent={{-10,-10},{10,10}},
                   rotation=0,
                   origin={-40,-6})));
@@ -1306,10 +1304,10 @@ package Complex
             parameter HydraulicCompliance C "Constant compliance";
             parameter HydraulicResistance R "Constant resistance";
 
-            Volume V=capacitor.volume "Segment volume";
+            Volume V=capacitor.fluidVolume "Segment volume";
 
-            Elements.C capacitor(Compliance=C, nHydraulicPorts=3)
-                                      annotation (Placement(transformation(
+            Elements.C capacitor(Compliance=C, nPorts=3) annotation (Placement(
+                  transformation(
                   extent={{-10,-10},{10,10}},
                   rotation=0,
                   origin={0,-6})));
@@ -1372,10 +1370,10 @@ package Complex
               "Constant compliance resistance";
             parameter HydraulicResistance R "Constant resistance";
 
-            Volume V=capacitor.volume "Segment volume";
+            Volume V=capacitor.fluidVolume "Segment volume";
 
-            Elements.C capacitor(Compliance=C, nHydraulicPorts=1)
-                                               annotation (Placement(transformation(
+            Elements.C capacitor(Compliance=C, nPorts=1) annotation (Placement(
+                  transformation(
                   extent={{-10,-10},{10,10}},
                   rotation=0,
                   origin={22,-34})));
@@ -1429,8 +1427,8 @@ package Complex
               extends Physiolibrary.Icons.HydraulicResistor;
               import Cardiovascular.Types.*;
 
-              parameter Cardiovascular.Types.Length l "Length";
-              parameter Cardiovascular.Types.Length r "Cross-sectional radius";
+              parameter Physiolibrary.Types.Length l "Length";
+              parameter Physiolibrary.Types.Length r "Cross-sectional radius";
 
               annotation (Icon(coordinateSystem(preserveAspectRatio=false,
                       extent={{-100,-100},{100,100}})));
@@ -1457,7 +1455,7 @@ package Complex
             import Modelica.Constants.*;
             import Physiolibrary.Types.*;
 
-            parameter Cardiovascular.Types.Length h "Wall thickness";
+            parameter Physiolibrary.Types.Length h "Wall thickness";
             parameter Pressure E "Young's elastic modulus";
 
             parameter Real qR=8
@@ -1487,9 +1485,9 @@ package Complex
             import Modelica.Constants.*;
             import Physiolibrary.Types.*;
 
-            outer parameter Cardiovascular.Types.Length cannulaOuterDiameter
+            outer parameter Physiolibrary.Types.Length cannulaOuterDiameter
               "Outer diameter of ECMO cannula";
-            outer parameter Cardiovascular.Types.Length cannulaDepth
+            outer parameter Physiolibrary.Types.Length cannulaDepth
               "Insertion depth of ECMO cannula";
             outer parameter Fraction arterialStiffnessScale
               "Stifness scale coefficient";
@@ -1533,9 +1531,9 @@ package Complex
 
             parameter Time flationDuration=80e-3
               "Duration of transition between inflation and deflation and vice versa";
-            parameter Cardiovascular.Types.Length rIABPdeflated=5e-4
+            parameter Physiolibrary.Types.Length rIABPdeflated=5e-4
               "Radius of deflated balloon";
-            parameter Cardiovascular.Types.Length rIABPinflated=8e-3
+            parameter Physiolibrary.Types.Length rIABPinflated=8e-3
               "Radius of inflated balloon";
             parameter Pressure pIABPdeflated=-200*101325/760
               "Balloon pressure when deflated";
@@ -1551,20 +1549,25 @@ package Complex
             Pressure pIABP(start=if tInflation < tDeflation then
                   pIABPdeflated else pIABPinflated)
               "Current balloon pressure";
-            Cardiovascular.Types.Length rIABP(start=if tInflation < tDeflation
+            Physiolibrary.Types.Length rIABP(start=if tInflation < tDeflation
                    then rIABPdeflated else rIABPinflated)
               "Current balloon radius";
             Time t "Current time with respect to cardiac cycle";
             Real xi=rIABP/r
               "Fraction of balloon radius and arterial radius";
 
-            Elements.C capacitorIABP(Compliance=0.1*C, useExternalPressureInput=true, externalPressure=pIABP+system.p_ambient,
-              nHydraulicPorts=1) if                             enableIABP
-              annotation (Placement(transformation(extent={{24,-46},{44,-26}})));
-            Elements.C capacitorIABP2(Compliance=0.1*C, useExternalPressureInput=true, externalPressure=pIABP+system.p_ambient,
-              nHydraulicPorts=1) if                              useIABP2
-               and enableIABP annotation (Placement(transformation(extent={
-                      {-50,-46},{-30,-26}})));
+            Elements.C capacitorIABP(
+              Compliance=0.1*C,
+              useExternalPressureInput=true,
+              externalPressure=pIABP + system.p_ambient,
+              nPorts=1) if enableIABP annotation (Placement(transformation(
+                    extent={{24,-46},{44,-26}})));
+            Elements.C capacitorIABP2(
+              Compliance=0.1*C,
+              useExternalPressureInput=true,
+              externalPressure=pIABP + system.p_ambient,
+              nPorts=1) if useIABP2 and enableIABP annotation (Placement(
+                  transformation(extent={{-50,-46},{-30,-26}})));
 
           equation
             der(t) = 1;
@@ -1644,8 +1647,8 @@ package Complex
           //   discrete input Volume VW(start = VW_init, fixed = true)
           //     "Adaptable wall volume";
           // DISABLING THE ADAPTATION
-            Cardiovascular.Types.Area Am0=Am0_init;
-            Cardiovascular.Types.Area AmRef=AmRef_init;
+            Physiolibrary.Types.Area Am0=Am0_init;
+            Physiolibrary.Types.Area AmRef=AmRef_init;
             Pressure sigmaPRef=sigmaPRef_init;
             Volume VW=VW_init;
 
@@ -1654,19 +1657,19 @@ package Complex
               "Delay in contraction with respect to start of cardiac cycle";
 
             // constant parameters
-            parameter Cardiovascular.Types.Length LsP0=settings.constants.LsP0
+            parameter Physiolibrary.Types.Length LsP0=settings.constants.LsP0
               "Sarcomere length with zero passive stress";
-            parameter Cardiovascular.Types.Length Lsc0=settings.constants.Lsc0
+            parameter Physiolibrary.Types.Length Lsc0=settings.constants.Lsc0
               "Length of contractile sarcomere element with zero passive stress";
-            parameter Cardiovascular.Types.Length LseIso=settings.constants.LseIso
+            parameter Physiolibrary.Types.Length LseIso=settings.constants.LseIso
               "Reference length of isometrically stressed elastic sarcomere element";
-            parameter Cardiovascular.Types.Length LsRef=settings.constants.LsRef
+            parameter Physiolibrary.Types.Length LsRef=settings.constants.LsRef
               "Reference sarcomere length";
 
             // top-level parameters
-            parameter Cardiovascular.Types.Area Am0_init
+            parameter Physiolibrary.Types.Area Am0_init
               "Starting value of mid-wall area of dead space";
-            parameter Cardiovascular.Types.Area AmRef_init
+            parameter Physiolibrary.Types.Area AmRef_init
               "Starting value of mid-wall surface area";
             parameter Fraction contractilityScale=1
               "Scaling coefficient of contractility";
@@ -1678,7 +1681,7 @@ package Complex
             parameter Volume VW_init "Starting value of wall volume";
 
             // parameters to distinguish Atria and Ventricles during inheritance
-            parameter Cardiovascular.Types.Length dLsP
+            parameter Physiolibrary.Types.Length dLsP
               "Passive stress coefficient";
             parameter Pressure sigmaARef "Reference active myofiber stress";
             parameter Real tauS "Time scaling coefficient";
@@ -1687,11 +1690,10 @@ package Complex
 
             Real epsilon=0.5*log(max(1e-9, Am - Am0)/AmRef) - 1/12*z^2 -
                 0.019*z^4 "Natural myofiber strain";
-            Cardiovascular.Types.Length Ls=LsRef*exp(epsilon)
-              "Sarcomere length";
-            Cardiovascular.Types.Length LscNorm=max(0.0001, (Lsc - Lsc0)*1e6)
+            Physiolibrary.Types.Length Ls=LsRef*exp(epsilon) "Sarcomere length";
+            Physiolibrary.Types.Length LscNorm=max(0.0001, (Lsc - Lsc0)*1e6)
               "Normalized length of contractile sarcomere element";
-            Cardiovascular.Types.Length Lse=Ls - Lsc
+            Physiolibrary.Types.Length Lse=Ls - Lsc
               "Length of elastic sarcomere element";
             Real LseNorm=max(-0.02, Lse/LseIso)
               "Normalized length of elastic sarcomere element";
@@ -1717,13 +1719,13 @@ package Complex
               "Auxiliary coefficient for computing natural myofiber strain";
 
             // differentiated variables
-            Cardiovascular.Types.Length Lsc
+            Physiolibrary.Types.Length Lsc
               "Length of contractile sarcomere element";
             Real C(start=0, fixed=true) "Current contractility";
             Time t(start=0, fixed=true) "Time from start of cardiac cycle";
 
             // abstract variables
-            Cardiovascular.Types.Area Am(start=AmRef_init, fixed=true)
+            Physiolibrary.Types.Area Am(start=AmRef_init, fixed=true)
               "Current mid-wall area";
             Volume Vm "Current Mid-wall volume";
             Real Cm(unit="m-1") "Mid-wall curvature";
@@ -1752,7 +1754,7 @@ package Complex
 
           outer Environment.ComplexEnvironment settings
             "Everything is out there...";
-          inner Pressure pP=pPRef*(VP/VPRef)^kP "Pericardial pressure";
+          inner Pressure pP=pPRef*(VP/VPRef)^kP "Relative Pericardial pressure";
 
         //   discrete input Volume VPRef(start = VPRef_init, fixed = true)
         //     "Adaptable reference pericardial volume";
@@ -1978,14 +1980,13 @@ package Complex
               smooth=Smooth.Bezier,
               thickness=1));
           connect(vPA.q_out, cVPA) annotation (Line(
-              points={{-9.82548,-30.0015},{-10,-30.0015},{-10,-24},{4,-24},{4,
-                  44}},
+              points={{-9.82548,-30.0015},{-10,-30.0015},{-10,-24},{4,-24},{4,44}},
               color={127,5,58},
               smooth=Smooth.Bezier,
               thickness=1));
           connect(vSA.q_out, Coro.cIn) annotation (Line(
-              points={{10.1745,-30.0015},{10,-30.0015},{10,-32},{10,-24},{22,
-                  -24},{22,-10},{22,-12},{21.8,-12},{21.8,-11}},
+              points={{10.1745,-30.0015},{10,-30.0015},{10,-32},{10,-24},{22,-24},
+                  {22,-10},{22,-12},{21.8,-12},{21.8,-11}},
               color={255,0,0},
               smooth=Smooth.Bezier,
               thickness=1));
@@ -2012,9 +2013,9 @@ package Complex
           // discrete input Cardiovascular.Types.Area ARef(start=ARef_init,
           //       fixed=true) "Adaptable cross-sectional area";
         // DISABLING THE ADAPTATION
-          Cardiovascular.Types.Area ARef=ARef_init;
+          Physiolibrary.Types.Area ARef=ARef_init;
 
-          parameter Cardiovascular.Types.Area ARef_init
+          parameter Physiolibrary.Types.Area ARef_init
             "Starting value of reference cross-sectional area";
           parameter Position l "Length of valve segment";
           parameter Pressure dpO=0 "Opening pressure";
@@ -2024,11 +2025,11 @@ package Complex
           parameter Fraction Mrg=0 "Ratio of valve regurgitation";
           parameter Fraction Mst=0 "Valve stenosis ratio";
 
-          Cardiovascular.Types.Area A=(AMax - AMin)*s + AMin
+          Physiolibrary.Types.Area A=(AMax - AMin)*s + AMin
             "Current cross-sectional area";
-          Cardiovascular.Types.Area AMin=Mrg*ARef + 1e-10
+          Physiolibrary.Types.Area AMin=Mrg*ARef + 1e-10
             "Cross-sectional area when closed, with miniature hole to prevent zero division";
-          Cardiovascular.Types.Area AMax=(1 - Mst)*ARef
+          Physiolibrary.Types.Area AMax=(1 - Mst)*ARef
             "Cross-sectional area when open";
 
           Real s(start=1, fixed=true)
@@ -2074,9 +2075,11 @@ package Complex
           import Modelica.Constants.*;
           import Physiolibrary.Types.*;
 
-          input Pressure pP "Pericardial pressure";
+          outer Modelica.Fluid.System system "System properties";
 
-          Pressure p=pT + pP "Current atria pressure";
+          input Pressure pP "Relative Pericardial pressure";
+
+          Pressure p=pT + pP + system.p_ambient "Absolute Current atria pressure";
           Volume V "Current atria volume";
 
           parameter Density density=1000;
@@ -2116,9 +2119,8 @@ package Complex
           parameter Real EAmRef_init=0
             "Starting value of the correctional coefficient";
 
-          input Cardiovascular.Types.Length xm
-            "Wall extension along the x-axis";
-          input Cardiovascular.Types.Length ym(start=0.033)
+          input Physiolibrary.Types.Length xm "Wall extension along the x-axis";
+          input Physiolibrary.Types.Length ym(start=0.033)
             "Wall extension along the y-axis";
 
           Real sinAlpha=2*xm*ym/(xm^2 + ym^2)
@@ -2143,27 +2145,28 @@ package Complex
           import Cardiovascular.Types.*;
           import Physiolibrary.Types.*;
 
+          outer Modelica.Fluid.System system "System properties";
           outer Environment.ComplexEnvironment settings
             "Everything is out there...";
 
-          input Pressure pP "Pericardial pressure";
+          input Pressure pP "Relative Pericardial pressure";
 
           Volume VLV "Volume of left ventricle";
           Volume VRV "Volume of right ventricle";
-          Pressure pLV=LW.pT + pP "Pressure in left ventricle";
-          Pressure pRV=RW.pT + pP "Pressure in right ventricle";
+          Pressure pLV=LW.pT + pP "Relative Pressure in left ventricle";
+          Pressure pRV=RW.pT + pP "Relative Pressure in right ventricle";
           Pressure pM=sigmaRM + pLV*(rO - rM)/(rO - rI)
             "Intramyocardial pressure for left ventricle";
 
           parameter Density density=1000;
 
         protected
-          Cardiovascular.Types.Length rO=(3*(VLV + (LW.VW + SW.VW)*1)/4/
-              Modelica.Constants.pi)^(1/3) "Radial position at outer surface";
-          Cardiovascular.Types.Length rI=(3*(VLV + (LW.VW + SW.VW)*0)/4/
-              Modelica.Constants.pi)^(1/3) "Radial position at inner surface";
-          Cardiovascular.Types.Length rM=(3*(VLV + (LW.VW + SW.VW)/3)/4/
-              Modelica.Constants.pi)^(1/3)
+          Physiolibrary.Types.Length rO=(3*(VLV + (LW.VW + SW.VW)*1)/4/Modelica.Constants.pi)
+              ^(1/3) "Radial position at outer surface";
+          Physiolibrary.Types.Length rI=(3*(VLV + (LW.VW + SW.VW)*0)/4/Modelica.Constants.pi)
+              ^(1/3) "Radial position at inner surface";
+          Physiolibrary.Types.Length rM=(3*(VLV + (LW.VW + SW.VW)/3)/4/Modelica.Constants.pi)
+              ^(1/3)
             "Radial possition at representative position (1 / 3) inside the wall";
           Real lambdaR=(((VLV + (LW.VW + SW.VW)/3)/(60e-6 + (LW.VW + SW.VW)
               /3))^(1/3))^(-2) "Radial fiber stretch ratio";
@@ -2238,8 +2241,8 @@ package Complex
           RW.Vm = +VRV + 0.5*RW.VW + 0.5*SW.VW + SW.Vm;
 
           // connectors connection
-          cLV.p = pLV;
-          cRV.p = pRV;
+          cLV.p = pLV + system.p_ambient;
+          cRV.p = pRV + system.p_ambient;
           cLV.m_flow/density = der(VLV);
           cRV.m_flow/density = der(VRV);
 
@@ -2312,10 +2315,10 @@ package Complex
             import Physiolibrary.Fluid.Sensors.*;
 
             inner parameter Real k "Stiffness non-linearity coefficient";
-            inner parameter Cardiovascular.Types.Length l "Length of vessels";
-            inner parameter Cardiovascular.Types.Area AW_init
+            inner parameter Physiolibrary.Types.Length l "Length of vessels";
+            inner parameter Physiolibrary.Types.Area AW_init
               "Starting value for wall cross-sectional area";
-            inner parameter Cardiovascular.Types.Area ARef_init
+            inner parameter Physiolibrary.Types.Area ARef_init
               "Starting value of reference inner cross-sectional area";
             inner parameter Pressure pRef_init
               "Starting value of reference pressure";
@@ -2408,10 +2411,10 @@ package Complex
           import Physiolibrary.Types.*;
 
           outer parameter Real k "Stiffness non-linearity coefficient";
-          outer parameter Cardiovascular.Types.Length l "Length of vessels";
-          outer parameter Cardiovascular.Types.Area AW_init
+          outer parameter Physiolibrary.Types.Length l "Length of vessels";
+          outer parameter Physiolibrary.Types.Area AW_init
             "Starting value for wall cross-sectional area";
-          outer parameter Cardiovascular.Types.Area ARef_init
+          outer parameter Physiolibrary.Types.Area ARef_init
             "Starting value of reference inner cross-sectional area";
           outer parameter Pressure pRef_init
             "Starting value of reference pressure";
@@ -2424,19 +2427,19 @@ package Complex
           //   "Adaptable reference pressure";
           // DISABLING THE ADAPTATION
 
-          Cardiovascular.Types.Area AW=AW_init;
-          Cardiovascular.Types.Area ARef=ARef_init;
+          Physiolibrary.Types.Area AW=AW_init;
+          Physiolibrary.Types.Area ARef=ARef_init;
           Pressure pRef=pRef_init;
 
-          Cardiovascular.Types.Area A "Inner cross-sectional area";
+          Physiolibrary.Types.Area A "Inner cross-sectional area";
           Volume VW "Wall volume";
           Volume VRef "Reference volume";
           Volume V(start=l*ARef_init, fixed=true) "Current volume";
 
           Pressure p "Wave-smoothed inner pressure";
 
-          HydraulicResistanceOutput RWave annotation (Placement(
-                transformation(
+          Physiolibrary.Types.RealIO.HydraulicResistanceOutput RWave annotation
+            (Placement(transformation(
                 extent={{-10,-10},{10,10}},
                 rotation=-90,
                 origin={0,-70})));
@@ -2489,12 +2492,16 @@ package Complex
           extends Auxiliary.BlockKinds.Port;
           import Cardiovascular.Model.Complex.Components.Auxiliary.RLC.Elements.*;
           import Physiolibrary.Types.Volume;
+          import Physiolibrary.Types.Pressure;
 
           outer Modelica.Fluid.System system "System wide properties";
 
-          input Real pM "Intramyocardial pressure";
+          Physiolibrary.Types.RealIO.PressureInput _pM;
 
-          Volume V=Ca.volume + Cm.volume + Cv.volume "Current volume";
+          Volume V=Ca.fluidVolume
+                             +Cm.fluidVolume
+                                         +Cv.fluidVolume
+                                                     "Current volume";
 
           Auxiliary.RLC.Elements.R_ Rv(R=200000000)
             annotation (Placement(transformation(extent={{38,-10},{58,10}})));
@@ -2504,20 +2511,25 @@ package Complex
             annotation (Placement(transformation(extent={{-26,-10},{-6,10}})));
           Auxiliary.RLC.Elements.R_ Ra(R=700000000)
             annotation (Placement(transformation(extent={{-58,-10},{-38,10}})));
-          C Ca(volume_start=6e-06, Compliance(displayUnit="m3/Pa") = 3e-11,
-            nHydraulicPorts=2)                                              annotation (
-              Placement(transformation(extent={{-40,-40},{-20,-20}})));
-          C Cv(volume_start=10e-6, Compliance=7e-10,
-            nHydraulicPorts=2)                       annotation (Placement(transformation(
-                  extent={{20,-40},{40,-20}})));
+          C Ca(
+            volume_start=6e-06,
+            Compliance(displayUnit="m3/Pa") = 3e-11,
+            nPorts=2) annotation (Placement(transformation(extent={{-40,-40},{-20,
+                    -20}})));
+          C Cv(
+            volume_start=10e-6,
+            Compliance=7e-10,
+            nPorts=2)
+            annotation (Placement(transformation(extent={{20,-40},{40,-20}})));
           C Cm(
-            volume_start=7e-6,
-            useExternalPressureInput=true,
-            externalPressure=pM+system.p_ambient,
+            volume_start=7e-06,
             Compliance=1.4e-09,
-            nHydraulicPorts=2)  annotation (Placement(transformation(extent={{-10,-40},
-                    {10,-20}})));
+            useExternalPressureInput=true,
+            nPorts=2)
+            annotation (Placement(transformation(extent={{-10,-40},{10,-20}})));
 
+          Physiolibrary.Types.RealIO.PressureInput pM "Intramyocardial pressure"
+            annotation (Placement(transformation(extent={{-120,60},{-80,100}})));
         equation
 
           connect(cIn, Ra.q_in) annotation (Line(
@@ -2525,33 +2537,35 @@ package Complex
               color={127,0,0},
               thickness=0.5));
           connect(Ra.q_out, Ca.q_in[1]) annotation (Line(
-              points={{-38,2.22045e-16},{-34,2.22045e-16},{-34,-28.7},{-30.3,-28.7}},
+              points={{-38,2.22045e-16},{-34,2.22045e-16},{-34,-28.7},{-30.1,-28.7}},
               color={127,0,0},
               thickness=0.5));
           connect(Ca.q_in[2], Rm1.q_in) annotation (Line(
-              points={{-30.3,-31.3},{-28,-31.3},{-28,2.22045e-16},{-26,2.22045e-16}},
+              points={{-30.1,-31.3},{-28,-31.3},{-28,2.22045e-16},{-26,2.22045e-16}},
               color={127,0,0},
               thickness=0.5));
           connect(Rm1.q_out, Cm.q_in[1]) annotation (Line(
-              points={{-6,2.22045e-16},{-4,2.22045e-16},{-4,-28.7},{-0.3,-28.7}},
+              points={{-6,2.22045e-16},{-4,2.22045e-16},{-4,-28.7},{-0.1,-28.7}},
               color={127,0,0},
               thickness=0.5));
           connect(Cm.q_in[2], Rm2.q_in) annotation (Line(
-              points={{-0.3,-31.3},{2,-31.3},{2,0},{6,0}},
+              points={{-0.1,-31.3},{2,-31.3},{2,0},{6,0}},
               color={127,0,0},
               thickness=0.5));
           connect(Rm2.q_out, Cv.q_in[1]) annotation (Line(
-              points={{26,0},{29.7,0},{29.7,-28.7}},
+              points={{26,0},{29.9,0},{29.9,-28.7}},
               color={127,0,0},
               thickness=0.5));
           connect(Cv.q_in[2], Rv.q_in) annotation (Line(
-              points={{29.7,-31.3},{34,-31.3},{34,0},{38,0}},
+              points={{29.9,-31.3},{34,-31.3},{34,0},{38,0}},
               color={127,0,0},
               thickness=0.5));
           connect(Rv.q_out, cOut) annotation (Line(
               points={{58,0},{70,0},{70,0},{80,0}},
               color={127,0,0},
               thickness=0.5));
+          connect(pM, Cm.externalPressure)
+            annotation (Line(points={{-100,80},{6,80},{6,-21}}, color={0,0,127}));
           annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
                   extent={{-100,-100},{100,100}})));
         end CoronaryVessels;
@@ -3484,11 +3498,10 @@ package Complex
           import Physiolibrary.Types.*;
 
           parameter Real fiberCount "Number of fibers";
-          parameter Cardiovascular.Types.Length fiberLength
+          parameter Physiolibrary.Types.Length fiberLength
             "Length of each fiber";
-          parameter Cardiovascular.Types.Length fiberDiameter "Fiber diameter";
-          parameter Cardiovascular.Types.Length fiberThickness
-            "Fiber thickness";
+          parameter Physiolibrary.Types.Length fiberDiameter "Fiber diameter";
+          parameter Physiolibrary.Types.Length fiberThickness "Fiber thickness";
 
           Auxiliary.RLC.Elements.R_ resistor(R=8*mu*fiberLength/pi/(0.5*fiberDiameter)
                 ^4/fiberCount)
@@ -4104,7 +4117,6 @@ package Complex
       extends Heart(redeclare Main.Heart.HeartLVCannulated heart);
     end HeartCannulated;
   end Components;
-
   annotation (Documentation(info="<html>
 <p>Complex combined model, as presented in [1], made compatible with the simple models.</p>
 <p><br><span style=\"font-family: Times New Roman; font-size: 10pt;\"><a name=\"docs-internal-guid-c7f7882d-1492-9270-5abc-b09ff77c8742\">[</a><span style=\"background-color: #000000;\">1]	<a href=\"http://paperpile.com/b/74sbye/FfEpD\">Kaleck&yacute; K. Relationship of heart&rsquo;s pumping function and pressure-flow patterns in reduced arterial tree. Czech Technical Unversity; 2015.</a> Available at </span>https://dspace.cvut.cz/bitstream/handle/10467/61792/F3-DP-2015-Kalecky-Karel-Karel&percnt;20Kalecky&percnt;20-&percnt;20Relationship&percnt;20of&percnt;20Heart&percnt;27s&percnt;20Pumping&percnt;20Function&percnt;20and&percnt;20Pressure-Flow&percnt;20Patterns&percnt;20in&percnt;20Reduced&percnt;20Arterial&percnt;20Tree&percnt;20&percnt;282015&percnt;29.pdf</p>

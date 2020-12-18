@@ -37,14 +37,15 @@ package Fernandez2014
     replaceable Smith2004.Parts.VentricularInteraction
                              ventricularInteraction
       annotation (Placement(transformation(extent={{-28,-14},{32,40}})));
-    Physiolibrary.Types.Constants.PressureConst Pth(k=101325 + (-533.28954966))
+    Physiolibrary.Types.Constants.PressureConst Pth(k(displayUnit="Pa") =
+        101325 + (-533.28954966))
       annotation (Placement(transformation(extent={{38,32},{48,42}})));
     Physiolibrary.Fluid.Components.ElasticVesselElastance pulmonaryArteries(
       ZeroPressureVolume=0,
       useExternalPressureInput=true,
       volume_start=3.904e-05,
       Elastance=49195960.956135,
-      nHydraulicPorts=1) annotation (Placement(transformation(
+      nPorts=1) annotation (Placement(transformation(
           extent={{-19,-18},{19,18}},
           rotation=0,
           origin={-175,-30})));
@@ -59,11 +60,12 @@ package Fernandez2014
       useExternalPressureInput=true,
       volume_start=0.0008269,
       Elastance=973253.4281295,
-      nHydraulicPorts=1) annotation (Placement(transformation(
+      nPorts=1) annotation (Placement(transformation(
           extent={{-18,-18},{18,18}},
           rotation=0,
           origin={-178,50})));
-    Physiolibrary.Types.Constants.PressureConst Pth1(k=101325 + (-533.28954966))
+    Physiolibrary.Types.Constants.PressureConst Pth1(k(displayUnit="Pa") =
+        101325 + (-533.28954966))
       annotation (Placement(transformation(
           extent={{-6,-6},{6,6}},
           rotation=0,
@@ -72,7 +74,7 @@ package Fernandez2014
       ZeroPressureVolume=0,
       volume_start=0.0001241,
       Elastance=92165766.41999,
-      nHydraulicPorts=1)
+      nPorts=1)
       annotation (Placement(transformation(extent={{186,34},{218,66}})));
     Physiolibrary.Fluid.Components.Resistor Rsys(Resistance(displayUnit=
             "(mmHg.s)/ml") = 145054757.50752) annotation (Placement(
@@ -84,7 +86,7 @@ package Fernandez2014
       ZeroPressureVolume=0,
       volume_start=0.0002952,
       Elastance=786602.0857485,
-      nHydraulicPorts=1)
+      nPorts=1)
       annotation (Placement(transformation(extent={{186,-44},{218,-12}})));
   equation
     connect(Ltc.q_out, tricuspidValve.q_in) annotation (Line(
@@ -138,48 +140,48 @@ package Fernandez2014
         thickness=1,
         smooth=Smooth.None));
     connect(pulmonaryArteries.q_in[1], Rpul.q_in) annotation (Line(
-        points={{-175.57,-30},{-176,-30},{-176,-5},{-177,-5}},
+        points={{-175.19,-30},{-176,-30},{-176,-5},{-177,-5}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Rpul.q_out, pulmonaryVeins.q_in[1]) annotation (Line(
-        points={{-177,25},{-176,25},{-176,50},{-178.54,50}},
+        points={{-177,25},{-176,25},{-176,50},{-178.18,50}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Pth1.y, pulmonaryArteries.externalPressure) annotation (Line(
-        points={{-218.5,44},{-198,44},{-198,-12},{-159.8,-12}},
+        points={{-218.5,44},{-198,44},{-198,-13.8},{-163.6,-13.8}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(pulmonaryArteries.externalPressure, pulmonaryVeins.externalPressure)
       annotation (Line(
-        points={{-159.8,-12},{-198,-12},{-198,68},{-163.6,68}},
+        points={{-163.6,-13.8},{-198,-13.8},{-198,66.2},{-167.2,66.2}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(aorta.q_in[1], Rsys.q_in) annotation (Line(
-        points={{201.52,50},{201.52,36},{202,36},{202,22}},
+        points={{201.84,50},{201.84,36},{202,36},{202,22}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Rsys.q_out, venaCava.q_in[1]) annotation (Line(
-        points={{202,-10},{202,-20},{202,-28},{201.52,-28}},
+        points={{202,-10},{202,-20},{202,-28},{201.84,-28}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(pulmonaryVeins.q_in[1], Ltc.q_in) annotation (Line(
-        points={{-178.54,50},{-136,50},{-136,52},{-94,52}},
+        points={{-178.18,50},{-136,50},{-136,52},{-94,52}},
         color={0,0,0},
         thickness=1));
     connect(pulmonaryArteries.q_in[1], aorticValve.q_out) annotation (Line(
-        points={{-175.57,-30},{-128,-30},{-128,-22},{-82,-22}},
+        points={{-175.19,-30},{-128,-30},{-128,-22},{-82,-22}},
         color={0,0,0},
         thickness=1));
     connect(Lmt.q_in, venaCava.q_in[1]) annotation (Line(
-        points={{84,-22},{144,-22},{144,-28},{201.52,-28}},
+        points={{84,-22},{144,-22},{144,-28},{201.84,-28}},
         color={0,0,0},
         thickness=1));
     connect(aorta.q_in[1], pulmonaryValve.q_out) annotation (Line(
-        points={{201.52,50},{142,50},{142,52},{82,52}},
+        points={{201.84,50},{142,50},{142,52},{82,52}},
         color={0,0,0},
         thickness=1));
     annotation (
@@ -474,7 +476,7 @@ package Fernandez2014
         useComplianceInput=true,
         ZeroPressureVolume=0,
         volume_start=0.00015,
-        nHydraulicPorts=1)
+        nPorts=1)
         annotation (Placement(transformation(extent={{-52,-12},{-32,8}})));
       Physiolibrary.Types.Constants.HydraulicConductanceConst
         backflowConductance(k=0)
@@ -489,7 +491,7 @@ package Fernandez2014
         useComplianceInput=true,
         ZeroPressureVolume=0,
         volume_start=0.00015,
-        nHydraulicPorts=1)
+        nPorts=1)
         annotation (Placement(transformation(extent={{68,-10},{88,10}})));
       Physiolibrary.Types.Constants.HydraulicConductanceConst
         backflowConductance1(k=0)
@@ -613,7 +615,7 @@ package Fernandez2014
         useComplianceInput=true,
         ZeroPressureVolume=0,
         volume_start=0.0001,
-        nHydraulicPorts=1)
+        nPorts=1)
         annotation (Placement(transformation(extent={{44,-10},{64,10}})));
       Physiolibrary.Types.Constants.HydraulicElastanceToComplianceConst EAO(
           k=106657909.932)
@@ -624,7 +626,7 @@ package Fernandez2014
       Physiolibrary.Fluid.Components.ElasticVessel peripheralVessels(
         useComplianceInput=true,
         volume_start=0.00334,
-        nHydraulicPorts=1)
+        nPorts=1)
         annotation (Placement(transformation(extent={{-32,-12},{-12,8}})));
       replaceable
         Physiolibrary.Types.Constants.HydraulicResistanceToConductanceConst
@@ -639,7 +641,7 @@ package Fernandez2014
       Physiolibrary.Fluid.Components.ElasticVessel venacava(
         useComplianceInput=true,
         volume_start=0.0005,
-        nHydraulicPorts=1)
+        nPorts=1)
         annotation (Placement(transformation(extent={{-92,-10},{-72,10}})));
       replaceable
         Physiolibrary.Types.Constants.HydraulicElastanceToComplianceConst
@@ -737,7 +739,7 @@ package Fernandez2014
         useComplianceInput=true,
         ZeroPressureVolume=0,
         volume_start=0.00012,
-        nHydraulicPorts=1)
+        nPorts=1)
         annotation (Placement(transformation(extent={{-20,-10},{0,10}})));
       Physiolibrary.Types.Constants.HydraulicElastanceToComplianceConst EPA(
           k=17771874.242419)
@@ -748,7 +750,7 @@ package Fernandez2014
       Physiolibrary.Fluid.Components.ElasticVessel pulmonaryVeins(
         useComplianceInput=true,
         volume_start=0.00024,
-        nHydraulicPorts=1)
+        nPorts=1)
         annotation (Placement(transformation(extent={{52,-10},{72,10}})));
       Physiolibrary.Types.Constants.HydraulicElastanceToComplianceConst EPV(
           k=4399638.784695)
@@ -996,7 +998,6 @@ package Fernandez2014
     end AortaFlowMeasurement;
 
   end Parts;
-
   annotation (conversion(from(
         version="1",
         script="ConvertFromFernandezModel_1.mos",

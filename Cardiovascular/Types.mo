@@ -32,10 +32,6 @@ package Types
     end FrequencyControl;
   end Constants;
 
-  type Area = Modelica.SIunits.Area (displayUnit="cm2",nominal=1e-4)
-    "Type for area";
-  type Length = Modelica.SIunits.Length (displayUnit="cm",nominal=1e-2)
-    "Type for length and radius";
   type PulseShape = enumeration(
       pulseless,
       parabolic,
@@ -48,63 +44,6 @@ package Types
       thoracicAorta2) "Location of inserted ECMO cannula";
   package IO "Real types as input and output connectors"
     import Physiolibrary.Types.*;
-
-    connector HydraulicResistanceInput = input HydraulicResistance
-      "Input HydraulicResistance as connector" annotation (
-      defaultComponentName="resistance",
-      Icon(graphics={Polygon(
-              points={{-100,100},{100,0},{-100,-100},{-100,100}},
-              lineColor={0,0,127},
-              fillColor={0,0,127},
-                  fillPattern=FillPattern.Solid)}, coordinateSystem(
-          extent={{-100,-100},{100,100}},
-          preserveAspectRatio=true,
-          initialScale=0.2)),
-      Diagram(coordinateSystem(
-          preserveAspectRatio=true,
-          initialScale=0.2,
-            extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics={Polygon(
-              points={{0,50},{100,0},{0,-50},{0,50}},
-              lineColor={0,0,127},
-              fillColor={0,0,127},
-                  fillPattern=FillPattern.Solid),Text(
-              extent={{-10,85},{-10,60}},
-              lineColor={0,0,127},
-              textString="%name")}),
-        Documentation(info="<html>
-    <p>
-    Connector with one input signal of type HydraulicResistance.
-    </p>
-    </html>"));
-
-    connector HydraulicResistanceOutput = output HydraulicResistance
-      "Output HydraulicResistance as connector" annotation (
-      defaultComponentName="resistance",
-      Icon(coordinateSystem(
-            preserveAspectRatio=true,
-            extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics={Polygon(
-              points={{-100,100},{100,0},{-100,-100},{-100,100}},
-              lineColor={0,0,127},
-              fillColor={255,255,255},
-              fillPattern=FillPattern.Solid)}),
-      Diagram(coordinateSystem(
-            preserveAspectRatio=true,
-            extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics={Polygon(
-              points={{-100,50},{0,0},{-100,-50},{-100,50}},
-              lineColor={0,0,127},
-              fillColor={255,255,255},
-                  fillPattern=FillPattern.Solid),Text(
-              extent={{30,110},{30,60}},
-              lineColor={0,0,127},
-              textString="%name")}),
-        Documentation(info="<html>
-  <p>
-  Connector with one output signal of type HydraulicResistance.
-  </p>
-  </html>"));
 
   end IO;
 end Types;

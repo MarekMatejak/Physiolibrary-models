@@ -12,7 +12,7 @@ package Scenario "models of various scenarios"
     Stenosis.StenosisResistance aorticstenosis
       "Aorctic stenosis - valve diameter goes to 1/2 =resistance 1/2^4 greater"
       annotation (Placement(transformation(extent={{-30,-54},{22,-4}})));
-    Physiolibrary.Types.Constants.HydraulicConductanceConst AVgon(k=0)
+    Physiolibrary.Types.Constants.HydraulicResistanceConst AVgon(k=Modelica.Constants.inf)
       annotation (Placement(transformation(
           extent={{-10,-9},{10,9}},
           rotation=180,
@@ -36,7 +36,7 @@ package Scenario "models of various scenarios"
         string="%second",
         index=1,
         extent={{6,3},{6,3}}));
-    connect(aorticstenosis.conductance, busConnector.avoutflowresistance)
+    connect(aorticstenosis.resistance, busConnector.avoutflowresistance)
       annotation (Line(
         points={{-1.92,-23},{-1.92,18},{80,18},{80,90}},
         color={0,0,127},
@@ -44,7 +44,7 @@ package Scenario "models of various scenarios"
         string="%second",
         index=1,
         extent={{6,3},{6,3}}));
-    connect(mitralvalvestenosis.conductance, busConnector.mv_gon)
+    connect(mitralvalvestenosis.resistance, busConnector.mv_ron)
       annotation (Line(
         points={{50.08,-23},{50.08,18},{80,18},{80,90}},
         color={0,0,127},
@@ -59,7 +59,7 @@ package Scenario "models of various scenarios"
         string="%second",
         index=1,
         extent={{6,3},{6,3}}));
-    connect(AVgon.y, busConnector.avbackflowconductance) annotation (Line(
+    connect(AVgon.y, busConnector.avbackflowresistance) annotation (Line(
         points={{1.5,-9},{1.5,18},{80,18},{80,90}},
         color={0,0,127},
         smooth=Smooth.None), Text(
@@ -154,14 +154,14 @@ package Scenario "models of various scenarios"
       parameter Physiolibrary.Types.HydraulicResistance FinalResistance;
       parameter Physiolibrary.Types.Time startTime(displayUnit="s") = 20;
       parameter Physiolibrary.Types.Time duration(displayUnit="s") = 5;
-      Physiolibrary.Types.RealIO.HydraulicConductanceOutput conductance
+      Physiolibrary.Types.RealIO.HydraulicResistanceOutput resistance
         annotation (Placement(transformation(extent={{48,-10},{68,10}}),
             iconTransformation(
             extent={{-10,-10},{10,10}},
             rotation=90,
             origin={8,24})));
     equation
-      conductance = 1/(InitialResistance + (if time < startTime then 0
+      resistance = (InitialResistance + (if time < startTime then 0
          else if time < startTime + duration then (time - startTime)*(
         FinalResistance - InitialResistance)/duration else FinalResistance
          - InitialResistance));

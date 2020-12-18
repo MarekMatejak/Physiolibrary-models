@@ -9,7 +9,7 @@ package Burkhoff
       volume_start=0.002701,
       ZeroPressureVolume=0.00223,
       Compliance=5.2504310309196e-07,
-      nHydraulicPorts=1)
+      nPorts=1)
       annotation (Placement(transformation(extent={{-72,12},{-52,32}})));
     Physiolibrary.Fluid.Components.Resistor Ras(Resistance=99991790.56125)
       annotation (Placement(transformation(extent={{-28,12},{-48,32}})));
@@ -17,7 +17,7 @@ package Burkhoff
       volume_start=0.000834,
       ZeroPressureVolume=0.0007,
       Compliance=1.2751046789376e-08,
-      nHydraulicPorts=1)
+      nPorts=1)
       annotation (Placement(transformation(extent={{-24,12},{-4,32}})));
     Physiolibrary.Fluid.Components.Resistor Rcs(Resistance=3199737.29796)
       annotation (Placement(transformation(extent={{18,12},{-2,32}})));
@@ -26,8 +26,7 @@ package Burkhoff
       ZeroPressureVolume=3e-05,
       Compliance=7.5006157584566e-10,
       useExternalPressureInput=true,
-      nHydraulicPorts=1)
-      annotation (Placement(transformation(extent={{20,12},{40,32}})));
+      nPorts=1) annotation (Placement(transformation(extent={{20,12},{40,32}})));
     Physiolibrary.Fluid.Components.Resistor Rcprox(Resistance=2666447.7483)
       annotation (Placement(transformation(extent={{62,12},{42,32}})));
     IdealValveResistance AOV(_Ron=266644.77483) annotation (Placement(
@@ -40,7 +39,7 @@ package Burkhoff
       volume_start=0.000125,
       ZeroPressureVolume=5e-06,
       useExternalPressureInput=true,
-      nHydraulicPorts=1)
+      nPorts=1)
       annotation (Placement(transformation(extent={{92,-14},{112,6}})));
     IdealValveResistance MV(_Ron=333305.9685375) annotation (Placement(
           transformation(
@@ -52,7 +51,7 @@ package Burkhoff
       useExternalPressureInput=true,
       volume_start=8.1e-05,
       ZeroPressureVolume=5e-06,
-      nHydraulicPorts=1)
+      nPorts=1)
       annotation (Placement(transformation(extent={{158,-14},{178,6}})));
     Physiolibrary.Fluid.Components.Resistor Rvp(Resistance=1999835.811225)
       annotation (Placement(transformation(extent={{206,-2},{186,18}})));
@@ -63,7 +62,7 @@ package Burkhoff
       useExternalPressureInput=true,
       volume_start=7.3e-05,
       ZeroPressureVolume=5e-06,
-      nHydraulicPorts=1)
+      nPorts=1)
       annotation (Placement(transformation(extent={{-60,-50},{-40,-30}})));
     IdealValveResistance TV(_Ron(displayUnit="(mmHg.s)/ml")=
         333305.9685375) annotation (Placement(transformation(
@@ -75,7 +74,7 @@ package Burkhoff
       volume_start=0.000112,
       ZeroPressureVolume=5e-06,
       useExternalPressureInput=true,
-      nHydraulicPorts=1,
+      nPorts=1,
       ExternalPressure=101325 + (0))
       annotation (Placement(transformation(extent={{16,-50},{36,-30}})));
     IdealValveResistance PV(_Ron=266644.77483) annotation (Placement(
@@ -90,7 +89,7 @@ package Burkhoff
       ZeroPressureVolume=0.0006,
       Compliance=1.5001231516913e-07,
       useExternalPressureInput=true,
-      nHydraulicPorts=1)
+      nPorts=1)
       annotation (Placement(transformation(extent={{144,-48},{164,-28}})));
     Physiolibrary.Fluid.Components.Resistor Rcp(Resistance=2666447.7483)
       annotation (Placement(transformation(extent={{122,-48},{142,-28}})));
@@ -99,14 +98,14 @@ package Burkhoff
       ZeroPressureVolume=0.0001,
       Compliance=5.2504310309196e-08,
       useExternalPressureInput=true,
-      nHydraulicPorts=1)
+      nPorts=1)
       annotation (Placement(transformation(extent={{184,-48},{204,-28}})));
     Physiolibrary.Fluid.Components.ElasticVessel Capprox(
       volume_start=3e-05,
       ZeroPressureVolume=2e-05,
       Compliance=7.5006157584566e-09,
       useExternalPressureInput=true,
-      nHydraulicPorts=1)
+      nPorts=1)
       annotation (Placement(transformation(extent={{98,-48},{118,-28}})));
     Physiolibrary.Fluid.Components.Resistor Rap(Resistance=2666447.7483)
       annotation (Placement(transformation(extent={{164,-48},{184,-28}})));
@@ -115,21 +114,25 @@ package Burkhoff
       Tau(displayUnit="ms") = 0.02,
       Beta(displayUnit="mmHg") = 39.9967162245,
       Alpha=40000,
-      Ees=26664477.483)
+      Ees=26664477.483,
+      IsPressureAbsolute=false)
       annotation (Placement(transformation(extent={{-56,-18},{-32,2}})));
     Parts.VentricularElastance RVElastance(
       Tmax(displayUnit="ms") = 0.2,
       Tau(displayUnit="ms") = 0.03,
       Beta(displayUnit="mmHg") = 45.3296117211,
       Alpha=24000,
-      Ees=50662507.2177)
+      Ees=50662507.2177,
+      IsPressureAbsolute=false)
       annotation (Placement(transformation(extent={{14,-14},{36,6}})));
     Parts.AtrialElastance LAElastance(
       Tmax(displayUnit="ms") = 0.125,
       Tau(displayUnit="ms") = 0.02,
       Beta(displayUnit="mmHg") = 39.9967162245,
       Alpha=40000,
-      Ees=33330596.85375) annotation (Placement(transformation(
+      Ees=33330596.85375,
+      IsPressureAbsolute=false)
+                          annotation (Placement(transformation(
           extent={{-9,-8},{9,8}},
           rotation=0,
           origin={167,32})));
@@ -139,7 +142,8 @@ package Burkhoff
       AVDelay(displayUnit="s"),
       Beta(displayUnit="mmHg") = 45.3296117211,
       Alpha=24000,
-      Ees=205316476.6191)
+      Ees=205316476.6191,
+      IsPressureAbsolute=false)
       annotation (Placement(transformation(extent={{88,16},{112,36}})));
     Physiolibrary.Types.Constants.FrequencyConst heartRate(k=
           1.3333333333333)
@@ -177,29 +181,30 @@ package Burkhoff
           extent={{-3,-3},{3,3}},
           rotation=270,
           origin={109,11})));
-    Physiolibrary.Types.Constants.PressureConst IntraThoracicPressure(k=101325
-           + (0)) annotation (Placement(transformation(
+    Physiolibrary.Types.Constants.PressureConst IntraThoracicPressure(k(
+          displayUnit="Pa") = 101325)
+                  annotation (Placement(transformation(
           extent={{-4,-4},{4,4}},
           rotation=0,
           origin={50,-4})));
   equation
     connect(AOV.q_in, LV.q_in[1]) annotation (Line(
-        points={{90,-4},{101.7,-4}},
+        points={{90,-4},{101.9,-4}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(LV.q_in[1], MV.q_out) annotation (Line(
-        points={{101.7,-4},{112,-4}},
+        points={{101.9,-4},{112,-4}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(TV.q_out, RV.q_in[1]) annotation (Line(
-        points={{14,-40},{25.7,-40}},
+        points={{14,-40},{25.9,-40}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(RV.q_in[1], PV.q_in) annotation (Line(
-        points={{25.7,-40},{40,-40}},
+        points={{25.9,-40},{40,-40}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
@@ -209,27 +214,27 @@ package Burkhoff
         thickness=1,
         smooth=Smooth.None));
     connect(Rcsp.q_out, Capprox.q_in[1]) annotation (Line(
-        points={{90,-40},{98,-40},{98,-38},{107.7,-38}},
+        points={{90,-40},{98,-40},{98,-38},{107.9,-38}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Capprox.q_in[1], Rcp.q_in) annotation (Line(
-        points={{107.7,-38},{122,-38}},
+        points={{107.9,-38},{122,-38}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Rcp.q_out, Cap.q_in[1]) annotation (Line(
-        points={{142,-38},{153.7,-38}},
+        points={{142,-38},{153.9,-38}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Cap.q_in[1], Rap.q_in) annotation (Line(
-        points={{153.7,-38},{164,-38}},
+        points={{153.9,-38},{164,-38}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Rap.q_out, Cvp.q_in[1]) annotation (Line(
-        points={{184,-38},{193.7,-38}},
+        points={{184,-38},{193.9,-38}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
@@ -264,22 +269,22 @@ package Burkhoff
         color={0,0,127},
         smooth=Smooth.None));
     connect(RA.q_in[1], TV.q_in) annotation (Line(
-        points={{-50.3,-40},{-6,-40}},
+        points={{-50.1,-40},{-6,-40}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(LA.q_in[1], MV.q_in) annotation (Line(
-        points={{167.7,-4},{132,-4}},
+        points={{167.9,-4},{132,-4}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Cvp.q_in[1], Rvp.q_in) annotation (Line(
-        points={{193.7,-38},{206,-38},{206,8}},
+        points={{193.9,-38},{206,-38},{206,8}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Rvp.q_out, LA.q_in[1]) annotation (Line(
-        points={{186,8},{186,-4},{167.7,-4}},
+        points={{186,8},{186,-4},{167.9,-4}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
@@ -289,37 +294,37 @@ package Burkhoff
         thickness=1,
         smooth=Smooth.None));
     connect(Rcprox.q_out, Caprox.q_in[1]) annotation (Line(
-        points={{42,22},{29.7,22}},
+        points={{42,22},{29.9,22}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Rcs.q_in, Caprox.q_in[1]) annotation (Line(
-        points={{18,22},{29.7,22}},
+        points={{18,22},{29.9,22}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Rcs.q_out, Cas.q_in[1]) annotation (Line(
-        points={{-2,22},{-14.3,22}},
+        points={{-2,22},{-14.1,22}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Cas.q_in[1], Ras.q_in) annotation (Line(
-        points={{-14.3,22},{-28,22}},
+        points={{-14.1,22},{-28,22}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Ras.q_out, Cvs.q_in[1]) annotation (Line(
-        points={{-48,22},{-62.3,22}},
+        points={{-48,22},{-62.1,22}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Cvs.q_in[1], Rvs.q_in) annotation (Line(
-        points={{-62.3,22},{-84,22},{-84,-40}},
+        points={{-62.1,22},{-84,22},{-84,-40}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(Rvs.q_out, RA.q_in[1]) annotation (Line(
-        points={{-64,-40},{-50.3,-40}},
+        points={{-64,-40},{-50.1,-40}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
@@ -328,19 +333,19 @@ package Burkhoff
         color={0,0,127},
         smooth=Smooth.None));
     connect(LVElastance.Ct, LV.compliance) annotation (Line(
-        points={{103.6,17.4},{103.6,17.21},{102,17.21},{102,6}},
+        points={{103.6,17.4},{103.6,17.21},{104,17.21},{104,5}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(LAElastance.Ct, LA.compliance) annotation (Line(
-        points={{169.7,25.12},{169.7,18},{168,18},{168,6}},
+        points={{169.7,25.12},{169.7,18},{170,18},{170,5}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(RVElastance.Ct, RV.compliance) annotation (Line(
-        points={{28.3,-12.6},{28.3,-25.79},{26,-25.79},{26,-30}},
+        points={{28.3,-12.6},{28.3,-25.79},{28,-25.79},{28,-31}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(RAElastance.Ct, RA.compliance) annotation (Line(
-        points={{-40.4,-16.6},{-40.4,-26},{-50,-26},{-50,-30}},
+        points={{-40.4,-16.6},{-40.4,-26},{-48,-26},{-48,-31}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(RV.StressedVolume, RVElastance.Vs) annotation (Line(
@@ -348,12 +353,12 @@ package Burkhoff
         color={0,0,127},
         smooth=Smooth.None));
     connect(LV.q_in[1], pressureMeasure.q_in) annotation (Line(
-        points={{101.7,-4},{103.6,-4},{103.6,-20}},
+        points={{101.9,-4},{103.6,-4},{103.6,-20}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(pressureMeasure1.q_in, RV.q_in[1]) annotation (Line(
-        points={{21.8,-56},{24,-56},{24,-40},{25.7,-40}},
+        points={{21.8,-56},{24,-56},{24,-40},{25.9,-40}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
@@ -370,11 +375,11 @@ package Burkhoff
         color={0,0,127},
         smooth=Smooth.None));
     connect(RV.externalPressure, add2.y) annotation (Line(
-        points={{34,-30},{34,-28.3},{35,-28.3}},
+        points={{32,-31},{32,-28.3},{35,-28.3}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(add.y, RA.externalPressure) annotation (Line(
-        points={{-34.4,-32},{-38,-32},{-38,-30},{-42,-30}},
+        points={{-34.4,-32},{-38,-32},{-38,-31},{-44,-31}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(RAElastance.Pt, add.u3) annotation (Line(
@@ -383,11 +388,11 @@ package Burkhoff
         smooth=Smooth.None));
 
     connect(LV.externalPressure, add3.y) annotation (Line(
-        points={{110,6},{110,7.7},{109,7.7}},
+        points={{108,5},{108,7.7},{109,7.7}},
         color={0,190,190},
         smooth=Smooth.None));
     connect(LA.externalPressure, add1.y) annotation (Line(
-        points={{176,6},{176,9.6}},
+        points={{174,5},{174,8},{176,8},{176,9.6}},
         color={0,190,190},
         smooth=Smooth.None));
     connect(pressureMeasure.pressure, LAVGain.u) annotation (Line(
@@ -400,7 +405,7 @@ package Burkhoff
         smooth=Smooth.None));
     connect(IntraThoracicPressure.y, Caprox.externalPressure) annotation (
         Line(
-        points={{55,-4},{66,-4},{66,32},{38,32}},
+        points={{55,-4},{66,-4},{66,31},{36,31}},
         color={0,190,190},
         smooth=Smooth.None));
     connect(IntraThoracicPressure.y, add3.u2) annotation (Line(
@@ -421,17 +426,17 @@ package Burkhoff
         smooth=Smooth.None));
     connect(IntraThoracicPressure.y, Capprox.externalPressure) annotation (
         Line(
-        points={{55,-4},{66,-4},{66,-26},{116,-26},{116,-28}},
+        points={{55,-4},{66,-4},{66,-26},{114,-26},{114,-29}},
         color={0,190,190},
         smooth=Smooth.None));
     connect(Cap.externalPressure, Capprox.externalPressure) annotation (
         Line(
-        points={{162,-28},{162,-26},{116,-26},{116,-28}},
+        points={{160,-29},{160,-26},{114,-26},{114,-29}},
         color={0,190,190},
         smooth=Smooth.None));
     connect(Cvp.externalPressure, Capprox.externalPressure) annotation (
         Line(
-        points={{202,-28},{202,-26},{116,-26},{116,-28}},
+        points={{200,-29},{200,-26},{114,-26},{114,-29}},
         color={0,190,190},
         smooth=Smooth.None));
     connect(IntraThoracicPressure.y, add2.u1) annotation (Line(
@@ -439,8 +444,8 @@ package Burkhoff
         color={0,190,190},
         smooth=Smooth.None));
     connect(add.u2, Capprox.externalPressure) annotation (Line(
-        points={{-25.2,-32},{-16,-32},{-16,-18},{66,-18},{66,-26},{116,-26},{
-            116,-28}},
+        points={{-25.2,-32},{-16,-32},{-16,-18},{66,-18},{66,-26},{114,-26},{
+            114,-29}},
         color={0,190,190},
         smooth=Smooth.None));
     annotation (
@@ -486,7 +491,7 @@ package Burkhoff
         volume_start=3e-05,
         ZeroPressureVolume=2e-05,
         Compliance=7.5006157584566e-09,
-        nHydraulicPorts=1)
+        nPorts=1)
         annotation (Placement(transformation(extent={{-56,-10},{-36,10}})));
       Physiolibrary.Fluid.Components.Resistor Rcp(Resistance(displayUnit=
               "(mmHg.s)/ml") = 2666447.7483)
@@ -495,7 +500,7 @@ package Burkhoff
         volume_start=0.000802,
         ZeroPressureVolume=0.0006,
         Compliance=1.5001231516913e-07,
-        nHydraulicPorts=1)
+        nPorts=1)
         annotation (Placement(transformation(extent={{-8,-10},{12,10}})));
       Physiolibrary.Fluid.Components.Resistor Rap(Resistance(displayUnit=
               "(mmHg.s)/ml") = 2666447.7483)
@@ -504,7 +509,7 @@ package Burkhoff
         volume_start=0.000154,
         ZeroPressureVolume=0.0001,
         Compliance=5.2504310309196e-08,
-        nHydraulicPorts=1)
+        nPorts=1)
         annotation (Placement(transformation(extent={{34,-10},{54,10}})));
       Physiolibrary.Fluid.Components.Resistor Rvp(Resistance(displayUnit=
               "(mmHg.s)/ml") = 1999835.811225)
@@ -516,32 +521,32 @@ package Burkhoff
           thickness=1,
           smooth=Smooth.None));
       connect(Rcsp.q_out, Capprox.q_in[1]) annotation (Line(
-          points={{-64,2.22045e-16},{-46,2.22045e-16}},
+          points={{-64,2.22045e-16},{-46.1,2.22045e-16}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(Capprox.q_in[1], Rcp.q_in) annotation (Line(
-          points={{-46,2.22045e-16},{-32,2.22045e-16}},
+          points={{-46.1,2.22045e-16},{-32,2.22045e-16}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(Rcp.q_out, Cap.q_in[1]) annotation (Line(
-          points={{-12,2.22045e-16},{2,2.22045e-16}},
+          points={{-12,2.22045e-16},{1.9,2.22045e-16}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(Cap.q_in[1], Rap.q_in) annotation (Line(
-          points={{2,2.22045e-16},{12,2.22045e-16}},
+          points={{1.9,2.22045e-16},{12,2.22045e-16}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(Rap.q_out, Cvp.q_in[1]) annotation (Line(
-          points={{32,2.22045e-16},{44,2.22045e-16}},
+          points={{32,2.22045e-16},{43.9,2.22045e-16}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(Cvp.q_in[1], Rvp.q_in) annotation (Line(
-          points={{44,2.22045e-16},{60,2.22045e-16}},
+          points={{43.9,2.22045e-16},{60,2.22045e-16}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
@@ -567,7 +572,7 @@ package Burkhoff
         volume_start=3.8e-05,
         ZeroPressureVolume=3e-05,
         Compliance=7.5006157584566e-10,
-        nHydraulicPorts=1)
+        nPorts=1)
         annotation (Placement(transformation(extent={{44,-10},{64,10}})));
       Physiolibrary.Fluid.Components.Resistor Rcs(Resistance(displayUnit=
               "(mmHg.s)/ml") = 3199737.29796)
@@ -576,7 +581,7 @@ package Burkhoff
         volume_start=0.000834,
         ZeroPressureVolume=0.0007,
         Compliance=1.2751046789376e-08,
-        nHydraulicPorts=1)
+        nPorts=1)
         annotation (Placement(transformation(extent={{0,-10},{20,10}})));
       Physiolibrary.Fluid.Components.Resistor Ras(Resistance(displayUnit=
               "(mmHg.s)/ml") = 99991790.56125)
@@ -585,8 +590,8 @@ package Burkhoff
         volume_start=0.002701,
         ZeroPressureVolume=0.00223,
         useComplianceInput=false,
-        Compliance=5.2504310309196e-07,
-        nHydraulicPorts=1)
+        Compliance(displayUnit="ml/mmHg") = 5.2504310309196e-07,
+        nPorts=1)
         annotation (Placement(transformation(extent={{-48,-10},{-28,10}})));
       Physiolibrary.Fluid.Components.Resistor Rvs(Resistance(displayUnit=
               "(mmHg.s)/ml") = 2666447.7483)
@@ -598,32 +603,32 @@ package Burkhoff
           thickness=1,
           smooth=Smooth.None));
       connect(Rcprox.q_out, Caprox.q_in[1]) annotation (Line(
-          points={{66,0},{54,0}},
+          points={{66,0},{53.9,0}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(Caprox.q_in[1], Rcs.q_in) annotation (Line(
-          points={{54,0},{42,0}},
+          points={{53.9,0},{42,0}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(Rcs.q_out, Cas.q_in[1]) annotation (Line(
-          points={{22,0},{10,0}},
+          points={{22,0},{9.9,0}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(Cas.q_in[1], Ras.q_in) annotation (Line(
-          points={{10,0},{-2,0}},
+          points={{9.9,0},{-2,0}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(Ras.q_out, Cvs.q_in[1]) annotation (Line(
-          points={{-22,0},{-38,0}},
+          points={{-22,0},{-38.1,0}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(Cvs.q_in[1], Rvs.q_in) annotation (Line(
-          points={{-38,0},{-56,0}},
+          points={{-38.1,0},{-56,0}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
@@ -641,12 +646,12 @@ package Burkhoff
 
     model Heart "heart with modified elastance"
       extends Cardiovascular.Interfaces.Heart;
-    Parts.ElasticVesselWithSVandP LA(
+      Parts.ElasticVesselWithSVandP LA(
         useComplianceInput=true,
         useExternalPressureInput=true,
         volume_start=8.1e-05,
         ZeroPressureVolume=5e-06,
-        nHydraulicPorts=1)
+        nPorts=1)
         annotation (Placement(transformation(extent={{30,-50},{50,-30}})));
     Parts.AtrialElastance atrialElastance1(
         Tmax(displayUnit="ms") = 0.125,
@@ -670,13 +675,13 @@ package Burkhoff
         Beta(displayUnit="mmHg") = 45.3296117211,
         Ees=205316476.6191)
         annotation (Placement(transformation(extent={{-52,-20},{-18,6}})));
-    Parts.ElasticVesselWithSVandP LV(
+      Parts.ElasticVesselWithSVandP LV(
         useComplianceInput=true,
         volume_start=0.000125,
         ZeroPressureVolume=5e-06,
         useExternalPressureInput=true,
-        nHydraulicPorts=1)             annotation (Placement(transformation(
-              extent={{-38,-50},{-18,-30}})));
+        nPorts=1)
+        annotation (Placement(transformation(extent={{-38,-50},{-18,-30}})));
       Physiolibrary.Fluid.Components.IdealValve AOV(_Gon(displayUnit=
               "ml/(mmHg.s)") = 3.7503078792283e-06) annotation (Placement(
             transformation(
@@ -694,7 +699,7 @@ package Burkhoff
         useExternalPressureInput=true,
         volume_start=0.000112,
         ZeroPressureVolume=5e-06,
-        nHydraulicPorts=1,
+        nPorts=1,
         ExternalPressure=101325 + (0))
         annotation (Placement(transformation(extent={{16,32},{36,52}})));
     Parts.VentricularElastance ventricularElastance(
@@ -717,12 +722,12 @@ package Burkhoff
         Beta(displayUnit="mmHg") = 39.9967162245,
         Ees=26664477.483)
         annotation (Placement(transformation(extent={{-80,62},{-48,92}})));
-    Parts.ElasticVesselWithSVandP RA(
+      Parts.ElasticVesselWithSVandP RA(
         useComplianceInput=true,
         useExternalPressureInput=true,
         volume_start=7.3e-05,
         ZeroPressureVolume=5e-06,
-        nHydraulicPorts=1)
+        nPorts=1)
         annotation (Placement(transformation(extent={{-60,32},{-40,52}})));
       replaceable Physiolibrary.Types.Constants.FrequencyConst heartRate(k=
             1.3333333333333)
@@ -751,22 +756,22 @@ package Burkhoff
         annotation (Placement(transformation(extent={{-14,-58},{0,-48}})));
     equation
       connect(rightHeartInflow, RA.q_in[1]) annotation (Line(
-          points={{-100,40},{-74,40},{-74,42},{-50.3,42}},
+          points={{-100,40},{-74,40},{-74,42},{-50.1,42}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(RA.q_in[1], TV.q_in) annotation (Line(
-          points={{-50.3,42},{-6,42}},
+          points={{-50.1,42},{-6,42}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(TV.q_out, RV.q_in[1]) annotation (Line(
-          points={{14,42},{25.7,42}},
+          points={{14,42},{25.9,42}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(RV.q_in[1], PV.q_in) annotation (Line(
-          points={{25.7,42},{40,42}},
+          points={{25.9,42},{40,42}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
@@ -776,31 +781,31 @@ package Burkhoff
           thickness=1,
           smooth=Smooth.None));
       connect(leftHeartInflow, LA.q_in[1]) annotation (Line(
-          points={{100,-20},{84,-20},{84,-18},{64,-18},{64,-40},{39.7,-40}},
+          points={{100,-20},{84,-20},{84,-18},{64,-18},{64,-40},{39.9,-40}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(LA.q_in[1], MV.q_in) annotation (Line(
-          points={{39.7,-40},{4,-40}},
+          points={{39.9,-40},{4,-40}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(MV.q_out, LV.q_in[1]) annotation (Line(
-          points={{-16,-40},{-28.3,-40}},
+          points={{-16,-40},{-28.1,-40}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(LV.q_in[1], AOV.q_in) annotation (Line(
-          points={{-28.3,-40},{-42,-40}},
+          points={{-28.1,-40},{-42,-40}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
       connect(ventricularElastance1.Ct, LV.compliance) annotation (Line(
-          points={{-29.9,-18.18},{-28,-18.18},{-28,-30}},
+          points={{-29.9,-18.18},{-26,-18.18},{-26,-31}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(ventricularElastance.Ct, RV.compliance) annotation (Line(
-          points={{38.1,65.96},{38.1,63.65},{26,63.65},{26,52}},
+          points={{38.1,65.96},{38.1,63.65},{28,63.65},{28,51}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(heartRate.y, atrialElastance.HR) annotation (Line(
@@ -834,11 +839,11 @@ package Burkhoff
           smooth=Smooth.None));
       connect(ventricularElastance1.Pt, LV.externalPressure) annotation (
           Line(
-          points={{-21.06,-18.18},{-20,-18.18},{-20,-30}},
+          points={{-21.06,-18.18},{-22,-18.18},{-22,-31}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(LA.externalPressure, add.y) annotation (Line(
-          points={{48,-30},{50,-30},{50,-26.5},{51,-26.5}},
+          points={{46,-31},{50,-31},{50,-26.5},{51,-26.5}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(atrialElastance1.HR, heartRate.y) annotation (Line(
@@ -850,7 +855,7 @@ package Burkhoff
           color={0,0,127},
           smooth=Smooth.None));
       connect(add1.y, RA.externalPressure) annotation (Line(
-          points={{-41,53.5},{-41,53.75},{-42,53.75},{-42,52}},
+          points={{-41,53.5},{-41,53.75},{-44,53.75},{-44,51}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(add1.u1, RAVGain.y) annotation (Line(
@@ -862,7 +867,7 @@ package Burkhoff
           color={0,0,127},
           smooth=Smooth.None));
       connect(pressureMeasure1.q_in, LV.q_in[1]) annotation (Line(
-          points={{-9.8,-56},{-24,-56},{-24,-40},{-28.3,-40}},
+          points={{-9.8,-56},{-24,-56},{-24,-40},{-28.1,-40}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
@@ -871,7 +876,7 @@ package Burkhoff
           color={0,0,127},
           smooth=Smooth.None));
       connect(pressureMeasure.q_in, RV.q_in[1]) annotation (Line(
-          points={{13.8,54.4},{14,54.4},{14,46},{25.7,46},{25.7,42}},
+          points={{13.8,54.4},{14,54.4},{14,46},{25.9,46},{25.9,42}},
           color={0,0,0},
           thickness=1,
           smooth=Smooth.None));
@@ -880,7 +885,7 @@ package Burkhoff
           color={0,0,127},
           smooth=Smooth.None));
       connect(RA.compliance, atrialElastance.Ct) annotation (Line(
-          points={{-50,52},{-50,58},{-59.2,58},{-59.2,64.1}},
+          points={{-48,51},{-48,58},{-59.2,58},{-59.2,64.1}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(atrialElastance1.Pt, add.u2) annotation (Line(
@@ -888,12 +893,12 @@ package Burkhoff
           color={0,0,127},
           smooth=Smooth.None));
       connect(LA.compliance, atrialElastance1.Ct) annotation (Line(
-          points={{40,-30},{38,-30},{38,-8.18},{36.1,-8.18}},
+          points={{42,-31},{38,-31},{38,-8.18},{36.1,-8.18}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(RV.externalPressure, ventricularElastance.Pt) annotation (
           Line(
-          points={{34,52},{34,56},{46.94,56},{46.94,65.96}},
+          points={{32,51},{32,56},{46.94,56},{46.94,65.96}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(leftHeartOutflow, AOV.q_out) annotation (Line(
@@ -919,7 +924,7 @@ package Burkhoff
             rotation=90,
             origin={-44,102})));
     equation
-      StressedVolume = volume - zpv;
+      StressedVolume =fluidVolume - zpv;
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
               extent={{-100,-100},{100,100}}), graphics), Icon(
             coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
@@ -929,6 +934,9 @@ package Burkhoff
     partial model HeartElastance
       "Elastance of heart atria and ventricules by Burkhoff"
       import Physiolibrary.Types.*;
+
+      outer Modelica.Fluid.System system "System properties";
+
       RealIO.VolumeInput Vs "Stressed volume" annotation (Placement(
           visible=true,
           transformation(
@@ -976,6 +984,8 @@ package Burkhoff
             extent={{-13,-13},{13,13}},
             rotation=180,
             origin={87,67})));
+
+      parameter Boolean IsPressureAbsolute = true;
     protected
      HydraulicElastance mes;
     equation
@@ -991,7 +1001,7 @@ package Burkhoff
       //1e+6 and 133.322368 are recalculation in SI units - as the original equation comes in torr and ml.
       //  Et = (1 - Et0) * Beta * (exp(Alpha * Vs * 1e+6) - 1) / Vs * 1e+6) * 133.322368 * 1e+6 + Et0 * Ees;
       Et = Modelica.Constants.eps + Et0*mes;
-      Pt = (1 - Et0)*Beta*(exp(Alpha*Vs) - 1);
+      Pt = (1 - Et0)*Beta*(exp(Alpha*Vs) - 1) + (if (IsPressureAbsolute) then system.p_ambient else 0);
       Ct = 1/Et;
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
               extent={{-100,-100},{100,100}}), graphics), Icon(
@@ -1118,16 +1128,15 @@ package Burkhoff
         pulmonaryCirculation,
       redeclare replaceable ControlledParts.HeartControl heart(MV(
             useLimitationInputs=false), AOV(useLimitationInputs=false)),
-      redeclare replaceable ControlledParts.SystemicControl
-        systemicCirculation(Ras(useConductanceInput=false)),
+      redeclare replaceable ControlledParts.SystemicControl systemicCirculation(
+          Ras(useResistanceInput=false)),
       redeclare Model.Control.Baroreflex shortTermControl(baroreceptor(
           PAOmedia=11585.715466364,
           EV0right=50662507.2177,
           EV0left=205316476.6191,
           EV0venacava=5.2504310309196e-07,
           activationDelay=10)),
-      redeclare replaceable Model.Control.BloodVolumeControl
-        longTermControl);
+      redeclare replaceable Model.Control.BloodVolumeControl longTermControl);
   /*    redeclare Control.StenosisControl simulationControl(venacavastenosis(
           InitialElastance=1906510.1400345, FinalElastance=
             1906510.1400345),                                aorticstenosis(
@@ -1156,16 +1165,16 @@ package Burkhoff
       Modelica.Blocks.Math.Add3 add3_1
         annotation (Placement(transformation(extent={{-36,22},{-56,42}})));
     equation
-      connect(Capprox.volume, add3_1.u3) annotation (Line(
-          points={{-40,-10},{-40,-16},{-34,-16},{-34,24}},
+      connect(Capprox.fluidVolume, add3_1.u3) annotation (Line(
+          points={{-36,-8},{-36,-16},{-34,-16},{-34,24}},
           color={0,0,127},
           smooth=Smooth.None));
-      connect(Cap.volume, add3_1.u2) annotation (Line(
-          points={{8,-10},{10,-10},{10,-16},{16,-16},{16,32},{-34,32}},
+      connect(Cap.fluidVolume, add3_1.u2) annotation (Line(
+          points={{12,-8},{10,-8},{10,-16},{16,-16},{16,32},{-34,32}},
           color={0,0,127},
           smooth=Smooth.None));
-      connect(Cvp.volume, add3_1.u1) annotation (Line(
-          points={{50,-10},{52,-10},{52,-16},{56,-16},{56,40},{-34,40}},
+      connect(Cvp.fluidVolume, add3_1.u1) annotation (Line(
+          points={{54,-8},{52,-8},{52,-16},{56,-16},{56,40},{-34,40}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(add3_1.y, busConnector.pulmonaryBloodVolume) annotation (Line(
@@ -1189,17 +1198,19 @@ package Burkhoff
             origin={-65,-23})));
       Cardiovascular.Model.Control.MeanAortaPressureMeasurement aortaPressureMeasurement
         annotation (Placement(transformation(extent={{32,12},{52,32}})));
+      Physiolibrary.Blocks.Math.Reciprocal rec
+        annotation (Placement(transformation(extent={{-36,42},{-16,62}})));
     equation
-      connect(add3_1.u3, Cvs.volume) annotation (Line(
-          points={{-56.6,-17.4},{-32,-17.4},{-32,-10}},
+      connect(add3_1.u3, Cvs.fluidVolume) annotation (Line(
+          points={{-56.6,-17.4},{-28,-17.4},{-28,-8}},
           color={0,0,127},
           smooth=Smooth.None));
-      connect(add3_1.u2, Cas.volume) annotation (Line(
-          points={{-56.6,-23},{16,-23},{16,-10}},
+      connect(add3_1.u2, Cas.fluidVolume) annotation (Line(
+          points={{-56.6,-23},{20,-23},{20,-8}},
           color={0,0,127},
           smooth=Smooth.None));
-      connect(add3_1.u1, Caprox.volume) annotation (Line(
-          points={{-56.6,-28.6},{60,-28.6},{60,-10}},
+      connect(add3_1.u1, Caprox.fluidVolume) annotation (Line(
+          points={{-56.6,-28.6},{64,-28.6},{64,-8}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(add3_1.y, busConnector.systemicBloodVolume) annotation (Line(
@@ -1222,16 +1233,18 @@ package Burkhoff
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
-      connect(Cvs.compliance, busConnector.venacavacompliance) annotation (
-          Line(
-          points={{-38,8},{-38,34},{-80,34}},
-          color={0,0,127},
-          smooth=Smooth.None), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
+      connect(busConnector.venacavaelastance, rec.u) annotation (Line(
+          points={{-80,34},{-44,34},{-44,52},{-38,52}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}},
+          horizontalAlignment=TextAlignment.Right));
+      connect(rec.y, Cvs.compliance) annotation (Line(points={{-15,52},{-10,52},
+              {-10,14},{-36,14},{-36,9}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-              extent={{-100,-100},{100,100}}), graphics));
+              extent={{-100,-100},{100,100}})));
     end SystemicControl;
 
     model HeartControl
@@ -1271,20 +1284,20 @@ package Burkhoff
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
-      connect(RV.volume, sum1.u[1]) annotation (Line(
-          points={{32,32},{32,14.5},{56,14.5}},
+      connect(RV.fluidVolume, sum1.u[1]) annotation (Line(
+          points={{36,34},{36,14.5},{56,14.5}},
           color={0,0,127},
           smooth=Smooth.None));
-      connect(RA.volume, sum1.u[2]) annotation (Line(
-          points={{-44,32},{-46,32},{-46,15.5},{56,15.5}},
+      connect(RA.fluidVolume, sum1.u[2]) annotation (Line(
+          points={{-40,34},{-46,34},{-46,15.5},{56,15.5}},
           color={0,0,127},
           smooth=Smooth.None));
-      connect(LV.volume, sum1.u[3]) annotation (Line(
-          points={{-22,-50},{-22,-72},{56,-72},{56,16.5}},
+      connect(LV.fluidVolume, sum1.u[3]) annotation (Line(
+          points={{-18,-48},{-18,-72},{56,-72},{56,16.5}},
           color={0,0,127},
           smooth=Smooth.None));
-      connect(LA.volume, sum1.u[4]) annotation (Line(
-          points={{46,-50},{46,-58},{56,-58},{56,17.5}},
+      connect(LA.fluidVolume, sum1.u[4]) annotation (Line(
+          points={{50,-48},{50,-58},{56,-58},{56,17.5}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(sum1.y, busConnector.heartBloodVolume) annotation (Line(
@@ -1315,24 +1328,33 @@ package Burkhoff
 
     model AorticValveHeartControl
       extends HeartControl(AOV(useLimitationInputs=true));
+      Physiolibrary.Blocks.Math.Reciprocal rec
+        annotation (Placement(transformation(extent={{-104,-110},{-84,-90}})));
+      Physiolibrary.Blocks.Math.Reciprocal rec1
+        annotation (Placement(transformation(extent={{-106,-84},{-86,-64}})));
     equation
-      connect(AOV.Goff, busConnector.avbackflowconductance) annotation (
-          Line(
-          points={{-58,-50},{-58,-60},{-98,-60},{-98,86}},
-          color={0,0,127},
-          smooth=Smooth.None), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(AOV.Gon, busConnector.avoutflowresistance) annotation (Line(
-          points={{-46,-50},{-46,-60},{-98,-60},{-98,86}},
-          color={0,0,127},
-          smooth=Smooth.None), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
+      connect(busConnector.avoutflowresistance, rec1.u) annotation (Line(
+          points={{-98,86},{-114,86},{-114,-74},{-108,-74}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}},
+          horizontalAlignment=TextAlignment.Right));
+      connect(busConnector.avbackflowresistance, rec.u) annotation (Line(
+          points={{-98,86},{-114,86},{-114,-100},{-106,-100}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-3,-6},{-3,-6}},
+          horizontalAlignment=TextAlignment.Right));
+      connect(rec.y, AOV.Goff) annotation (Line(points={{-83,-100},{-58,-100},{
+              -58,-50}}, color={0,0,127}));
+      connect(rec1.y, AOV.Gon) annotation (Line(points={{-85,-74},{-46,-74},{
+              -46,-50}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-              extent={{-100,-100},{100,100}}), graphics));
+              extent={{-100,-100},{100,100}})));
     end AorticValveHeartControl;
   end ControlledParts;
 
