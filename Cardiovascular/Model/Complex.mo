@@ -7,7 +7,7 @@ package Complex
     import Physiolibrary.Types.*;
 
     model ComplexEnvironment "Class encompassing all settings"
-      extends Cardiovascular.Icons.Settings;
+      extends Physiolibrary.Icons.Settings;
       import Cardiovascular.Model.Complex.Components.Main.SystemicArteries.*;
 
       inner replaceable Conditions.Rest_NoAdapt condition constrainedby
@@ -1745,7 +1745,7 @@ package Complex
         end Abstraction;
 
         model Heart "Heart model including coronaries"
-          extends Cardiovascular.Icons.Heart_detailed;
+          extends Physiolibrary.Icons.Heart_detailed;
           import Cardiovascular.Model.Complex.Components.Auxiliary.Analyzers.*;
           import Cardiovascular.Model.Complex.Components.Auxiliary.Connectors.*;
           import Cardiovascular.Model.Complex.Components.Main.Vessels.*;
@@ -2005,7 +2005,7 @@ package Complex
 
         model Valve "Heart valves with finite-time state transition"
           extends Physiolibrary.Fluid.Interfaces.OnePort;
-          extends Cardiovascular.Icons.Valve;
+          extends Physiolibrary.Icons.Valve;
           import Cardiovascular.Constants.*;
           import Cardiovascular.Types.*;
           import Physiolibrary.Types.*;
@@ -2064,7 +2064,7 @@ package Complex
         end Valve;
 
         model AtrialWall "Atrial wall and cavity"
-          extends Cardiovascular.Icons.Atrium;
+          extends Physiolibrary.Icons.Atrium;
           extends Hook;
           extends Abstraction.HeartWall(
             dLsP=settings.constants.atriumDLsP,
@@ -2139,7 +2139,7 @@ package Complex
         end VentricularWall;
 
         model Ventricles "Model of interacting ventricles"
-          extends Cardiovascular.Icons.Ventricle;
+          extends Physiolibrary.Icons.Ventricle;
           import Cardiovascular.Model.Complex.Components.Auxiliary.Connectors.*;
           import Cardiovascular.Model.Complex.Environment.*;
           import Cardiovascular.Types.*;
@@ -2472,7 +2472,7 @@ package Complex
         end AdaptableVesselsCore;
 
         model AdaptableArteries
-          extends Cardiovascular.Icons.Arteries;
+          extends Physiolibrary.Icons.Arteries;
           extends Abstraction.AdaptableVessels;
           annotation (Icon(coordinateSystem(preserveAspectRatio=false,
                   extent={{-100,-100},{100,100}})));
@@ -2480,7 +2480,7 @@ package Complex
         end AdaptableArteries;
 
         model AdaptableVeins
-          extends Cardiovascular.Icons.Vessels;
+          extends Physiolibrary.Icons.Vessels;
           extends Abstraction.AdaptableVessels;
           annotation (Icon(coordinateSystem(preserveAspectRatio=false,
                   extent={{-100,-100},{100,100}})));
@@ -2488,7 +2488,7 @@ package Complex
         end AdaptableVeins;
 
         model CoronaryVessels "Flow port for coronary vessels"
-          extends Cardiovascular.Icons.Vessels;
+          extends Physiolibrary.Icons.Vessels;
           extends Auxiliary.BlockKinds.Port;
           import Cardiovascular.Model.Complex.Components.Auxiliary.RLC.Elements.*;
           import Physiolibrary.Types.Volume;
@@ -2607,7 +2607,7 @@ package Complex
 
           partial model SystemicArteries_Adapter
             "Adapter for non-adaptable versions of systemic arteries"
-            extends Cardiovascular.Icons.Arteries;
+            extends Physiolibrary.Icons.Arteries;
             extends SystemicArteries(isAdaptable=false);
             import Cardiovascular.Types.*;
             import Physiolibrary.Types.*;
@@ -3464,7 +3464,7 @@ package Complex
 
         model Pump
           "ECMO pump with pressure control according to flow feedback and reference flow"
-          extends Cardiovascular.Icons.Screw;
+          extends Physiolibrary.Icons.Screw;
           extends Physiolibrary.Fluid.Interfaces.OnePort;
           import Cardiovascular.Model.Complex.Environment.*;
           import Physiolibrary.Types.*;
@@ -3489,7 +3489,7 @@ package Complex
 
         model Oxygenator "Resistive hollow-fiber oxygenator"
           extends Physiolibrary.Icons.PerfusionDO;
-          extends Cardiovascular.Icons.O2;
+          extends Physiolibrary.Icons.O2;
           extends Auxiliary.BlockKinds.Port;
           import Cardiovascular.Model.Complex.Components.Auxiliary.RLC.*;
           import Cardiovascular.Constants.*;
@@ -3522,7 +3522,7 @@ package Complex
         end Oxygenator;
 
         model ECMO_bare "ECMO circuit including cannulas"
-        extends Cardiovascular.Icons.ECMO;
+        extends Physiolibrary.Icons.ECMO;
         extends Auxiliary.BlockKinds.Port;
         import Cardiovascular.Model.Complex.Components.Auxiliary.RLC.Tubes.*;
         import Cardiovascular.Model.Complex.Environment.*;
