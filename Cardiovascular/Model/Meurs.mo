@@ -383,15 +383,15 @@ package Meurs
         points={{185.6,26.9},{185.6,84},{172,84},{172,76.5}},
         color={0,190,190},
         smooth=Smooth.None));
-    connect(atrialElastance1.Et, RightAtrium.elastance) annotation (Line(points
-          ={{-202.39,101.84},{-194,101.84},{-194,80},{-226,80},{-226,74},{
+    connect(atrialElastance1.Et, RightAtrium.elastance) annotation (Line(points=
+           {{-202.39,101.84},{-194,101.84},{-194,80},{-226,80},{-226,74},{
             -225.2,74},{-225.2,70.6}}, color={0,0,127}));
     connect(ventricularElastance1.Et, rightVentricle.elastance) annotation (
         Line(points={{-147.15,108.91},{-126,108.91},{-126,80},{-150,80},{-150,
             70.5}}, color={0,0,127}));
     connect(LeftAtrium.elastance, atrialElastance.Et) annotation (Line(points={
-            {90.8,76.6},{90.8,88},{132,88},{132,109.84},{121.61,109.84}}, color
-          ={0,0,127}));
+            {90.8,76.6},{90.8,88},{132,88},{132,109.84},{121.61,109.84}}, color=
+           {0,0,127}));
     connect(ventricularElastance.Et, LeftVentricle.elastance) annotation (Line(
           points={{203.42,111.68},{212,111.68},{212,86},{166,86},{166,76.5}},
           color={0,0,127}));
@@ -440,7 +440,7 @@ package Meurs
         ExternalPressure=101325 + (-533.28954966))
         annotation (Placement(transformation(extent={{-82,-12},{-58,12}})));
       Physiolibrary.Fluid.Components.Resistor PulmonaryArteriesResistance(
-          useResistanceInput=false, Resistance(displayUnit="(mmHg.s)/ml") =
+          useResistanceInput=false, Resistance(displayUnit="(mmHg.s)/ml")=
           14665462.61565)
         annotation (Placement(transformation(extent={{-38,-14},{-10,14}})));
       Physiolibrary.Fluid.Components.ElasticVesselElastance PulmonaryVeins(
@@ -454,7 +454,7 @@ package Meurs
         ExternalPressure=101325 + (-533.28954966))
         annotation (Placement(transformation(extent={{8,-12},{32,12}})));
       Physiolibrary.Fluid.Components.Resistor PulmonaryVeinResistance(
-          useResistanceInput=false, Resistance(displayUnit="(mmHg.s)/ml") =
+          useResistanceInput=false, Resistance(displayUnit="(mmHg.s)/ml")=
           399967.162245)
         annotation (Placement(transformation(extent={{46,-12},{70,12}})));
     equation
@@ -515,7 +515,7 @@ package Meurs
             rotation=180,
             origin={70,1})));
       Physiolibrary.Fluid.Components.Resistor ArteryResistance(
-          useResistanceInput=false, Resistance(displayUnit="(mmHg.s)/ml") =
+          useResistanceInput=false, Resistance(displayUnit="(mmHg.s)/ml")=
           7999343.2449) annotation (Placement(transformation(
             extent={{7,-7},{-7,7}},
             rotation=0,
@@ -531,7 +531,7 @@ package Meurs
         nPorts=1)
         annotation (Placement(transformation(extent={{38,-22},{54,-6}})));
       Physiolibrary.Fluid.Components.Resistor SystemicArterioralResistance(
-          useResistanceInput=false, Resistance(displayUnit="(mmHg.s)/ml") =
+          useResistanceInput=false, Resistance(displayUnit="(mmHg.s)/ml")=
           106657909.932) annotation (Placement(transformation(
             extent={{9,-8},{-9,8}},
             rotation=0,
@@ -546,7 +546,7 @@ package Meurs
         nPorts=1)
         annotation (Placement(transformation(extent={{2,-36},{16,-22}})));
       Physiolibrary.Fluid.Components.Resistor SmallVenuleResistance(
-          useResistanceInput=false, Resistance(displayUnit="(mmHg.s)/ml") =
+          useResistanceInput=false, Resistance(displayUnit="(mmHg.s)/ml")=
           26664477.483) annotation (Placement(transformation(
             extent={{7,-7},{-7,7}},
             rotation=0,
@@ -561,7 +561,7 @@ package Meurs
         nPorts=1)
         annotation (Placement(transformation(extent={{-32,-22},{-14,-6}})));
       Physiolibrary.Fluid.Components.Resistor VeinsResistance(
-          useResistanceInput=false, Resistance(displayUnit="(mmHg.s)/ml") =
+          useResistanceInput=false, Resistance(displayUnit="(mmHg.s)/ml")=
           11999014.86735)
         annotation (Placement(transformation(extent={{-32,-22},{-48,-6}})));
       Physiolibrary.Fluid.Components.ElasticVesselElastance IntraThoracicVeins(
@@ -575,7 +575,7 @@ package Meurs
         ExternalPressure=101325 + (-533.28954966))
         annotation (Placement(transformation(extent={{-66,-8},{-48,8}})));
       Physiolibrary.Fluid.Components.Resistor CentralVenousResistance(
-          useResistanceInput=false, Resistance(displayUnit="(mmHg.s)/ml") =
+          useResistanceInput=false, Resistance(displayUnit="(mmHg.s)/ml")=
           399967.162245)
         annotation (Placement(transformation(extent={{-74,-8},{-90,8}})));
     equation
@@ -688,8 +688,7 @@ package Meurs
         nPorts=1,
         ExternalPressure=101325 + (-533.28954966))
         annotation (Placement(transformation(extent={{8,8},{36,36}})));
-      Physiolibrary.Fluid.Components.IdealValveResistance ventricleArteryValve1
-        (
+      Physiolibrary.Fluid.Components.IdealValveResistance ventricleArteryValve1(
         useResistanceInputs=false,
         _Ron(displayUnit="(mmHg.s)/ml") = 399967.162245,
         _Roff=Modelica.Constants.inf)
@@ -827,8 +826,8 @@ package Meurs
       connect(leftVentricle.elastance, ventricularElastance.Et) annotation (
           Line(points={{-13.2,-59.4},{-13.2,-26.32},{-26.58,-26.32}}, color={0,
               0,127}));
-      connect(leftAtrium.elastance, atrialElastance.Et) annotation (Line(points
-            ={{66.8,-59.4},{66.8,-34.16},{49.61,-34.16}}, color={0,0,127}));
+      connect(leftAtrium.elastance, atrialElastance.Et) annotation (Line(points=
+             {{66.8,-59.4},{66.8,-34.16},{49.61,-34.16}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
               extent={{-100,-100},{100,100}})),           Icon(graphics={
               Text(   extent={{-100,60},{100,100}},
@@ -1006,7 +1005,7 @@ package Meurs
       discrete Physiolibrary.Types.Time Tvs;
       parameter Physiolibrary.Types.Time Tav(displayUnit="s") = 0.01
         "atrioventricular delay";
-      discrete Modelica.SIunits.Time HP(start=0) "heart period";
+      discrete Modelica.Units.SI.Time HP(start=0) "heart period";
       Boolean b(start=false);
       Physiolibrary.Types.RealIO.FrequencyInput HR "heart rate" annotation (
          Placement(transformation(extent={{-12,68},{28,108}}),

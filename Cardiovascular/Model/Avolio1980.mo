@@ -9,8 +9,8 @@ package Avolio1980
           parameter Physiolibrary.Types.Height h=0.0005 "wall thickness";
           parameter Physiolibrary.Types.Pressure E=1600000.0
             "Young modulus N/m^2";
-          parameter Modelica.SIunits.Density ro=1060;
-          parameter Modelica.SIunits.DynamicViscosity mi=0.004;
+      parameter Modelica.Units.SI.Density ro=1060;
+      parameter Modelica.Units.SI.DynamicViscosity mi=0.004;
           parameter Boolean terminal = false;
           parameter Physiolibrary.Types.HydraulicResistance Rbref=1e8; //per KK
           parameter Real kkCfactor = 3.53;
@@ -1691,7 +1691,8 @@ package Avolio1980
 
       model PulsatileCirculation
         "Model of cardiovascular system with pulsatile dynamic"
-                                extends Physiolibrary.Icons.CardioVascular;
+                                extends
+      Physiolibrary.Icons.CardioVascular;
         parameter Boolean EnthalpyNotUsed = true;
         Physiolibrary.Fluid.Components.Conductor RPulmonaryVeins(
       EnthalpyNotUsed=EnthalpyNotUsed,
@@ -1979,7 +1980,8 @@ package Avolio1980
       package Test
         model PulsatileCirculation
           "Model of cardiovascular system with pulsatile dynamic"
-                                  extends Physiolibrary.Icons.CardioVascular;
+                                  extends
+        Physiolibrary.Icons.CardioVascular;
           Physiolibrary.Fluid.Components.Conductor RPulmonaryVeins(
           useConductanceInput=false, Conductance(displayUnit="m3/(Pa.s)")=
           7.425609600872e-08) annotation (Placement(transformation(origin={-220,
@@ -2319,7 +2321,8 @@ package Avolio1980
 
         model PulsatileCirculationTest1
           "Model of cardiovascular system with pulsatile dynamic"
-                                  extends Physiolibrary.Icons.CardioVascular;
+                                  extends
+        Physiolibrary.Icons.CardioVascular;
           Physiolibrary.Fluid.Components.Conductor RPulmonaryVeins(
           useConductanceInput=false, Conductance(displayUnit="m3/(Pa.s)")=
           7.425609600872e-08) annotation (Placement(transformation(origin={-220,
@@ -2636,7 +2639,8 @@ package Avolio1980
 
         model PulsatileCirculation2
           "Model of cardiovascular system with pulsatile dynamic"
-                                  extends Physiolibrary.Icons.CardioVascular;
+                                  extends
+        Physiolibrary.Icons.CardioVascular;
           Physiolibrary.Fluid.Components.Conductor RPulmonaryVeins(
           useConductanceInput=false, Conductance(displayUnit="m3/(Pa.s)")=
           7.425609600872e-08) annotation (Placement(transformation(origin={-220,

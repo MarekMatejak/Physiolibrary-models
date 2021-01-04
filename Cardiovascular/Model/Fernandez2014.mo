@@ -37,7 +37,7 @@ package Fernandez2014
     replaceable Smith2004.Parts.VentricularInteraction
                              ventricularInteraction
       annotation (Placement(transformation(extent={{-28,-14},{32,40}})));
-    Physiolibrary.Types.Constants.PressureConst Pth(k(displayUnit="Pa") =
+    Physiolibrary.Types.Constants.PressureConst Pth(k(displayUnit="Pa")=
         101325 + (-533.28954966))
       annotation (Placement(transformation(extent={{38,32},{48,42}})));
     Physiolibrary.Fluid.Components.ElasticVesselElastance pulmonaryArteries(
@@ -64,7 +64,7 @@ package Fernandez2014
           extent={{-18,-18},{18,18}},
           rotation=0,
           origin={-178,50})));
-    Physiolibrary.Types.Constants.PressureConst Pth1(k(displayUnit="Pa") =
+    Physiolibrary.Types.Constants.PressureConst Pth1(k(displayUnit="Pa")=
         101325 + (-533.28954966))
       annotation (Placement(transformation(
           extent={{-6,-6},{6,6}},
