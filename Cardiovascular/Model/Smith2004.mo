@@ -5,53 +5,63 @@ package Smith2004
         extends Cardiovascular.Icons.Runnable_Shallow;
     import Physiolibrary.Fluid.Components.*;
     Physiolibrary.Fluid.Components.ElasticVesselElastance aorta(
+      EnthalpyNotUsed=true,
       ZeroPressureVolume=0,
       volume_start=0.0001241,
       Elastance=92165766.41999,
       nPorts=2)
       annotation (Placement(transformation(extent={{-130,-30},{-110,-10}})));
     Physiolibrary.Fluid.Components.ElasticVesselElastance venaCava(
+      EnthalpyNotUsed=true,
       ZeroPressureVolume=0,
       volume_start=0.0002952,
       Elastance(displayUnit="Pa/m3") = 786602.0857485,
       nPorts=2)
       annotation (Placement(transformation(extent={{-130,24},{-110,44}})));
-    IdealValveResistance aorticValve(Pknee=0, _Ron(displayUnit=
+    IdealValveResistance aorticValve(
+      EnthalpyNotUsed=true,          Pknee=0, _Ron(displayUnit=
             "(mmHg.s)/ml") = 2399802.97347)
       annotation (Placement(transformation(extent={{-68,-30},{-88,-10}})));
-    Physiolibrary.Fluid.Components.Resistor Rsys(Resistance(displayUnit=
+    Physiolibrary.Fluid.Components.Resistor Rsys(EnthalpyNotUsed=true,
+                                                 Resistance(displayUnit=
             "(mmHg.s)/ml") = 145054757.50752) annotation (Placement(
           transformation(
           extent={{-10,-10},{10,10}},
           rotation=90,
           origin={-120,6})));
-    IdealValveResistance tricuspidValve(Pknee=0, _Ron(displayUnit=
+    IdealValveResistance tricuspidValve(
+      EnthalpyNotUsed=true,             Pknee=0, _Ron(displayUnit=
             "(mmHg.s)/ml") = 3159740.5817355)
       annotation (Placement(transformation(extent={{-62,24},{-42,44}})));
-    IdealValveResistance pulmonaryValve(Pknee=0, _Ron(displayUnit=
+    IdealValveResistance pulmonaryValve(
+      EnthalpyNotUsed=true,             Pknee=0, _Ron(displayUnit=
             "(mmHg.s)/ml") = 733273.1307825)
       annotation (Placement(transformation(extent={{62,24},{82,44}})));
     Physiolibrary.Fluid.Components.ElasticVesselElastance pulmonaryArteries(
+      EnthalpyNotUsed=true,
       ZeroPressureVolume=0,
       useExternalPressureInput=true,
       volume_start=3.904e-05,
       Elastance(displayUnit="Pa/m3") = 49195960.956135,
       nPorts=2)
       annotation (Placement(transformation(extent={{102,24},{122,44}})));
-    Physiolibrary.Fluid.Components.Resistor Rpul(Resistance(displayUnit=
+    Physiolibrary.Fluid.Components.Resistor Rpul(EnthalpyNotUsed=true,
+                                                 Resistance(displayUnit=
             "(mmHg.s)/ml") = 20691634.526808) annotation (Placement(
           transformation(
           extent={{-10,-10},{10,10}},
           rotation=270,
           origin={114,4})));
     Physiolibrary.Fluid.Components.ElasticVesselElastance pulmonaryVeins(
+      EnthalpyNotUsed=true,
       ZeroPressureVolume=0,
       useExternalPressureInput=true,
       volume_start=0.0008269,
       Elastance(displayUnit="Pa/m3") = 973253.4281295,
       nPorts=2)
       annotation (Placement(transformation(extent={{104,-30},{124,-10}})));
-    IdealValveResistance mitralValve(Pknee=0, _Ron(displayUnit=
+    IdealValveResistance mitralValve(
+      EnthalpyNotUsed=true,          Pknee=0, _Ron(displayUnit=
             "(mmHg.s)/ml") = 2106493.721157)
       annotation (Placement(transformation(extent={{52,-30},{32,-10}})));
     Physiolibrary.Types.Constants.FrequencyConst HR(k=1.2)

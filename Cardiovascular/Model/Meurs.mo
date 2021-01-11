@@ -5,6 +5,7 @@ package Meurs
     extends Cardiovascular.Icons.Runnable_Shallow;
 
     Physiolibrary.Fluid.Components.ElasticVessel PulmonaryArteries(
+      EnthalpyNotUsed=true,
       useV0Input=false,
       useComplianceInput=false,
       volume_start=0.000106,
@@ -15,10 +16,12 @@ package Meurs
       ExternalPressure=101325 + (-533.28954966))
       annotation (Placement(transformation(extent={{-94,84},{-68,110}})));
     Physiolibrary.Fluid.Components.Conductor PulmonaryArteriesResistance(
+      EnthalpyNotUsed=true,
         useConductanceInput=false, Conductance(displayUnit="ml/(mmHg.s)")=
         6.818059724437e-08)
       annotation (Placement(transformation(extent={{-56,85},{-22,111}})));
     Physiolibrary.Fluid.Components.ElasticVessel PulmonaryVeins(
+      EnthalpyNotUsed=true,
       useV0Input=false,
       useComplianceInput=false,
       volume_start=0.000518,
@@ -29,11 +32,13 @@ package Meurs
       ExternalPressure=101325 + (-533.28954966))
       annotation (Placement(transformation(extent={{-10,86},{14,110}})));
     Physiolibrary.Fluid.Components.Conductor PulmonaryVeinResistance(
+      EnthalpyNotUsed=true,
         useConductanceInput=false, Conductance(displayUnit="ml/(mmHg.s)")=
         2.4999552322936e-06)
       annotation (Placement(transformation(extent={{26,86},{56,110}})));
     Physiolibrary.Fluid.Components.ElasticVesselElastance
                                                  LeftAtrium(
+      EnthalpyNotUsed=true,
       useV0Input=false,
       volume_start=9.31e-05,
       ZeroPressureVolume=3e-05,
@@ -44,6 +49,7 @@ package Meurs
       annotation (Placement(transformation(extent={{74,50},{102,78}})));
     Physiolibrary.Fluid.Components.ElasticVesselElastance
                                                  LeftVentricle(
+      EnthalpyNotUsed=true,
       useV0Input=false,
       volume_start=0.000144,
       ZeroPressureVolume=6e-05,
@@ -53,6 +59,7 @@ package Meurs
       ExternalPressure=101325 + (-533.28954966))
       annotation (Placement(transformation(extent={{148,48},{178,78}})));
     Physiolibrary.Fluid.Components.IdealValve ventricleArteryValve(
+      EnthalpyNotUsed=true,
       _Gon(displayUnit="ml/(mmHg.s)") = 9.3757696980707e-07,
       _Goff(displayUnit="ml/(mmHg.s)") = 0,
       useLimitationInputs=false)
@@ -64,6 +71,7 @@ package Meurs
         EMAX=533289549.66)
       annotation (Placement(transformation(extent={{164,92},{200,124}})));
     Physiolibrary.Fluid.Components.IdealValve atrioVentricleValve(
+      EnthalpyNotUsed=true,
       _Gon(displayUnit="ml/(mmHg.s)") = 2.4999552322936e-06,
       useLimitationInputs=false,
       _Goff(displayUnit="ml/(mmHg.s)") = 0) annotation (Placement(visible=true,
@@ -72,6 +80,7 @@ package Meurs
           extent={{-13,12},{13,-12}},
           rotation=0)));
     Physiolibrary.Fluid.Components.ElasticVessel IntraThoracicArteries(
+      EnthalpyNotUsed=true,
       useV0Input=false,
       useComplianceInput=false,
       useExternalPressureInput=true,
@@ -83,34 +92,41 @@ package Meurs
       annotation (Placement(transformation(extent={{168,6},{190,28}})));
     Physiolibrary.Fluid.Components.ElasticVessel ExtrathoracicArteries(
       volume_start(displayUnit="ml") = 0.000526,
+      EnthalpyNotUsed=true,
       useV0Input=false,
       useExternalPressureInput=false,
       useComplianceInput=false,
       ZeroPressureVolume=0.00037,
       Compliance=1.3493607749463e-08,
       nPorts=1) annotation (Placement(transformation(extent={{58,6},{84,32}})));
-    Physiolibrary.Fluid.Components.Inertia inertia(I=(93325.6711905)/1000,
-        massFlow_start=0.021666666666667) annotation (Placement(transformation(
+    Physiolibrary.Fluid.Components.Inertia inertia(
+      EnthalpyNotUsed=true,
+      I=(93325.6711905)/1000,
+      massFlow_start=0.021666666666667)   annotation (Placement(transformation(
           extent={{-10,-10},{10,10}},
           rotation=180,
           origin={134,18})));
     Physiolibrary.Fluid.Components.Conductor ArteryResistance(
+      EnthalpyNotUsed=true,
         useConductanceInput=false, Conductance(displayUnit="ml/(mmHg.s)")=
         1.2526028316622e-07)
       annotation (Placement(transformation(extent={{94,8},{114,28}})));
     Physiolibrary.Fluid.Components.Conductor SystemicArterioralConductance(
+      EnthalpyNotUsed=true,
         useConductanceInput=false, Conductance(displayUnit="ml/(mmHg.s)")=
         9.3757696980707e-09) annotation (Placement(transformation(
           extent={{11,-9},{-11,9}},
           rotation=0,
           origin={23,17})));
     Physiolibrary.Fluid.Components.Conductor SmallVenuleConductance(
+      EnthalpyNotUsed=true,
         useConductanceInput=false, Conductance(displayUnit="ml/(mmHg.s)")=
         3.7503078792283e-08) annotation (Placement(transformation(
           extent={{14,-9},{-14,9}},
           rotation=0,
           origin={-60,17})));
     Physiolibrary.Fluid.Components.ElasticVessel PeripheralVessels(
+      EnthalpyNotUsed=true,
       useV0Input=false,
       useExternalPressureInput=false,
       useComplianceInput=false,
@@ -120,14 +136,17 @@ package Meurs
       nPorts=1)
       annotation (Placement(transformation(extent={{-26,10},{-6,30}})));
     Physiolibrary.Fluid.Components.Conductor VeinsResistance(
+      EnthalpyNotUsed=true,
         useConductanceInput=false, Conductance(displayUnit="ml/(mmHg.s)")=
         8.3256834918868e-08)
       annotation (Placement(transformation(extent={{-120,6},{-148,28}})));
     Physiolibrary.Fluid.Components.Conductor CentralVenousResistance(
+      EnthalpyNotUsed=true,
         useConductanceInput=false, Conductance(displayUnit="ml/(mmHg.s)")=
         2.4999552322936e-06)
       annotation (Placement(transformation(extent={{-208,8},{-232,28}})));
     Physiolibrary.Fluid.Components.ElasticVessel IntraThoracicVeins(
+      EnthalpyNotUsed=true,
       useV0Input=false,
       useComplianceInput=false,
       useExternalPressureInput=true,
@@ -138,6 +157,7 @@ package Meurs
       ExternalPressure=101325 + (-533.28954966))
       annotation (Placement(transformation(extent={{-192,4},{-164,32}})));
     Physiolibrary.Fluid.Components.ElasticVessel ExtrathoracicVeins(
+      EnthalpyNotUsed=true,
       useV0Input=false,
       useExternalPressureInput=false,
       useComplianceInput=false,
@@ -148,6 +168,7 @@ package Meurs
       annotation (Placement(transformation(extent={{-116,4},{-90,30}})));
     Physiolibrary.Fluid.Components.ElasticVesselElastance
                                                  RightAtrium(
+      EnthalpyNotUsed=true,
       useV0Input=false,
       volume_start=0.000135,
       ZeroPressureVolume=3e-05,
@@ -158,6 +179,7 @@ package Meurs
       annotation (Placement(transformation(extent={{-242,44},{-214,72}})));
     Physiolibrary.Fluid.Components.ElasticVesselElastance
                                                  rightVentricle(
+      EnthalpyNotUsed=true,
       useV0Input=false,
       volume_start=0.000131,
       ZeroPressureVolume=4e-05,
@@ -167,6 +189,7 @@ package Meurs
       ExternalPressure=101325 + (-533.28954966))
       annotation (Placement(transformation(extent={{-168,42},{-138,72}})));
     Physiolibrary.Fluid.Components.IdealValve ventricleArteryValve1(
+      EnthalpyNotUsed=true,
       _Goff(displayUnit="ml/(mmHg.s)") = 0,
       useLimitationInputs=false,
       _Gon(displayUnit="ml/(mmHg.s)") = 2.4999552322936e-06)
@@ -178,6 +201,7 @@ package Meurs
         EMAX=65327969.83335)
       annotation (Placement(transformation(extent={{-180,88},{-150,122}})));
     Physiolibrary.Fluid.Components.IdealValve atrioVentricleValve1(
+      EnthalpyNotUsed=true,
       _Gon(displayUnit="ml/(mmHg.s)") = 2.497705047566e-06,
       _Goff=0,
       useLimitationInputs=false) annotation (Placement(visible=true,

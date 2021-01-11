@@ -2629,7 +2629,8 @@ package Avolio1980
           points={{-20.3,24},{-14,24},{-14,26},{-6,26}},
           color={127,0,0},
           thickness=0.5));
-      connect(elasticVessel.q_in[1], conductor1.q_in) annotation (Line(
+      connect(elasticVessel.q_in[1], conductor1.q_in)
+        annotation (Line(
           points={{-14.3,-26},{8,-26}},
           color={127,0,0},
           thickness=0.5));

@@ -7,69 +7,79 @@ package Burkhoff
     import Physiolibrary.Fluid.Components.*;
     Physiolibrary.Fluid.Components.ElasticVessel Cvs(
       volume_start=0.002701,
+      EnthalpyNotUsed=true,
       ZeroPressureVolume=0.00223,
       Compliance=5.2504310309196e-07,
       nPorts=1)
       annotation (Placement(transformation(extent={{-72,12},{-52,32}})));
-    Physiolibrary.Fluid.Components.Resistor Ras(Resistance=99991790.56125)
+    Physiolibrary.Fluid.Components.Resistor Ras(EnthalpyNotUsed=true, Resistance=99991790.56125)
       annotation (Placement(transformation(extent={{-28,12},{-48,32}})));
     Physiolibrary.Fluid.Components.ElasticVessel Cas(
       volume_start=0.000834,
+      EnthalpyNotUsed=true,
       ZeroPressureVolume=0.0007,
       Compliance=1.2751046789376e-08,
       nPorts=1)
       annotation (Placement(transformation(extent={{-24,12},{-4,32}})));
-    Physiolibrary.Fluid.Components.Resistor Rcs(Resistance=3199737.29796)
+    Physiolibrary.Fluid.Components.Resistor Rcs(EnthalpyNotUsed=true, Resistance=3199737.29796)
       annotation (Placement(transformation(extent={{18,12},{-2,32}})));
     Physiolibrary.Fluid.Components.ElasticVessel Caprox(
       volume_start=3.8e-05,
+      EnthalpyNotUsed=true,
       ZeroPressureVolume=3e-05,
       Compliance=7.5006157584566e-10,
       useExternalPressureInput=true,
       nPorts=1) annotation (Placement(transformation(extent={{20,12},{40,32}})));
-    Physiolibrary.Fluid.Components.Resistor Rcprox(Resistance=2666447.7483)
+    Physiolibrary.Fluid.Components.Resistor Rcprox(EnthalpyNotUsed=true, Resistance=2666447.7483)
       annotation (Placement(transformation(extent={{62,12},{42,32}})));
-    IdealValveResistance AOV(_Ron=266644.77483) annotation (Placement(
+    IdealValveResistance AOV(EnthalpyNotUsed=true, _Ron=266644.77483)
+                                                annotation (Placement(
           transformation(
           extent={{-10,-10},{10,10}},
           rotation=180,
           origin={80,-4})));
     Parts.ElasticVesselWithSVandP LV(
+      EnthalpyNotUsed=true,
       useComplianceInput=true,
       volume_start=0.000125,
       ZeroPressureVolume=5e-06,
       useExternalPressureInput=true,
       nPorts=1)
       annotation (Placement(transformation(extent={{92,-14},{112,6}})));
-    IdealValveResistance MV(_Ron=333305.9685375) annotation (Placement(
+    IdealValveResistance MV(EnthalpyNotUsed=true, _Ron=333305.9685375)
+                                                 annotation (Placement(
           transformation(
           extent={{-10,-10},{10,10}},
           rotation=180,
           origin={122,-4})));
     Parts.ElasticVesselWithSVandP LA(
+      EnthalpyNotUsed=true,
       useComplianceInput=true,
       useExternalPressureInput=true,
       volume_start=8.1e-05,
       ZeroPressureVolume=5e-06,
       nPorts=1)
       annotation (Placement(transformation(extent={{158,-14},{178,6}})));
-    Physiolibrary.Fluid.Components.Resistor Rvp(Resistance=1999835.811225)
+    Physiolibrary.Fluid.Components.Resistor Rvp(EnthalpyNotUsed=true, Resistance=1999835.811225)
       annotation (Placement(transformation(extent={{206,-2},{186,18}})));
-    Physiolibrary.Fluid.Components.Resistor Rvs(Resistance=2666447.7483)
+    Physiolibrary.Fluid.Components.Resistor Rvs(EnthalpyNotUsed=true, Resistance=2666447.7483)
       annotation (Placement(transformation(extent={{-84,-50},{-64,-30}})));
     Parts.ElasticVesselWithSVandP RA(
+      EnthalpyNotUsed=true,
       useComplianceInput=true,
       useExternalPressureInput=true,
       volume_start=7.3e-05,
       ZeroPressureVolume=5e-06,
       nPorts=1)
       annotation (Placement(transformation(extent={{-60,-50},{-40,-30}})));
-    IdealValveResistance TV(_Ron(displayUnit="(mmHg.s)/ml")=
+    IdealValveResistance TV(EnthalpyNotUsed=true,
+                            _Ron(displayUnit="(mmHg.s)/ml")=
         333305.9685375) annotation (Placement(transformation(
           extent={{-10,-10},{10,10}},
           rotation=0,
           origin={4,-40})));
     Parts.ElasticVesselWithSVandP RV(
+      EnthalpyNotUsed=true,
       useComplianceInput=true,
       volume_start=0.000112,
       ZeroPressureVolume=5e-06,
@@ -77,24 +87,27 @@ package Burkhoff
       nPorts=1,
       ExternalPressure=101325 + (0))
       annotation (Placement(transformation(extent={{16,-50},{36,-30}})));
-    IdealValveResistance PV(_Ron=266644.77483) annotation (Placement(
+    IdealValveResistance PV(EnthalpyNotUsed=true, _Ron=266644.77483)
+                                               annotation (Placement(
           transformation(
           extent={{-10,-10},{10,10}},
           rotation=0,
           origin={50,-40})));
-    Physiolibrary.Fluid.Components.Resistor Rcsp(Resistance=2666447.7483)
+    Physiolibrary.Fluid.Components.Resistor Rcsp(EnthalpyNotUsed=true, Resistance=2666447.7483)
       annotation (Placement(transformation(extent={{70,-50},{90,-30}})));
     Physiolibrary.Fluid.Components.ElasticVessel Cap(
       volume_start=0.000802,
+      EnthalpyNotUsed=true,
       ZeroPressureVolume=0.0006,
       Compliance=1.5001231516913e-07,
       useExternalPressureInput=true,
       nPorts=1)
       annotation (Placement(transformation(extent={{144,-48},{164,-28}})));
-    Physiolibrary.Fluid.Components.Resistor Rcp(Resistance=2666447.7483)
+    Physiolibrary.Fluid.Components.Resistor Rcp(EnthalpyNotUsed=true, Resistance=2666447.7483)
       annotation (Placement(transformation(extent={{122,-48},{142,-28}})));
     Physiolibrary.Fluid.Components.ElasticVessel Cvp(
       volume_start=0.000154,
+      EnthalpyNotUsed=true,
       ZeroPressureVolume=0.0001,
       Compliance=5.2504310309196e-08,
       useExternalPressureInput=true,
@@ -102,12 +115,13 @@ package Burkhoff
       annotation (Placement(transformation(extent={{184,-48},{204,-28}})));
     Physiolibrary.Fluid.Components.ElasticVessel Capprox(
       volume_start=3e-05,
+      EnthalpyNotUsed=true,
       ZeroPressureVolume=2e-05,
       Compliance=7.5006157584566e-09,
       useExternalPressureInput=true,
       nPorts=1)
       annotation (Placement(transformation(extent={{98,-48},{118,-28}})));
-    Physiolibrary.Fluid.Components.Resistor Rap(Resistance=2666447.7483)
+    Physiolibrary.Fluid.Components.Resistor Rap(EnthalpyNotUsed=true, Resistance=2666447.7483)
       annotation (Placement(transformation(extent={{164,-48},{184,-28}})));
     Parts.AtrialElastance RAElastance(
       Tmax(displayUnit="ms") = 0.125,

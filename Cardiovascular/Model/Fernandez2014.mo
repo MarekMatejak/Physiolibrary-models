@@ -4,43 +4,57 @@ package Fernandez2014
   model Hemodynamics_shallow
         extends Cardiovascular.Icons.Runnable_Shallow;
 
-    Physiolibrary.Fluid.Components.Inertia Ltc(I=(10678.18997523)/1000,
-        massFlow_start=0.1372)
+    Physiolibrary.Fluid.Components.Inertia Ltc(
+      EnthalpyNotUsed=true,
+      I=(10678.18997523)/1000,
+      massFlow_start=0.1372)
       annotation (Placement(transformation(extent={{-94,42},{-74,62}})));
-    Physiolibrary.Fluid.Components.IdealValveResistance tricuspidValve(Pknee=0,
+    Physiolibrary.Fluid.Components.IdealValveResistance tricuspidValve(
+      EnthalpyNotUsed=true,                                            Pknee=0,
         _Ron(displayUnit="(mmHg.s)/ml") = 3159740.5817355)
       annotation (Placement(transformation(extent={{-52,42},{-32,62}})));
-    Physiolibrary.Fluid.Components.Inertia Lpv(I=(19822.372560862)/1000,
-        massFlow_start=-1.9e-06)
+    Physiolibrary.Fluid.Components.Inertia Lpv(
+      EnthalpyNotUsed=true,
+      I=(19822.372560862)/1000,
+      massFlow_start=-1.9e-06)
       annotation (Placement(transformation(extent={{38,42},{58,62}})));
-    Physiolibrary.Fluid.Components.IdealValveResistance pulmonaryValve(Pknee=0,
+    Physiolibrary.Fluid.Components.IdealValveResistance pulmonaryValve(
+      EnthalpyNotUsed=true,                                            Pknee=0,
         _Ron(displayUnit="(mmHg.s)/ml") = 733273.1307825)
       annotation (Placement(transformation(extent={{62,42},{82,62}})));
-    Physiolibrary.Fluid.Components.Inertia Lmt(I=(10261.557514558)/1000,
-        massFlow_start=0.1141) annotation (Placement(transformation(
+    Physiolibrary.Fluid.Components.Inertia Lmt(
+      EnthalpyNotUsed=true,
+      I=(10261.557514558)/1000,
+      massFlow_start=0.1141)   annotation (Placement(transformation(
           extent={{-10,-10},{10,10}},
           rotation=180,
           origin={74,-22})));
-    Physiolibrary.Fluid.Components.IdealValveResistance mitralValve(Pknee=0,
+    Physiolibrary.Fluid.Components.IdealValveResistance mitralValve(
+      EnthalpyNotUsed=true,                                         Pknee=0,
         _Ron(displayUnit="(mmHg.s)/ml") = 2106493.721157)
       annotation (Placement(transformation(extent={{56,-32},{36,-12}})));
-    Physiolibrary.Fluid.Components.Inertia Lav(I=(16250.665802014)/1000,
-        massFlow_start=-1.4e-05) annotation (Placement(transformation(
+    Physiolibrary.Fluid.Components.Inertia Lav(
+      EnthalpyNotUsed=true,
+      I=(16250.665802014)/1000,
+      massFlow_start=-1.4e-05)   annotation (Placement(transformation(
           extent={{-10,-10},{10,10}},
           rotation=180,
           origin={-44,-22})));
-    Physiolibrary.Fluid.Components.IdealValveResistance aorticValve(Pknee=0,
+    Physiolibrary.Fluid.Components.IdealValveResistance aorticValve(
+      EnthalpyNotUsed=true,                                         Pknee=0,
         _Ron(displayUnit="(mmHg.s)/ml") = 2399802.97347)
       annotation (Placement(transformation(extent={{-62,-32},{-82,-12}})));
     replaceable Physiolibrary.Types.Constants.FrequencyConst HR(k=1.2)
       annotation (Placement(transformation(extent={{-56,20},{-40,34}})));
     replaceable Smith2004.Parts.VentricularInteraction
-                             ventricularInteraction
+                             ventricularInteraction(rightVentricle(ventricle(EnthalpyNotUsed=true)),
+        leftVentricle(ventricle(EnthalpyNotUsed=true)))
       annotation (Placement(transformation(extent={{-28,-14},{32,40}})));
     Physiolibrary.Types.Constants.PressureConst Pth(k(displayUnit="Pa")=
         101325 + (-533.28954966))
       annotation (Placement(transformation(extent={{38,32},{48,42}})));
     Physiolibrary.Fluid.Components.ElasticVesselElastance pulmonaryArteries(
+      EnthalpyNotUsed=true,
       ZeroPressureVolume=0,
       useExternalPressureInput=true,
       volume_start=3.904e-05,
@@ -49,13 +63,15 @@ package Fernandez2014
           extent={{-19,-18},{19,18}},
           rotation=0,
           origin={-175,-30})));
-    Physiolibrary.Fluid.Components.Resistor Rpul(Resistance(displayUnit=
+    Physiolibrary.Fluid.Components.Resistor Rpul(EnthalpyNotUsed=true,
+                                                 Resistance(displayUnit=
             "(mmHg.s)/ml") = 20691634.526808) annotation (Placement(
           transformation(
           extent={{-15,-16},{15,16}},
           rotation=90,
           origin={-177,10})));
     Physiolibrary.Fluid.Components.ElasticVesselElastance pulmonaryVeins(
+      EnthalpyNotUsed=true,
       ZeroPressureVolume=0,
       useExternalPressureInput=true,
       volume_start=0.0008269,
@@ -71,18 +87,21 @@ package Fernandez2014
           rotation=0,
           origin={-226,44})));
     Physiolibrary.Fluid.Components.ElasticVesselElastance aorta(
+      EnthalpyNotUsed=true,
       ZeroPressureVolume=0,
       volume_start=0.0001241,
       Elastance=92165766.41999,
       nPorts=1)
       annotation (Placement(transformation(extent={{186,34},{218,66}})));
-    Physiolibrary.Fluid.Components.Resistor Rsys(Resistance(displayUnit=
+    Physiolibrary.Fluid.Components.Resistor Rsys(EnthalpyNotUsed=true,
+                                                 Resistance(displayUnit=
             "(mmHg.s)/ml") = 145054757.50752) annotation (Placement(
           transformation(
           extent={{-16,-16},{16,16}},
           rotation=270,
           origin={202,6})));
     Physiolibrary.Fluid.Components.ElasticVesselElastance venaCava(
+      EnthalpyNotUsed=true,
       ZeroPressureVolume=0,
       volume_start=0.0002952,
       Elastance=786602.0857485,
@@ -209,8 +228,7 @@ package Fernandez2014
 
   package Parts
     extends Modelica.Icons.UtilitiesPackage;
-      connector HydraulicElastanceInput = input
-        Physiolibrary.Types.HydraulicElastance
+      connector HydraulicElastanceInput = input Physiolibrary.Types.HydraulicElastance
       "input HydraulicElastance as connector" annotation (
       defaultComponentName="hydraulicelastance",
       Icon(graphics={Polygon(
@@ -238,8 +256,7 @@ package Fernandez2014
              Connector with one input signal of type HydraulicElastance.
              </p>
              </html>"));
-    connector HydraulicElastanceOutput = output
-        Physiolibrary.Types.HydraulicElastance
+    connector HydraulicElastanceOutput = output Physiolibrary.Types.HydraulicElastance
       "output HydraulicElastance as connector" annotation (
       defaultComponentName="hydraulicelastance",
       Icon(coordinateSystem(
@@ -266,8 +283,7 @@ package Fernandez2014
            Connector with one output signal of type HydraulicElastance.
            </p>
            </html>"));
-    connector HydraulicResistanceInput = input
-        Physiolibrary.Types.HydraulicResistance
+    connector HydraulicResistanceInput = input Physiolibrary.Types.HydraulicResistance
       "input HydraulicResistance as connector" annotation (
       defaultComponentName="hydraulicresistance",
       Icon(graphics={Polygon(
@@ -295,8 +311,7 @@ package Fernandez2014
              Connector with one input signal of type HydraulicResistance.
              </p>
              </html>"));
-    connector HydraulicResistanceOutput = output
-        Physiolibrary.Types.HydraulicResistance
+    connector HydraulicResistanceOutput = output Physiolibrary.Types.HydraulicResistance
       "output HydraulicResistance as connector" annotation (
       defaultComponentName="hydraulicresistance",
       Icon(coordinateSystem(
