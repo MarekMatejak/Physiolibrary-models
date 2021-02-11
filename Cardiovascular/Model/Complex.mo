@@ -15,8 +15,7 @@ package Complex
         "Selected global condition and adaptation"
         annotation (choicesAllMatching=true);
 
-      replaceable Supports.No supports constrainedby
-        Supports.Abstraction.Supports
+      replaceable Supports.No supports constrainedby Supports.Abstraction.Supports
         "Selected settings of cardiac supports"
         annotation (choicesAllMatching=true);
 

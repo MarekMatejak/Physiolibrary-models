@@ -87,7 +87,7 @@ package Meurs
       volume_start=0.000204,
       ZeroPressureVolume=0.00014,
       Compliance=5.2429304151611e-09,
-      nPorts=1,
+      nPorts=2,
       ExternalPressure=101325 + (-533.28954966))
       annotation (Placement(transformation(extent={{168,6},{190,28}})));
     Physiolibrary.Fluid.Components.ElasticVessel ExtrathoracicArteries(
@@ -98,7 +98,7 @@ package Meurs
       useComplianceInput=false,
       ZeroPressureVolume=0.00037,
       Compliance=1.3493607749463e-08,
-      nPorts=1) annotation (Placement(transformation(extent={{58,6},{84,32}})));
+      nPorts=2) annotation (Placement(transformation(extent={{58,6},{84,32}})));
     Physiolibrary.Fluid.Components.Inertia inertia(
       EnthalpyNotUsed=true,
       I=(93325.6711905)/1000,
@@ -220,6 +220,10 @@ package Meurs
           extent={{-9,-6},{9,6}},
           rotation=0,
           origin={-123,118})));
+    Physiolibrary.Fluid.Sensors.PressureMeasure pressureMeasure
+      annotation (Placement(transformation(extent={{174,-46},{194,-26}})));
+    Physiolibrary.Fluid.Sensors.PressureMeasure pressureMeasure1
+      annotation (Placement(transformation(extent={{74,-42},{94,-22}})));
   equation
     connect(PulmonaryArteries.q_in[1], PulmonaryArteriesResistance.q_in)
       annotation (Line(
@@ -261,7 +265,7 @@ package Meurs
         smooth=Smooth.None));
     connect(ArteryResistance.q_in, ExtrathoracicArteries.q_in[1]) annotation (
         Line(
-        points={{94,18},{80,18},{80,19},{70.87,19}},
+        points={{94,18},{80,18},{80,20.69},{70.87,20.69}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
@@ -271,13 +275,13 @@ package Meurs
         thickness=1,
         smooth=Smooth.None));
     connect(inertia.q_in, IntraThoracicArteries.q_in[1]) annotation (Line(
-        points={{144,18},{162,18},{162,17},{178.89,17}},
+        points={{144,18},{162,18},{162,18.43},{178.89,18.43}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
     connect(IntraThoracicArteries.q_in[1], ventricleArteryValve.q_out)
       annotation (Line(
-        points={{178.89,17},{216,17},{216,64},{208,64}},
+        points={{178.89,18.43},{216,18.43},{216,64},{208,64}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
@@ -295,7 +299,7 @@ package Meurs
         smooth=Smooth.None));
     connect(SystemicArterioralConductance.q_in, ExtrathoracicArteries.q_in[1])
       annotation (Line(
-        points={{34,17},{70.87,17},{70.87,19}},
+        points={{34,17},{70.87,17},{70.87,20.69}},
         color={0,0,0},
         thickness=1,
         smooth=Smooth.None));
@@ -419,6 +423,14 @@ package Meurs
     connect(ventricularElastance.Et, LeftVentricle.elastance) annotation (Line(
           points={{203.42,111.68},{212,111.68},{212,86},{166,86},{166,76.5}},
           color={0,0,127}));
+    connect(pressureMeasure.q_in, IntraThoracicArteries.q_in[2]) annotation (Line(
+        points={{180,-42},{180,-52},{160,-52},{160,15.57},{178.89,15.57}},
+        color={127,0,0},
+        thickness=0.5));
+    connect(ExtrathoracicArteries.q_in[2], pressureMeasure1.q_in) annotation (Line(
+        points={{70.87,19},{70.87,16},{52,16},{52,-48},{80,-48},{80,-38}},
+        color={127,0,0},
+        thickness=0.5));
     annotation (
       Diagram(coordinateSystem(extent={{-280,-140},{280,180}},
             preserveAspectRatio=false)),

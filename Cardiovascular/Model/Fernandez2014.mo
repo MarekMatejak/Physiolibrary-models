@@ -311,7 +311,8 @@ package Fernandez2014
              Connector with one input signal of type HydraulicResistance.
              </p>
              </html>"));
-    connector HydraulicResistanceOutput = output Physiolibrary.Types.HydraulicResistance
+    connector HydraulicResistanceOutput = output
+        Physiolibrary.Types.HydraulicResistance
       "output HydraulicResistance as connector" annotation (
       defaultComponentName="hydraulicresistance",
       Icon(coordinateSystem(
